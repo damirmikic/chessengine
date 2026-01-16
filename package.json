@@ -1,0 +1,43 @@
+{
+  "name": "ai-chess-coach",
+  "version": "1.0.0",
+  "description": "An interactive chess training application powered by Stockfish that provides real-time feedback and analysis",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "npx http-server -p 8000 -o",
+    "serve": "python3 -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damirmikic/chessengine.git"
+  },
+  "keywords": [
+    "chess",
+    "stockfish",
+    "training",
+    "coach",
+    "AI",
+    "game",
+    "education",
+    "chess-engine",
+    "interactive"
+  ],
+  "author": "Damir Mikic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/damirmikic/chessengine/issues"
+  },
+  "homepage": "https://github.com/damirmikic/chessengine#readme",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
+  ]
+}
