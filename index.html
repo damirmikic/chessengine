@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chess Coach</title>
+    
+    <!-- Board CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.base.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.brown.css">
+    
+    <!-- Piece CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece-css/cburnett.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div id="board" class="board is2d"></div>
+    
+    <div class="sidebar">
+        <!-- NEW: Opening Name Display -->
+        <div id="opening-name" class="opening-name">Starting Position</div>
+
+        <h2>Coach Feedback</h2>
+        <div id="status">White to move</div>
+        
+        <!-- Evaluation Bar -->
+        <div id="evaluation-bar">
+            <div id="eval-fill"></div>
+        </div>
+        
+        <div id="feedback" class="feedback-box">
+            Make a move to get coaching...
+        </div>
+        
+        <!-- Continue Button -->
+        <button id="continueBtn" class="continue-btn" style="display: none;">
+            Ignore & Continue Game
+        </button>
+
+        <!-- Settings Group -->
+        <div class="control-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="showHints" checked> 
+                Pause & Explain Mistakes
+            </label>
+        </div>
+
+        <!-- Difficulty Control -->
+        <div class="control-group">
+            <label for="difficulty">Opponent Level:</label>
+            <select id="difficulty">
+                <option value="2">Easy (Beginner)</option>
+                <option value="6">Medium (Casual)</option>
+                <option value="12">Hard (Club)</option>
+                <option value="18" selected>Master (Pro)</option>
+            </select>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button id="undoBtn">Undo Move</button>
+            <button id="flipBtn">Play as Black</button>
+            <button id="resetBtn" class="primary-btn">New Game</button>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
