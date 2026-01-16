@@ -776,3 +776,467 @@ select {
 
 button:hover { background: #666; }
 #resetBtn:hover { background: #1976d2; }
+
+/* CSS Variables for animations */
+:root {
+    --animation-duration: 300ms;
+    --bg-primary: #2c2c2c;
+    --bg-secondary: #222;
+    --bg-tertiary: #2a2a2a;
+    --bg-quaternary: #333;
+    --border-color: #444;
+    --text-primary: white;
+    --text-secondary: #bbb;
+    --text-tertiary: #888;
+}
+
+/* Light Mode */
+body.light-mode {
+    background-color: #e0e0e0;
+    color: #222;
+}
+
+body.light-mode :root {
+    --bg-primary: #e0e0e0;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #ffffff;
+    --bg-quaternary: #eeeeee;
+    --border-color: #ccc;
+    --text-primary: #222;
+    --text-secondary: #444;
+    --text-tertiary: #666;
+}
+
+body.light-mode .container {
+    background: #f5f5f5;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+body.light-mode h2,
+body.light-mode h3 {
+    color: #222;
+}
+
+body.light-mode label {
+    color: #444;
+}
+
+body.light-mode .opening-panel,
+body.light-mode .move-history-panel,
+body.light-mode .analysis-panel,
+body.light-mode .critical-moments-panel,
+body.light-mode .puzzles-panel,
+body.light-mode .themes-panel {
+    background: #ffffff;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .opening-header,
+body.light-mode .move-history-header,
+body.light-mode .analysis-panel h3 {
+    border-bottom-color: #ccc;
+}
+
+body.light-mode .opening-name {
+    color: #555;
+}
+
+body.light-mode .opening-eco {
+    background: #e0e0e0;
+    color: #555;
+}
+
+body.light-mode .opening-category {
+    color: #666;
+}
+
+body.light-mode .move-pair {
+    border-bottom-color: #e0e0e0;
+}
+
+body.light-mode .move-number {
+    color: #666;
+}
+
+body.light-mode .move-item:hover {
+    background: #f0f0f0;
+}
+
+body.light-mode .move-item.current {
+    background: #bbdefb;
+}
+
+body.light-mode .icon-btn {
+    background: #e0e0e0;
+    border: 1px solid #ccc;
+    color: #222;
+}
+
+body.light-mode .icon-btn:hover {
+    background: #d0d0d0;
+}
+
+body.light-mode select {
+    background: #ffffff;
+    color: #222;
+    border: 1px solid #ccc;
+}
+
+body.light-mode #evaluation-bar {
+    background: #e0e0e0;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .feedback-box {
+    background: #f0f0f0;
+    border-left-color: #999;
+    color: #222;
+}
+
+body.light-mode .feedback-box.good {
+    background: #e8f5e9;
+    border-left-color: #4caf50;
+}
+
+body.light-mode .feedback-box.inaccuracy {
+    background: #fffde7;
+    border-left-color: #ffeb3b;
+    color: #222;
+}
+
+body.light-mode .feedback-box.mistake {
+    background: #fff3e0;
+    border-left-color: #ff9800;
+}
+
+body.light-mode .feedback-box.blunder {
+    background: #ffebee;
+    border-left-color: #f44336;
+}
+
+body.light-mode .analysis-btn {
+    background: #e0e0e0;
+    border: 1px solid #ccc;
+    color: #222;
+}
+
+body.light-mode .analysis-btn:hover {
+    background: #d0d0d0;
+}
+
+body.light-mode .analysis-btn:disabled {
+    background: #f0f0f0;
+    color: #aaa;
+}
+
+body.light-mode .best-moves-panel {
+    background: #f5f5f5;
+}
+
+body.light-mode .best-move-item {
+    background: #ffffff;
+}
+
+body.light-mode .best-move-item:hover {
+    background: #f0f0f0;
+}
+
+body.light-mode .critical-moment-item,
+body.light-mode .puzzle-item,
+body.light-mode .saved-game-item {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+body.light-mode .critical-moment-item:hover,
+body.light-mode .puzzle-item:hover,
+body.light-mode .saved-game-item:hover {
+    background: #f5f5f5;
+}
+
+body.light-mode .button-group button {
+    background: #e0e0e0;
+    color: #222;
+}
+
+body.light-mode .button-group button:hover {
+    background: #d0d0d0;
+}
+
+body.light-mode #resetBtn {
+    background: #2196f3;
+    color: white;
+}
+
+body.light-mode #resetBtn:hover {
+    background: #1976d2;
+}
+
+body.light-mode .modal-content {
+    background: #ffffff;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .modal-header {
+    border-bottom-color: #ccc;
+}
+
+/* Animated move highlighting */
+.board square.last-move {
+    background-color: rgba(155, 199, 0, 0.41) !important;
+    animation: highlight-pulse var(--animation-duration) ease-in-out;
+}
+
+@keyframes highlight-pulse {
+    0% {
+        background-color: rgba(255, 255, 0, 0.8) !important;
+    }
+    100% {
+        background-color: rgba(155, 199, 0, 0.41) !important;
+    }
+}
+
+/* Move animation */
+piece {
+    transition: transform var(--animation-duration) ease-out,
+                opacity calc(var(--animation-duration) / 2) ease-out;
+}
+
+/* Themes Panel */
+.themes-panel {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.themes-panel h3 {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+}
+
+/* Toggle Switch */
+.theme-toggle-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #2196f3;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+}
+
+body.light-mode .toggle-slider {
+    background-color: #ccc;
+}
+
+body.light-mode input:checked + .toggle-slider {
+    background-color: #2196f3;
+}
+
+/* Board size slider */
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #444;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #2196f3;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #2196f3;
+    cursor: pointer;
+    border: none;
+}
+
+body.light-mode input[type="range"] {
+    background: #ccc;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .board {
+        width: 600px !important;
+        height: 600px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        height: auto;
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .board {
+        width: 90vw !important;
+        height: 90vw !important;
+        max-width: 500px !important;
+        max-height: 500px !important;
+    }
+
+    .sidebar {
+        width: 100%;
+        max-width: 90vw;
+    }
+
+    .move-history-panel {
+        max-height: 180px;
+    }
+
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+
+    #undoBtn {
+        grid-column: span 1;
+    }
+
+    .analysis-controls {
+        grid-template-columns: 1fr;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
+
+    h3 {
+        font-size: 0.95em;
+    }
+
+    .feedback-box {
+        font-size: 1em;
+        min-height: 60px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .board {
+        width: 95vw !important;
+        height: 95vw !important;
+        max-width: 400px !important;
+        max-height: 400px !important;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .control-group {
+        font-size: 0.9em;
+    }
+
+    select {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    .button-group button {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+
+    .move-history-panel {
+        max-height: 150px;
+    }
+
+    .opening-panel,
+    .analysis-panel,
+    .themes-panel {
+        padding: 10px;
+    }
+}
+
+/* Ensure board maintains aspect ratio */
+.board {
+    position: relative;
+    transition: width var(--animation-duration) ease, height var(--animation-duration) ease;
+}
+
+/* Smooth transitions for theme changes */
+body,
+.container,
+.opening-panel,
+.move-history-panel,
+.analysis-panel,
+.critical-moments-panel,
+.puzzles-panel,
+.themes-panel,
+.feedback-box,
+select,
+button {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

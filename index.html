@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.brown.css">
     
     <!-- Piece CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece-css/cburnett.css">
+    <link id="piece-set-css" rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece-css/cburnett.css">
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -136,7 +136,73 @@
                 <option value="25">Depth 25 (Very Deep)</option>
             </select>
         </div>
-        
+
+        <!-- Visual Themes Panel -->
+        <div class="themes-panel">
+            <h3>Visual Settings</h3>
+
+            <!-- Dark/Light Mode Toggle -->
+            <div class="control-group">
+                <label class="theme-toggle-label">
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </label>
+            </div>
+
+            <!-- Board Theme -->
+            <div class="control-group">
+                <label for="boardTheme">Board Theme:</label>
+                <select id="boardTheme">
+                    <option value="brown">Brown (Classic)</option>
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="gray">Gray</option>
+                    <option value="marble">Marble</option>
+                </select>
+            </div>
+
+            <!-- Piece Set -->
+            <div class="control-group">
+                <label for="pieceSet">Piece Set:</label>
+                <select id="pieceSet">
+                    <option value="cburnett">Classic (Cburnett)</option>
+                    <option value="merida">Merida</option>
+                    <option value="alpha">Alpha</option>
+                    <option value="chess7">Chess7</option>
+                    <option value="companion">Companion</option>
+                    <option value="fantasy">Fantasy</option>
+                </select>
+            </div>
+
+            <!-- Board Size -->
+            <div class="control-group">
+                <label for="boardSize">Board Size: <span id="boardSizeValue">600px</span></label>
+                <input type="range" id="boardSize" min="300" max="800" value="600" step="50">
+            </div>
+
+            <!-- Animation Speed -->
+            <div class="control-group">
+                <label for="animationSpeed">Animation:</label>
+                <select id="animationSpeed">
+                    <option value="instant">Instant</option>
+                    <option value="fast">Fast</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="slow">Slow</option>
+                </select>
+            </div>
+
+            <!-- Sound Toggle -->
+            <div class="control-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="soundToggle" checked>
+                    Sound Effects
+                </label>
+            </div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="button-group">
             <button id="undoBtn">Undo Move</button>

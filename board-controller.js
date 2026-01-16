@@ -5,6 +5,7 @@
 
 import { Chess } from 'https://esm.sh/chess.js@0.13.4';
 import { Chessground } from 'https://esm.sh/chessground@8.3.3';
+import { themeManager } from './themes.js';
 
 /**
  * @typedef {Object} BoardState
@@ -109,6 +110,15 @@ function handleUserMove(from, to) {
         return;
     }
 
+    // Play sound effect
+    if (boardState.chess.in_check()) {
+        themeManager.playSound('check');
+    } else if (move.captured) {
+        themeManager.playSound('capture');
+    } else {
+        themeManager.playSound('move');
+    }
+
     // Disable board while processing
     disableBoard();
 
@@ -136,6 +146,15 @@ export function performEngineMove(moveStr) {
         if (!move) {
             console.error('Invalid engine move:', moveStr);
             return false;
+        }
+
+        // Play sound effect
+        if (boardState.chess.in_check()) {
+            themeManager.playSound('check');
+        } else if (move.captured) {
+            themeManager.playSound('capture');
+        } else {
+            themeManager.playSound('move');
         }
 
         // Update board display

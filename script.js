@@ -79,6 +79,8 @@ import {
     isAnalysisMode
 } from './enhanced-analysis.js';
 
+import { themeManager } from './themes.js';
+
 /**
  * Application state
  */
@@ -93,6 +95,9 @@ const appState = {
  */
 async function initializeApp() {
     try {
+        // Initialize theme manager and apply saved settings
+        themeManager.applyAllSettings();
+
         // Load opening database
         await loadOpeningsDatabase();
 
@@ -177,6 +182,65 @@ function setupEventListeners() {
     if (analyzeBtn) analyzeBtn.addEventListener('click', handleAnalyze);
     if (analysisModeCheckbox) analysisModeCheckbox.addEventListener('change', handleAnalysisModeToggle);
     if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
+
+    // Theme controls
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const boardThemeSelect = document.getElementById('boardTheme');
+    const pieceSetSelect = document.getElementById('pieceSet');
+    const boardSizeSlider = document.getElementById('boardSize');
+    const boardSizeValue = document.getElementById('boardSizeValue');
+    const animationSpeedSelect = document.getElementById('animationSpeed');
+    const soundToggle = document.getElementById('soundToggle');
+
+    if (darkModeToggle) {
+        darkModeToggle.checked = themeManager.settings.darkMode;
+        darkModeToggle.addEventListener('change', (e) => {
+            themeManager.setDarkMode(e.target.checked);
+        });
+    }
+
+    if (boardThemeSelect) {
+        boardThemeSelect.value = themeManager.settings.boardTheme;
+        boardThemeSelect.addEventListener('change', (e) => {
+            themeManager.setBoardTheme(e.target.value);
+        });
+    }
+
+    if (pieceSetSelect) {
+        pieceSetSelect.value = themeManager.settings.pieceSet;
+        pieceSetSelect.addEventListener('change', (e) => {
+            themeManager.setPieceSet(e.target.value);
+        });
+    }
+
+    if (boardSizeSlider && boardSizeValue) {
+        boardSizeSlider.value = themeManager.settings.boardSize;
+        boardSizeValue.textContent = `${themeManager.settings.boardSize}px`;
+        boardSizeSlider.addEventListener('input', (e) => {
+            const size = e.target.value;
+            boardSizeValue.textContent = `${size}px`;
+            themeManager.setBoardSize(parseInt(size));
+        });
+    }
+
+    if (animationSpeedSelect) {
+        animationSpeedSelect.value = themeManager.settings.animationSpeed;
+        animationSpeedSelect.addEventListener('change', (e) => {
+            themeManager.setAnimationSpeed(e.target.value);
+        });
+    }
+
+    if (soundToggle) {
+        soundToggle.checked = themeManager.settings.soundEnabled;
+        soundToggle.addEventListener('change', (e) => {
+            themeManager.setSoundEnabled(e.target.checked);
+        });
+    }
+
+    // Enable audio on first user interaction
+    document.addEventListener('click', () => {
+        themeManager.enableAudio();
+    }, { once: true });
 }
 
 /**
