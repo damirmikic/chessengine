@@ -313,3 +313,38 @@ export function getCurrentFen() {
 export function getMoveHistory() {
     return boardState.chess ? boardState.chess.history() : [];
 }
+
+/**
+ * Loads a position from FEN
+ * @param {string} fen - FEN string
+ * @returns {boolean} True if position loaded successfully
+ */
+export function loadPosition(fen) {
+    if (!boardState.chess || !boardState.board) return false;
+
+    try {
+        const success = boardState.chess.load(fen);
+        if (!success) {
+            console.error('Invalid FEN:', fen);
+            return false;
+        }
+
+        // Update board display
+        boardState.board.set({
+            fen: fen,
+            lastMove: undefined,
+            check: boardState.chess.in_check(),
+            turnColor: boardState.chess.turn() === 'w' ? 'white' : 'black',
+            movable: {
+                color: boardState.userColor,
+                dests: calculateDestinations(boardState.chess)
+            }
+        });
+
+        return true;
+
+    } catch (error) {
+        console.error('Error loading position:', error);
+        return false;
+    }
+}

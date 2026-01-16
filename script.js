@@ -23,7 +23,8 @@ import {
     getChess,
     getUserColor,
     isGameOver,
-    getCurrentFen
+    getCurrentFen,
+    loadPosition
 } from './board-controller.js';
 
 import {
@@ -39,6 +40,28 @@ import {
     updateOpeningDisplay,
     loadOpeningsDatabase
 } from './openings.js';
+
+import {
+    initializeMoveHistory,
+    addMove,
+    annotateLastMove,
+    updateLastMoveEvaluation,
+    resetMoveHistory,
+    getMoves,
+    loadMoveHistory,
+    setNavigationMode,
+    isViewingHistory
+} from './move-history.js';
+
+import {
+    saveGame,
+    loadGame,
+    exportToPGN,
+    importFromPGN,
+    downloadPGN,
+    showLoadGameModal,
+    hideLoadGameModal
+} from './game-manager.js';
 
 /**
  * Application state
@@ -87,6 +110,11 @@ async function initializeApp() {
             showMessage('Engine initialization failed. Some features may not work.');
         }
 
+        // Initialize move history
+        initializeMoveHistory({
+            onMoveClick: handleMoveNavigation
+        });
+
         // Set up UI event listeners
         setupEventListeners();
 
@@ -107,11 +135,23 @@ function setupEventListeners() {
     const undoBtn = document.getElementById('undoBtn');
     const flipBtn = document.getElementById('flipBtn');
     const continueBtn = document.getElementById('continueBtn');
+    const saveGameBtn = document.getElementById('saveGameBtn');
+    const loadGameBtn = document.getElementById('loadGameBtn');
+    const exportPgnBtn = document.getElementById('exportPgnBtn');
+    const importPgnBtn = document.getElementById('importPgnBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const pgnFileInput = document.getElementById('pgnFileInput');
 
     if (resetBtn) resetBtn.addEventListener('click', handleReset);
     if (undoBtn) undoBtn.addEventListener('click', handleUndo);
     if (flipBtn) flipBtn.addEventListener('click', handleFlip);
     if (continueBtn) continueBtn.addEventListener('click', handleContinue);
+    if (saveGameBtn) saveGameBtn.addEventListener('click', handleSaveGame);
+    if (loadGameBtn) loadGameBtn.addEventListener('click', handleLoadGame);
+    if (exportPgnBtn) exportPgnBtn.addEventListener('click', handleExportPGN);
+    if (importPgnBtn) importPgnBtn.addEventListener('click', () => pgnFileInput?.click());
+    if (closeModalBtn) closeModalBtn.addEventListener('click', hideLoadGameModal);
+    if (pgnFileInput) pgnFileInput.addEventListener('change', handleImportPGN);
 }
 
 /**
@@ -121,12 +161,23 @@ function setupEventListeners() {
 function handleUserMove(moveData) {
     const { move, previousFen, currentFen } = moveData;
 
+    // Don't allow moves while viewing history
+    if (isViewingHistory()) {
+        showMessage('Return to current position to make moves');
+        return;
+    }
+
     // Hide continue button and unpause
     toggleContinueButton(false);
     appState.gamePaused = false;
 
+    // Add move to history (evaluation will be updated later)
+    const chess = getChess();
+    const turn = chess.turn();
+    addMove(move.san, null, currentFen, turn === 'w' ? 'b' : 'w'); // Color is previous turn
+
     // Update opening display
-    updateOpeningDisplay(getChess());
+    updateOpeningDisplay(chess);
 
     // Show analyzing message
     showAnalyzing('Analyzing...');
@@ -152,6 +203,10 @@ function analyzeUserMove(move, previousFen, currentFen) {
 
     // Calculate evaluation loss
     const evalLoss = calculateEvalLoss(appState.previousEval, currentEval, getUserColor());
+
+    // Update move history with evaluation and annotation
+    updateLastMoveEvaluation(currentEval);
+    annotateLastMove(evalLoss);
 
     // Check if hints are enabled
     const showHints = document.getElementById('showHints')?.checked ?? true;
@@ -207,12 +262,28 @@ function handleEngineBestMove(result) {
     if (status === 'playing') {
         // Engine is making its move
         if (move && move !== '(none)') {
+            const chess = getChess();
+            const beforeTurn = chess.turn();
+
             performEngineMove(move);
-            updateOpeningDisplay(getChess());
+
+            // Add engine move to history
+            const moveHistory = chess.history();
+            const lastMoveSan = moveHistory[moveHistory.length - 1];
+            const currentFen = getCurrentFen();
+            addMove(lastMoveSan, null, currentFen, beforeTurn);
+
+            updateOpeningDisplay(chess);
 
             // Evaluate new position
-            const currentFen = getCurrentFen();
             evaluatePosition(currentFen, 10, 'current');
+
+            // Store evaluation for the engine's move (will be updated when evaluation completes)
+            setTimeout(() => {
+                const engineState = getEngineState();
+                updateLastMoveEvaluation(engineState.currentEval);
+                appState.previousEval = engineState.currentEval;
+            }, 500);
         }
         resetEngineStatus();
 
@@ -288,6 +359,7 @@ function requestEngineMove() {
  */
 function handleReset() {
     resetBoard();
+    resetMoveHistory();
     appState.previousEval = 0.3;
     appState.gamePaused = false;
     appState.pendingUserMove = null;
@@ -369,6 +441,174 @@ function toggleContinueButton(show) {
     if (btn) {
         btn.style.display = show ? 'block' : 'none';
     }
+}
+
+/**
+ * Handles save game button click
+ */
+function handleSaveGame() {
+    const moves = getMoves();
+    if (moves.length === 0) {
+        showMessage('No moves to save');
+        return;
+    }
+
+    const chess = getChess();
+    const result = chess.game_over()
+        ? (chess.in_checkmate()
+            ? (chess.turn() === 'w' ? '0-1' : '1-0')
+            : '1/2-1/2')
+        : '*';
+
+    const success = saveGame(moves, getCurrentFen(), result);
+    if (success) {
+        showMessage('Game saved successfully!');
+    } else {
+        showMessage('Failed to save game');
+    }
+}
+
+/**
+ * Handles load game button click
+ */
+function handleLoadGame() {
+    showLoadGameModal((game) => {
+        // Reset board first
+        resetBoard();
+        resetMoveHistory();
+
+        // Load moves from saved game
+        loadMoveHistory(game.moves);
+
+        // Replay moves on the board
+        const chess = getChess();
+        game.moves.forEach(moveRecord => {
+            try {
+                chess.move(moveRecord.san);
+            } catch (error) {
+                console.error('Error replaying move:', moveRecord.san, error);
+            }
+        });
+
+        // Update board display
+        loadPosition(game.fen);
+        updateOpeningDisplay(chess);
+
+        // Update evaluation bar with last move's eval
+        if (game.moves.length > 0) {
+            const lastMove = game.moves[game.moves.length - 1];
+            if (lastMove.evaluation !== null) {
+                updateEvaluationBar(lastMove.evaluation);
+                appState.previousEval = lastMove.evaluation;
+            }
+        }
+
+        showMessage('Game loaded successfully');
+    });
+}
+
+/**
+ * Handles export PGN button click
+ */
+function handleExportPGN() {
+    const moves = getMoves();
+    if (moves.length === 0) {
+        showMessage('No moves to export');
+        return;
+    }
+
+    const chess = getChess();
+    const result = chess.game_over()
+        ? (chess.in_checkmate()
+            ? (chess.turn() === 'w' ? '0-1' : '1-0')
+            : '1/2-1/2')
+        : '*';
+
+    const pgn = exportToPGN(moves, result);
+    const now = new Date();
+    const filename = `chess_game_${now.getFullYear()}_${String(now.getMonth() + 1).padStart(2, '0')}_${String(now.getDate()).padStart(2, '0')}.pgn`;
+
+    downloadPGN(pgn, filename);
+    showMessage('PGN exported successfully!');
+}
+
+/**
+ * Handles import PGN file selection
+ * @param {Event} event - File input change event
+ */
+function handleImportPGN(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const pgnText = e.target.result;
+        const imported = importFromPGN(pgnText);
+
+        if (!imported || imported.moves.length === 0) {
+            showMessage('Failed to import PGN');
+            return;
+        }
+
+        // Reset board first
+        resetBoard();
+        resetMoveHistory();
+
+        // Replay moves and build move history
+        const chess = getChess();
+        imported.moves.forEach(moveRecord => {
+            try {
+                const beforeFen = chess.fen();
+                const moveResult = chess.move(moveRecord.san);
+                if (moveResult) {
+                    const afterFen = chess.fen();
+                    moveRecord.fen = afterFen;
+                    addMove(moveRecord.san, moveRecord.evaluation, afterFen, moveRecord.color);
+                }
+            } catch (error) {
+                console.error('Error replaying PGN move:', moveRecord.san, error);
+            }
+        });
+
+        // Update board display
+        const currentFen = getCurrentFen();
+        loadPosition(currentFen);
+        updateOpeningDisplay(chess);
+
+        showMessage(`PGN imported: ${imported.moves.length} moves`);
+    };
+
+    reader.readAsText(file);
+
+    // Reset file input
+    event.target.value = '';
+}
+
+/**
+ * Handles move navigation (clicking on moves in history)
+ * @param {number} moveIndex - Index of the move in history
+ * @param {string} fen - FEN position at that move
+ */
+function handleMoveNavigation(moveIndex, fen) {
+    setNavigationMode(true);
+
+    // Load the position
+    loadPosition(fen);
+
+    const moves = getMoves();
+    const isLatestMove = moveIndex === moves.length - 1;
+
+    if (isLatestMove) {
+        // Return to current position - enable board
+        enableBoard();
+        showMessage('Current position');
+    } else {
+        // Viewing history - disable board
+        disableBoard();
+        showMessage(`Viewing move ${Math.floor(moveIndex / 2) + 1}${moveIndex % 2 === 0 ? '' : '...'}`);
+    }
+
+    setNavigationMode(false);
 }
 
 // Initialize application when DOM is ready
