@@ -1,402 +1,375 @@
-import { Chess } from 'https://esm.sh/chess.js@0.13.4';
-import { Chessground } from 'https://esm.sh/chessground@8.3.3';
+/**
+ * @fileoverview AI Chess Coach - Main application controller
+ * Orchestrates the chess board, engine, and analysis modules
+ */
 
-const chess = new Chess();
-let board = null;
-let stockfish = null;
+import {
+    initializeEngine,
+    evaluatePosition,
+    findBestMove,
+    getEngineState,
+    isEngineReady,
+    resetEngineStatus
+} from './chess-engine.js';
 
-// State Variables
-let previousEval = 0.3;
-let engineStatus = 'idle'; // 'idle' | 'evaluating_current' | 'finding_hint' | 'playing'
-let userColor = 'white';   
-let pendingUserMove = null; 
-let previousFen = "";
-let gamePaused = false;
-let currentPv = ""; // Store the Principal Variation (best line)
-let badMoveRefutation = ""; // Store the line that punishes the user's mistake
+import {
+    initializeBoard,
+    performEngineMove,
+    disableBoard,
+    enableBoard,
+    resetBoard,
+    undoMove,
+    flipBoard,
+    getChess,
+    getUserColor,
+    isGameOver,
+    getCurrentFen
+} from './board-controller.js';
 
-// --- SIMPLE OPENING DICTIONARY ---
-const OPENINGS = {
-    "e4": "King's Pawn Game",
-    "e4 e5": "Open Game",
-    "e4 e5 Nf3": "King's Knight Opening",
-    "e4 e5 Nf3 Nc6": "King's Knight Opening: Normal",
-    "e4 e5 Nf3 Nc6 Bb5": "Ruy Lopez",
-    "e4 e5 Nf3 Nc6 Bc4": "Italian Game",
-    "e4 c5": "Sicilian Defense",
-    "e4 c6": "Caro-Kann Defense",
-    "e4 e6": "French Defense",
-    "d4": "Queen's Pawn Game",
-    "d4 d5": "Queen's Gambit Game",
-    "d4 d5 c4": "Queen's Gambit",
-    "d4 Nf6": "Indian Defense",
-    "d4 Nf6 c4 g6": "King's Indian / Grunfeld",
-    "Nf3": "Reti Opening",
-    "c4": "English Opening"
+import {
+    displayMoveAnalysis,
+    showAnalyzing,
+    showMessage,
+    updateEvaluationBar,
+    calculateEvalLoss,
+    isMistake
+} from './analysis.js';
+
+import {
+    updateOpeningDisplay
+} from './openings.js';
+
+/**
+ * Application state
+ */
+const appState = {
+    previousEval: 0.3,
+    gamePaused: false,
+    pendingUserMove: null
 };
 
-// --- STOCKFISH SETUP ---
-try {
-    stockfish = new Worker('stockfish.js');
-    stockfish.onmessage = function(event) {
-        const line = event.data;
-        if (line === 'uciok') console.log("Stockfish Ready");
+/**
+ * Initializes the chess application
+ */
+async function initializeApp() {
+    try {
+        // Initialize board
+        const boardInitialized = initializeBoard({
+            containerId: 'board',
+            orientation: 'white',
+            onUserMove: handleUserMove
+        });
 
-        // 0. Capture PV (Line of best moves) from info string
-        // Format: "info depth 10 ... pv e2e4 e7e5 g1f3 ..."
-        if (line.startsWith('info') && line.includes(' pv ')) {
-            const pvIndex = line.indexOf(' pv ') + 4;
-            currentPv = line.substring(pvIndex);
-            
-            // If we are evaluating the USER'S move, this PV is the "Refutation" 
-            // (The sequence of moves the opponent will play to punish you)
-            if (engineStatus === 'evaluating_current') {
-                badMoveRefutation = currentPv;
-            }
+        if (!boardInitialized) {
+            showMessage('Failed to initialize board. Please refresh the page.');
+            return;
         }
 
-        // 1. Score Parsing
-        if (line.startsWith('info') && line.includes('score cp')) {
-            const parts = line.split(' ');
-            const scoreIndex = parts.indexOf('cp') + 1;
-            let score = parseInt(parts[scoreIndex]) / 100;
-            const turn = chess.turn();
-            if (turn === 'b') score = -score;
-            window.currentEval = score;
+        // Initialize engine
+        const engineInitialized = await initializeEngine({
+            onReady: () => {
+                showMessage('Make a move to get coaching...');
+                updateEvaluationBar(0.3);
+            },
+            onBestMove: handleEngineBestMove,
+            onEvaluation: handleEngineEvaluation,
+            onError: (error) => {
+                showMessage('Engine error. Please refresh the page.');
+                console.error('Engine error:', error);
+            }
+        });
+
+        if (!engineInitialized) {
+            showMessage('Engine initialization failed. Some features may not work.');
         }
 
-        // 2. Best Move Parsing
-        if (line.startsWith('bestmove')) {
-            const moveStr = line.split(' ')[1];
-            
-            if (engineStatus === 'playing') {
-                if (moveStr && moveStr !== '(none)') performEngineMove(moveStr);
-                engineStatus = 'idle';
-            }
-            else if (engineStatus === 'finding_hint') {
-                const bestMove = moveStr;
-                // Note: pendingUserMove now contains the refutation from the previous step
-                completeUserMoveAnalysis(pendingUserMove, bestMove, currentPv);
-                engineStatus = 'idle';
-            }
-        }
-    };
-    
-    stockfish.postMessage('uci');
-    stockfish.postMessage('isready');
+        // Set up UI event listeners
+        setupEventListeners();
 
-} catch (e) {
-    console.error("Stockfish error:", e);
-}
+        // Update opening display
+        updateOpeningDisplay(getChess());
 
-// --- BOARD SETUP ---
-function toDests(chess) {
-    const dests = new Map();
-    const moves = chess.moves({ verbose: true });
-    moves.forEach(m => {
-        if (!dests.has(m.from)) dests.set(m.from, []);
-        dests.get(m.from).push(m.to);
-    });
-    return dests;
-}
-
-const config = {
-    fen: chess.fen(),
-    orientation: 'white',
-    movable: {
-        color: 'white',
-        free: false,
-        dests: toDests(chess),
-        events: { after: onUserMove }
-    }
-};
-
-const boardContainer = document.getElementById('board');
-if (boardContainer) board = Chessground(boardContainer, config);
-
-// --- OPENING DETECTION ---
-function updateOpeningName() {
-    const history = chess.history().join(" ");
-    const nameEl = document.getElementById('opening-name');
-    
-    if (OPENINGS[history]) {
-        nameEl.innerText = OPENINGS[history];
-        nameEl.style.color = "#4caf50"; 
-    } else {
-        let found = "Unknown / Custom";
-        let bestLen = 0;
-        for (const [seq, name] of Object.entries(OPENINGS)) {
-            if (history.startsWith(seq) && seq.length > bestLen) {
-                found = name;
-                bestLen = seq.length;
-            }
-        }
-        if (history === "") found = "Starting Position";
-        nameEl.innerText = found;
-        nameEl.style.color = "#888";
+    } catch (error) {
+        console.error('Application initialization error:', error);
+        showMessage('Failed to start application. Please refresh the page.');
     }
 }
 
-// --- USER MOVE LOGIC ---
-function onUserMove(orig, dest) {
-    toggleContinueBtn(false);
-    gamePaused = false;
+/**
+ * Sets up event listeners for UI controls
+ */
+function setupEventListeners() {
+    const resetBtn = document.getElementById('resetBtn');
+    const undoBtn = document.getElementById('undoBtn');
+    const flipBtn = document.getElementById('flipBtn');
+    const continueBtn = document.getElementById('continueBtn');
 
-    previousFen = chess.fen(); 
+    if (resetBtn) resetBtn.addEventListener('click', handleReset);
+    if (undoBtn) undoBtn.addEventListener('click', handleUndo);
+    if (flipBtn) flipBtn.addEventListener('click', handleFlip);
+    if (continueBtn) continueBtn.addEventListener('click', handleContinue);
+}
 
-    let move = chess.move({ from: orig, to: dest });
-    if (move === null) move = chess.move({ from: orig, to: dest, promotion: 'q' });
-    if (move === null) { board.set({ fen: previousFen }); return; }
+/**
+ * Handles user moves from the board
+ * @param {Object} moveData - Move information
+ */
+function handleUserMove(moveData) {
+    const { move, previousFen, currentFen } = moveData;
 
-    board.set({ movable: { dests: new Map() } });
-    updateOpeningName();
+    // Hide continue button and unpause
+    toggleContinueButton(false);
+    appState.gamePaused = false;
 
-    const feedbackEl = document.getElementById('feedback');
-    feedbackEl.innerHTML = "<em>Analyzing...</em>";
-    feedbackEl.className = "feedback-box";
-    
-    // Check eval AND capture refutation
-    if(stockfish) {
-        engineStatus = 'evaluating_current';
-        currentPv = ""; 
-        badMoveRefutation = ""; // Reset refutation
-        stockfish.postMessage(`position fen ${chess.fen()}`);
-        stockfish.postMessage('go depth 12');
-    }
+    // Update opening display
+    updateOpeningDisplay(getChess());
 
+    // Show analyzing message
+    showAnalyzing('Analyzing...');
+
+    // Request evaluation of the new position
+    evaluatePosition(currentFen, 12, 'current');
+
+    // After engine has time to evaluate, analyze the move
     setTimeout(() => {
-        const currEval = window.currentEval || 0;
-        const delta = (userColor === 'white') ? (previousEval - currEval) : (currEval - previousEval);
-        
-        const showHints = document.getElementById('showHints').checked;
-        
-        // CHANGED: Lowered threshold from 0.8 to 0.3 to catch "Passive" (Inaccuracy) moves
-        const isMistake = delta > 0.3; 
-
-        if (isMistake && showHints && !chess.game_over()) {
-            feedbackEl.innerHTML = "<em>Finding better move...</em>";
-            
-            // Pass the refutation we captured (badMoveRefutation) to the next step
-            pendingUserMove = { move, delta, currEval, refutation: badMoveRefutation };
-            
-            // Ask engine for the best move in the PREVIOUS position
-            engineStatus = 'finding_hint';
-            currentPv = ""; 
-            stockfish.postMessage(`position fen ${previousFen}`);
-            stockfish.postMessage('go depth 12');
-        } else {
-            analyzeMove(delta, currEval, null, null, null);
-            previousEval = currEval;
-            if (!chess.game_over()) makeEngineMove();
-        }
+        analyzeUserMove(move, previousFen, currentFen);
     }, 800);
 }
 
-// Callback after Hint found
-function completeUserMoveAnalysis(data, bestMoveUci, bestLinePv) {
-    const { delta, currEval, refutation } = data;
-    analyzeMove(delta, currEval, bestMoveUci, bestLinePv, refutation);
-    previousEval = currEval;
-    
-    gamePaused = true;
-    toggleContinueBtn(true); 
-}
+/**
+ * Analyzes a user's move
+ * @param {Object} move - Chess.js move object
+ * @param {string} previousFen - FEN before the move
+ * @param {string} currentFen - FEN after the move
+ */
+function analyzeUserMove(move, previousFen, currentFen) {
+    const engineState = getEngineState();
+    const currentEval = engineState.currentEval;
 
-// User clicked "Continue"
-function continueGame() {
-    if (!gamePaused) return;
-    toggleContinueBtn(false);
-    gamePaused = false;
-    if (!chess.game_over()) makeEngineMove();
-}
+    // Calculate evaluation loss
+    const evalLoss = calculateEvalLoss(appState.previousEval, currentEval, getUserColor());
 
-// --- ENGINE MOVE LOGIC ---
-function makeEngineMove() {
-    if (stockfish) {
-        engineStatus = 'playing';
-        const levelSelect = document.getElementById('difficulty');
-        const depth = levelSelect ? levelSelect.value : 12;
-        stockfish.postMessage(`position fen ${chess.fen()}`);
-        stockfish.postMessage(`go depth ${depth}`);
-    }
-}
+    // Check if hints are enabled
+    const showHints = document.getElementById('showHints')?.checked ?? true;
 
-function performEngineMove(moveStr) {
-    const from = moveStr.substring(0, 2);
-    const to = moveStr.substring(2, 4);
-    const promotion = moveStr.length > 4 ? moveStr.substring(4, 5) : undefined;
+    // Determine if this is a mistake
+    const isMistakeMove = isMistake(evalLoss);
 
-    chess.move({ from, to, promotion });
+    if (isMistakeMove && showHints && !isGameOver()) {
+        // Mistake detected - find better move
+        showAnalyzing('Finding better move...');
 
-    board.set({ 
-        fen: chess.fen(),
-        lastMove: [from, to],
-        check: chess.in_check(),
-        turnColor: userColor,
-        movable: { 
-            color: userColor,
-            dests: toDests(chess) 
-        } 
-    });
-    
-    updateOpeningName();
+        // Store pending analysis data
+        appState.pendingUserMove = {
+            move,
+            evalLoss,
+            currentEval,
+            refutation: engineState.badMoveRefutation,
+            previousFen,
+            currentFen
+        };
 
-    if(stockfish) {
-        stockfish.postMessage(`position fen ${chess.fen()}`);
-        stockfish.postMessage('go depth 10'); 
-    }
-}
+        // Find best move in the previous position
+        evaluatePosition(previousFen, 12, 'hint');
 
-// --- HELPER: Convert UCI (e2e4) to readable SAN (e4) using temp game state ---
-function uciToSan(uciMove, startFen) {
-    if (!uciMove) return "";
-    const tempChess = new Chess(startFen);
-    const from = uciMove.substring(0, 2);
-    const to = uciMove.substring(2, 4);
-    const promotion = uciMove.length > 4 ? uciMove.substring(4, 5) : undefined;
-    
-    const move = tempChess.move({ from, to, promotion });
-    return move ? move.san : uciMove;
-}
-
-// --- ANALYSIS UI ---
-function analyzeMove(delta, currEval, bestMoveUci, bestLinePv, refutationPv) {
-    const feedbackEl = document.getElementById('feedback');
-    let title = "", desc = "", css = "";
-
-    if (delta < 0.3) {
-        title = "Good Move"; desc = "Solid play."; css = "good";
-    } else if (delta < 1.0) {
-        title = "Inaccuracy"; desc = "Passive."; css = "inaccuracy";
-    } else if (delta < 2.5) {
-        title = "Mistake"; desc = "Tactical error."; css = "mistake";
     } else {
-        title = "BLUNDER"; desc = "Major error."; css = "blunder";
-    }
+        // Good move or hints disabled - show analysis and continue
+        displayMoveAnalysis({
+            evalLoss,
+            currentEval,
+            bestMoveUci: null,
+            bestLinePv: null,
+            refutationPv: null,
+            previousFen,
+            currentFen
+        });
 
-    let html = `<strong>${title}</strong> <small>(Loss: ${delta.toFixed(2)})</small><br>${desc}`;
-    
-    // If we have a hint (mistake was made)
-    if (bestMoveUci) {
-        // 1. Show Best Move
-        const sanBest = uciToSan(bestMoveUci, previousFen);
-        html += `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2)">
-                 <strong>Better was:</strong> <span style="color:#4caf50; font-size:1.1em">${sanBest}</span>`;
-        
-        // 2. Explain WHY it is bad (Refutation)
-        if (refutationPv) {
-            // Get the first move of the refutation (The opponent's reply)
-            const moves = refutationPv.split(" ");
-            const oppReplyUci = moves[0];
-            
-            // We need to convert this reply to SAN. 
-            // Note: The board is currently AT the bad position, so we can use current chess instance or fen.
-            const sanReply = uciToSan(oppReplyUci, chess.fen());
-            
-            html += `<div style="margin-top:8px; font-size:0.95em; color:#ffccbc;">
-                     <strong>Why?</strong> This allows <b>${sanReply}</b>...
-                     </div>`;
-        }
+        appState.previousEval = currentEval;
 
-        html += `</div>`;
-    }
-
-    feedbackEl.innerHTML = html;
-    feedbackEl.className = `feedback-box ${css}`;
-    
-    const clampedScore = Math.max(-5, Math.min(5, currEval));
-    const percent = 50 + (clampedScore * 10);
-    const bar = document.getElementById('eval-fill');
-    if (bar) bar.style.width = `${percent}%`;
-}
-
-// --- CONTROLS ---
-
-function toggleContinueBtn(show) {
-    const btn = document.getElementById('continueBtn');
-    if (btn) btn.style.display = show ? 'block' : 'none';
-}
-
-function resetGame() {
-    chess.reset();
-    engineStatus = 'idle';
-    gamePaused = false;
-    toggleContinueBtn(false);
-    updateOpeningName();
-    
-    board.set({ 
-        fen: chess.fen(),
-        lastMove: undefined, 
-        check: undefined,
-        turnColor: 'white',
-        orientation: userColor,
-        movable: { 
-            color: userColor === 'white' ? 'white' : null,
-            dests: (userColor === 'white') ? toDests(chess) : new Map()
-        } 
-    });
-    previousEval = 0.3;
-    document.getElementById('feedback').innerHTML = "Make a move...";
-    document.getElementById('feedback').className = "feedback-box";
-    document.getElementById('eval-fill').style.width = "50%";
-
-    if (userColor === 'black') {
-        setTimeout(makeEngineMove, 500);
-    }
-}
-
-function undoMove() {
-    if (engineStatus === 'playing' || engineStatus === 'evaluating_current') return;
-
-    if (gamePaused) {
-        chess.undo(); 
-        gamePaused = false;
-        toggleContinueBtn(false);
-    } else {
-        if (chess.history().length >= 2) {
-            chess.undo(); 
-            chess.undo(); 
-        } else if (chess.history().length === 1 && userColor === 'black') {
-             chess.undo(); 
+        // Make engine move if game is not over
+        if (!isGameOver()) {
+            requestEngineMove();
         }
     }
+}
 
-    board.set({ 
-        fen: chess.fen(),
-        lastMove: undefined,
-        check: undefined,
-        turnColor: userColor,
-        movable: { 
-            color: userColor,
-            dests: toDests(chess) 
-        } 
-    });
-    
-    updateOpeningName();
-    
-    document.getElementById('feedback').innerHTML = "Move undone.";
-    document.getElementById('feedback').className = "feedback-box";
-    
-    if (stockfish) {
-        stockfish.postMessage(`position fen ${chess.fen()}`);
-        stockfish.postMessage('go depth 10');
+/**
+ * Handles best move from engine
+ * @param {Object} result - Engine result
+ */
+function handleEngineBestMove(result) {
+    const { move, status, pv, refutation } = result;
+
+    if (status === 'playing') {
+        // Engine is making its move
+        if (move && move !== '(none)') {
+            performEngineMove(move);
+            updateOpeningDisplay(getChess());
+
+            // Evaluate new position
+            const currentFen = getCurrentFen();
+            evaluatePosition(currentFen, 10, 'current');
+        }
+        resetEngineStatus();
+
+    } else if (status === 'finding_hint') {
+        // Engine found the best move (hint)
+        if (appState.pendingUserMove) {
+            completeUserMoveAnalysis(move, pv);
+        }
+        resetEngineStatus();
     }
 }
 
-function switchSides() {
+/**
+ * Completes user move analysis with hint
+ * @param {string} bestMoveUci - Best move in UCI format
+ * @param {string} bestLinePv - Best line Principal Variation
+ */
+function completeUserMoveAnalysis(bestMoveUci, bestLinePv) {
+    const data = appState.pendingUserMove;
+    if (!data) return;
+
+    // Display full analysis with hint
+    displayMoveAnalysis({
+        evalLoss: data.evalLoss,
+        currentEval: data.currentEval,
+        bestMoveUci: bestMoveUci,
+        bestLinePv: bestLinePv,
+        refutationPv: data.refutation,
+        previousFen: data.previousFen,
+        currentFen: data.currentFen
+    });
+
+    appState.previousEval = data.currentEval;
+
+    // Pause game and show continue button
+    appState.gamePaused = true;
+    toggleContinueButton(true);
+
+    // Clear pending move
+    appState.pendingUserMove = null;
+}
+
+/**
+ * Handles engine evaluation updates
+ * @param {number} score - Evaluation score
+ * @param {string} pv - Principal Variation
+ */
+function handleEngineEvaluation(score, pv) {
+    // Update evaluation bar in real-time
+    const turn = getChess().turn();
+    const adjustedScore = turn === 'b' ? -score : score;
+    updateEvaluationBar(adjustedScore);
+}
+
+/**
+ * Requests the engine to make a move
+ */
+function requestEngineMove() {
+    if (!isEngineReady()) {
+        console.error('Engine not ready');
+        return;
+    }
+
+    const levelSelect = document.getElementById('difficulty');
+    const depth = levelSelect ? parseInt(levelSelect.value) : 12;
+    const currentFen = getCurrentFen();
+
+    findBestMove(currentFen, depth);
+}
+
+/**
+ * Handles reset button click
+ */
+function handleReset() {
+    resetBoard();
+    appState.previousEval = 0.3;
+    appState.gamePaused = false;
+    appState.pendingUserMove = null;
+    toggleContinueButton(false);
+
+    updateOpeningDisplay(getChess());
+    showMessage('Make a move...');
+    updateEvaluationBar(0.3);
+
+    // If playing as black, engine moves first
+    if (getUserColor() === 'black') {
+        setTimeout(requestEngineMove, 500);
+    }
+}
+
+/**
+ * Handles undo button click
+ */
+function handleUndo() {
+    const engineState = getEngineState();
+
+    // Don't allow undo during engine processing
+    if (engineState.status === 'playing' || engineState.status === 'evaluating_current') {
+        return;
+    }
+
+    // If game is paused, just undo the user's bad move
+    if (appState.gamePaused) {
+        undoMove(true);
+        appState.gamePaused = false;
+        toggleContinueButton(false);
+    } else {
+        // Undo both user and engine moves
+        undoMove(false);
+    }
+
+    updateOpeningDisplay(getChess());
+    showMessage('Move undone.');
+
+    // Re-evaluate position
+    const currentFen = getCurrentFen();
+    evaluatePosition(currentFen, 10, 'current');
+}
+
+/**
+ * Handles flip/switch sides button click
+ */
+function handleFlip() {
     const btn = document.getElementById('flipBtn');
-    if (userColor === 'white') {
-        userColor = 'black';
-        btn.innerText = "Play as White";
-    } else {
-        userColor = 'white';
-        btn.innerText = "Play as Black";
+    const newColor = flipBoard();
+
+    if (btn) {
+        btn.innerText = newColor === 'white' ? 'Play as Black' : 'Play as White';
     }
-    resetGame();
+
+    handleReset();
 }
 
-// Event Listeners
-document.getElementById('resetBtn').addEventListener('click', resetGame);
-document.getElementById('undoBtn').addEventListener('click', undoMove);
-document.getElementById('flipBtn').addEventListener('click', switchSides);
-document.getElementById('continueBtn').addEventListener('click', continueGame);
+/**
+ * Handles continue button click
+ */
+function handleContinue() {
+    if (!appState.gamePaused) return;
+
+    toggleContinueButton(false);
+    appState.gamePaused = false;
+
+    if (!isGameOver()) {
+        requestEngineMove();
+    }
+}
+
+/**
+ * Toggles the continue button visibility
+ * @param {boolean} show - Whether to show the button
+ */
+function toggleContinueButton(show) {
+    const btn = document.getElementById('continueBtn');
+    if (btn) {
+        btn.style.display = show ? 'block' : 'none';
+    }
+}
+
+// Initialize application when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}

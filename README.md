@@ -106,7 +106,11 @@ The coach categorizes moves based on evaluation loss:
 ```
 chessengine/
 ├── index.html          # Main HTML structure
-├── script.js           # Game logic and Stockfish integration
+├── script.js           # Main application controller
+├── chess-engine.js     # Stockfish communication module
+├── board-controller.js # Board UI and move handling
+├── analysis.js         # Move analysis and evaluation
+├── openings.js         # Opening detection logic
 ├── style.css           # UI styling
 ├── stockfish.js        # Stockfish engine (JavaScript)
 ├── stockfish.wasm      # Stockfish WebAssembly module
@@ -115,6 +119,22 @@ chessengine/
 ├── .gitignore          # Git ignore rules
 └── LICENSE             # MIT License
 ```
+
+### Architecture
+
+The application follows a modular architecture with clear separation of concerns:
+
+- **script.js** - Main application orchestrator that coordinates all modules
+- **chess-engine.js** - Handles all Stockfish worker communication with retry logic and error handling
+- **board-controller.js** - Manages the Chessground board UI and user interactions
+- **analysis.js** - Provides move quality classification and evaluation display
+- **openings.js** - Detects and displays chess opening names
+
+Each module is:
+- Self-contained with clear responsibilities
+- Fully documented with JSDoc comments
+- Exported as ES6 modules for easy testing and maintenance
+- Designed with error handling and user feedback
 
 ## Dependencies
 
@@ -141,6 +161,32 @@ ES6 modules and WebAssembly support required.
 4. **Best Move Search**: For mistakes, the engine finds the optimal move
 5. **Refutation Analysis**: Shows how the opponent can punish mistakes
 6. **Feedback Display**: Results are presented with color-coded feedback
+
+## Code Quality Features
+
+### Error Handling
+- **Automatic Recovery**: Engine failures trigger automatic retry with exponential backoff (up to 3 attempts)
+- **Graceful Degradation**: Application continues to function even if engine fails
+- **User Feedback**: Clear error messages inform users when issues occur
+- **Null Safety**: Comprehensive null checks prevent crashes from missing DOM elements
+
+### Loading States
+- **Initialization Feedback**: "Initializing chess engine..." message during startup
+- **Analysis Progress**: "Analyzing..." and "Finding better move..." indicators
+- **Engine Status**: Real-time status updates ("Engine ready", "Engine error", etc.)
+
+### Documentation
+- **JSDoc Comments**: All functions include parameter types, return types, and descriptions
+- **Type Definitions**: Custom TypeScript-style type definitions for better IDE support
+- **Inline Documentation**: Complex logic explained with clear comments
+- **Module Headers**: Each file includes a fileoverview describing its purpose
+
+### Best Practices
+- **Separation of Concerns**: Each module has a single, well-defined responsibility
+- **Dependency Injection**: Callbacks passed to modules for loose coupling
+- **Immutable State**: State objects copied before return to prevent external mutation
+- **Error Logging**: All errors logged to console for debugging
+- **Safe Defaults**: Fallback values prevent crashes when optional parameters missing
 
 ## Contributing
 
