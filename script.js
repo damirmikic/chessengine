@@ -9,7 +9,8 @@ import {
     findBestMove,
     getEngineState,
     isEngineReady,
-    resetEngineStatus
+    resetEngineStatus,
+    analyzeWithMultiPv
 } from './chess-engine.js';
 
 import {
@@ -33,7 +34,8 @@ import {
     showMessage,
     updateEvaluationBar,
     calculateEvalLoss,
-    isMistake
+    isMistake,
+    uciToSan
 } from './analysis.js';
 
 import {
@@ -62,6 +64,20 @@ import {
     showLoadGameModal,
     hideLoadGameModal
 } from './game-manager.js';
+
+import {
+    displayBestMoves,
+    hideBestMoves,
+    detectCriticalMoments,
+    displayCriticalMoments,
+    hideCriticalMoments,
+    generatePuzzle,
+    displayPuzzles,
+    togglePuzzlesPanel,
+    clearPuzzles,
+    setAnalysisMode,
+    isAnalysisMode
+} from './enhanced-analysis.js';
 
 /**
  * Application state
@@ -100,6 +116,7 @@ async function initializeApp() {
             },
             onBestMove: handleEngineBestMove,
             onEvaluation: handleEngineEvaluation,
+            onMultiPv: handleMultiPvUpdate,
             onError: (error) => {
                 showMessage('Engine error. Please refresh the page.');
                 console.error('Engine error:', error);
@@ -141,6 +158,10 @@ function setupEventListeners() {
     const importPgnBtn = document.getElementById('importPgnBtn');
     const closeModalBtn = document.getElementById('closeModalBtn');
     const pgnFileInput = document.getElementById('pgnFileInput');
+    const hintBtn = document.getElementById('hintBtn');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const analysisModeCheckbox = document.getElementById('analysisMode');
+    const showPuzzlesBtn = document.getElementById('showPuzzlesBtn');
 
     if (resetBtn) resetBtn.addEventListener('click', handleReset);
     if (undoBtn) undoBtn.addEventListener('click', handleUndo);
@@ -152,6 +173,10 @@ function setupEventListeners() {
     if (importPgnBtn) importPgnBtn.addEventListener('click', () => pgnFileInput?.click());
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideLoadGameModal);
     if (pgnFileInput) pgnFileInput.addEventListener('change', handleImportPGN);
+    if (hintBtn) hintBtn.addEventListener('click', handleHint);
+    if (analyzeBtn) analyzeBtn.addEventListener('click', handleAnalyze);
+    if (analysisModeCheckbox) analysisModeCheckbox.addEventListener('change', handleAnalysisModeToggle);
+    if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
 }
 
 /**
@@ -245,8 +270,8 @@ function analyzeUserMove(move, previousFen, currentFen) {
 
         appState.previousEval = currentEval;
 
-        // Make engine move if game is not over
-        if (!isGameOver()) {
+        // Make engine move if game is not over and not in analysis mode
+        if (!isGameOver() && !isAnalysisMode()) {
             requestEngineMove();
         }
     }
@@ -316,6 +341,19 @@ function completeUserMoveAnalysis(bestMoveUci, bestLinePv) {
         currentFen: data.currentFen
     });
 
+    // Generate puzzle from this mistake
+    if (data.evalLoss >= 1.0 && bestMoveUci) {
+        const sanMove = uciToSan(bestMoveUci, data.previousFen);
+        generatePuzzle(
+            {
+                move: data.move,
+                evalLoss: data.evalLoss
+            },
+            sanMove,
+            data.previousFen
+        );
+    }
+
     appState.previousEval = data.currentEval;
 
     // Pause game and show continue button
@@ -365,12 +403,17 @@ function handleReset() {
     appState.pendingUserMove = null;
     toggleContinueButton(false);
 
+    // Clear analysis panels
+    hideBestMoves();
+    hideCriticalMoments();
+    clearPuzzles();
+
     updateOpeningDisplay(getChess());
     showMessage('Make a move...');
     updateEvaluationBar(0.3);
 
-    // If playing as black, engine moves first
-    if (getUserColor() === 'black') {
+    // If playing as black, engine moves first (unless in analysis mode)
+    if (getUserColor() === 'black' && !isAnalysisMode()) {
         setTimeout(requestEngineMove, 500);
     }
 }
@@ -427,7 +470,7 @@ function handleContinue() {
     toggleContinueButton(false);
     appState.gamePaused = false;
 
-    if (!isGameOver()) {
+    if (!isGameOver() && !isAnalysisMode()) {
         requestEngineMove();
     }
 }
@@ -609,6 +652,75 @@ function handleMoveNavigation(moveIndex, fen) {
     }
 
     setNavigationMode(false);
+}
+
+/**
+ * Handles hint button click
+ */
+function handleHint() {
+    if (!isEngineReady()) {
+        showMessage('Engine not ready');
+        return;
+    }
+
+    const currentFen = getCurrentFen();
+    const depthSelect = document.getElementById('analysisDepth');
+    const depth = depthSelect ? parseInt(depthSelect.value) : 15;
+
+    showAnalyzing('Finding best move...');
+
+    // Analyze with multipv to get top moves
+    analyzeWithMultiPv(currentFen, depth, 3);
+}
+
+/**
+ * Handles analyze button click
+ */
+function handleAnalyze() {
+    if (!isEngineReady()) {
+        showMessage('Engine not ready');
+        return;
+    }
+
+    const currentFen = getCurrentFen();
+    const depthSelect = document.getElementById('analysisDepth');
+    const depth = depthSelect ? parseInt(depthSelect.value) : 15;
+
+    showAnalyzing(`Analyzing position (depth ${depth})...`);
+
+    // Analyze with multipv to show top 3 moves
+    analyzeWithMultiPv(currentFen, depth, 3);
+
+    // Also detect critical moments in the current game
+    const moves = getMoves();
+    if (moves.length > 1) {
+        const criticalMoments = detectCriticalMoments(moves);
+        displayCriticalMoments(criticalMoments, handleMoveNavigation);
+    }
+}
+
+/**
+ * Handles analysis mode toggle
+ * @param {Event} event - Change event
+ */
+function handleAnalysisModeToggle(event) {
+    const enabled = event.target.checked;
+    setAnalysisMode(enabled);
+
+    if (enabled) {
+        showMessage('Analysis mode enabled - engine will not make moves');
+    } else {
+        showMessage('Analysis mode disabled - normal play resumed');
+    }
+}
+
+/**
+ * Handles multipv updates from engine
+ * @param {Array} bestMoves - Array of best moves with evaluations
+ */
+function handleMultiPvUpdate(bestMoves) {
+    const currentFen = getCurrentFen();
+    displayBestMoves(bestMoves, currentFen);
 }
 
 // Initialize application when DOM is ready

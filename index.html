@@ -67,11 +67,51 @@
             Ignore & Continue Game
         </button>
 
+        <!-- Analysis Panel -->
+        <div class="analysis-panel">
+            <h3>Analysis Tools</h3>
+
+            <!-- Multiple Best Moves Display -->
+            <div id="bestMovesPanel" class="best-moves-panel" style="display: none;">
+                <div class="best-moves-header">Top Moves:</div>
+                <div id="bestMovesList" class="best-moves-list"></div>
+            </div>
+
+            <!-- Analysis Controls -->
+            <div class="analysis-controls">
+                <button id="hintBtn" class="analysis-btn" title="Get a hint for the current position">
+                    💡 Get Hint
+                </button>
+                <button id="analyzeBtn" class="analysis-btn" title="Analyze current position">
+                    🔍 Analyze
+                </button>
+            </div>
+        </div>
+
+        <!-- Critical Moments Panel -->
+        <div id="criticalMomentsPanel" class="critical-moments-panel" style="display: none;">
+            <h3>Critical Moments</h3>
+            <div id="criticalMomentsList" class="critical-moments-list"></div>
+        </div>
+
+        <!-- Puzzles Panel -->
+        <div id="puzzlesPanel" class="puzzles-panel" style="display: none;">
+            <h3>Generated Puzzles</h3>
+            <div id="puzzlesList" class="puzzles-list"></div>
+            <button id="showPuzzlesBtn" class="show-puzzles-btn" style="display: none;">
+                View Puzzles (0)
+            </button>
+        </div>
+
         <!-- Settings Group -->
         <div class="control-group">
             <label class="checkbox-label">
-                <input type="checkbox" id="showHints" checked> 
+                <input type="checkbox" id="showHints" checked>
                 Pause & Explain Mistakes
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="analysisMode">
+                Analysis Mode (No Engine Moves)
             </label>
         </div>
 
@@ -83,6 +123,17 @@
                 <option value="6">Medium (Casual)</option>
                 <option value="12">Hard (Club)</option>
                 <option value="18" selected>Master (Pro)</option>
+            </select>
+        </div>
+
+        <!-- Analysis Depth Control -->
+        <div class="control-group">
+            <label for="analysisDepth">Analysis Depth:</label>
+            <select id="analysisDepth">
+                <option value="10">Depth 10 (Fast)</option>
+                <option value="15" selected>Depth 15 (Balanced)</option>
+                <option value="20">Depth 20 (Deep)</option>
+                <option value="25">Depth 25 (Very Deep)</option>
             </select>
         </div>
         
