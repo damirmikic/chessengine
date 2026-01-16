@@ -169,6 +169,250 @@ piece.queen.black  { background-image: url('https://upload.wikimedia.org/wikiped
 piece.king.black   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'); }
 
 h2 { margin: 0 0 10px 0; color: #eee; }
+h3 { margin: 0; color: #eee; font-size: 1em; }
+
+/* MOVE HISTORY PANEL */
+.move-history-panel {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    max-height: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.move-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+}
+
+.game-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn {
+    background: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 1em;
+    transition: background 0.2s;
+}
+
+.icon-btn:hover {
+    background: #444;
+}
+
+.move-list {
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.95em;
+    max-height: 160px;
+}
+
+.move-list-empty {
+    color: #888;
+    text-align: center;
+    padding: 20px 0;
+    font-style: italic;
+}
+
+.move-pair {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid #333;
+}
+
+.move-number {
+    color: #888;
+    font-weight: bold;
+    min-width: 30px;
+    font-size: 0.85em;
+}
+
+.move-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.move-item:hover {
+    background: #333;
+}
+
+.move-item.current {
+    background: #2c4a7c;
+    font-weight: bold;
+}
+
+.move-notation {
+    min-width: 50px;
+}
+
+.move-eval {
+    font-size: 0.75em;
+    color: #888;
+    min-width: 40px;
+    text-align: right;
+}
+
+.move-eval.positive {
+    color: #4caf50;
+}
+
+.move-eval.negative {
+    color: #f44336;
+}
+
+.move-annotation {
+    font-size: 0.85em;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+.move-annotation.good {
+    color: #4caf50;
+}
+
+.move-annotation.excellent {
+    color: #2196f3;
+}
+
+.move-annotation.inaccuracy {
+    color: #ffeb3b;
+}
+
+.move-annotation.mistake {
+    color: #ff9800;
+}
+
+.move-annotation.blunder {
+    color: #f44336;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 400px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #444;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.saved-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.no-games {
+    color: #888;
+    text-align: center;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+.saved-game-item {
+    background: #333;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.saved-game-item:hover {
+    background: #3a3a3a;
+}
+
+.saved-game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.saved-game-date {
+    font-size: 0.85em;
+    color: #888;
+}
+
+.saved-game-info {
+    font-size: 0.9em;
+    color: #bbb;
+}
+
+.delete-game-btn {
+    background: #f44336;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-size: 0.85em;
+    margin-left: 10px;
+}
+
+.delete-game-btn:hover {
+    background: #d32f2f;
+}
 
 /* CONTROLS */
 .control-group {

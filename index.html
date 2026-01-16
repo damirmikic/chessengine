@@ -34,6 +34,22 @@
             <div id="opening-plans" class="opening-plans"></div>
         </div>
 
+        <!-- Move History Panel -->
+        <div class="move-history-panel">
+            <div class="move-history-header">
+                <h3>Move History</h3>
+                <div class="game-controls">
+                    <button id="saveGameBtn" class="icon-btn" title="Save Game">💾</button>
+                    <button id="loadGameBtn" class="icon-btn" title="Load Game">📂</button>
+                    <button id="exportPgnBtn" class="icon-btn" title="Export PGN">📤</button>
+                    <button id="importPgnBtn" class="icon-btn" title="Import PGN">📥</button>
+                </div>
+            </div>
+            <div id="move-list" class="move-list">
+                <div class="move-list-empty">No moves yet</div>
+            </div>
+        </div>
+
         <h2>Coach Feedback</h2>
         <div id="status">White to move</div>
         
@@ -75,6 +91,22 @@
             <button id="undoBtn">Undo Move</button>
             <button id="flipBtn">Play as Black</button>
             <button id="resetBtn" class="primary-btn">New Game</button>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden file input for PGN import -->
+<input type="file" id="pgnFileInput" accept=".pgn" style="display: none;">
+
+<!-- Load Game Modal -->
+<div id="loadGameModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Load Saved Game</h3>
+            <button id="closeModalBtn" class="close-btn">&times;</button>
+        </div>
+        <div id="savedGamesList" class="saved-games-list">
+            <div class="no-games">No saved games found</div>
         </div>
     </div>
 </div>
