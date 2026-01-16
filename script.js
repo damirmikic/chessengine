@@ -36,7 +36,8 @@ import {
 } from './analysis.js';
 
 import {
-    updateOpeningDisplay
+    updateOpeningDisplay,
+    loadOpeningsDatabase
 } from './openings.js';
 
 /**
@@ -53,6 +54,9 @@ const appState = {
  */
 async function initializeApp() {
     try {
+        // Load opening database
+        await loadOpeningsDatabase();
+
         // Initialize board
         const boardInitialized = initializeBoard({
             containerId: 'board',

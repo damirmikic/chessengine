@@ -1,0 +1,1969 @@
+{
+  "openings": [
+    {
+      "moves": "e4",
+      "name": "King's Pawn Game",
+      "eco": "B00",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 45.2,
+      "whiteWinRate": 37.8,
+      "drawRate": 32.1,
+      "blackWinRate": 30.1,
+      "plans": {
+        "white": ["Control the center", "Develop pieces quickly", "Castle kingside"],
+        "black": ["Challenge white's center", "Develop minor pieces", "Look for counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5",
+      "name": "Open Game",
+      "eco": "C20",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 28.5,
+      "whiteWinRate": 36.2,
+      "drawRate": 34.5,
+      "blackWinRate": 29.3,
+      "plans": {
+        "white": ["Control center with pawns", "Develop knights before bishops", "Attack black's e5 pawn"],
+        "black": ["Maintain central presence", "Develop pieces harmoniously", "Prepare counterattacks"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3",
+      "name": "King's Knight Opening",
+      "eco": "C20",
+      "category": "Open Games",
+      "variations": ["King's Knight Opening: Normal Variation"],
+      "popularity": 25.3,
+      "whiteWinRate": 37.1,
+      "drawRate": 33.8,
+      "blackWinRate": 29.1,
+      "plans": {
+        "white": ["Attack e5 pawn immediately", "Develop Bc4 or Bb5", "Castle early"],
+        "black": ["Defend e5 with Nc6", "Consider d6 for solid defense", "Develop pieces"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6",
+      "name": "King's Knight Opening: Normal Variation",
+      "eco": "C20",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 23.7,
+      "whiteWinRate": 36.8,
+      "drawRate": 34.2,
+      "blackWinRate": 29.0,
+      "plans": {
+        "white": ["Choose between Bb5 (Ruy Lopez) or Bc4 (Italian)", "Continue central control", "Prepare d4 push"],
+        "black": ["Develop Nf6 or Bc5", "Maintain e5 pawn", "Prepare castling"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5",
+      "name": "Ruy Lopez",
+      "eco": "C60",
+      "category": "Spanish Opening",
+      "variations": ["Spanish Opening", "Ruy Lopez: Morphy Defense", "Ruy Lopez: Berlin Defense", "Ruy Lopez: Closed Variation"],
+      "popularity": 18.2,
+      "whiteWinRate": 39.5,
+      "drawRate": 35.8,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Put pressure on e5 via Nc6", "Play d4 eventually", "Maneuver knight via d2-f1-g3", "Attack on kingside"],
+        "black": ["Play a6 to clarify bishop's intentions", "Develop Nf6", "Choose between Berlin (Nf6) or Classical (Bc5)", "Counterattack in center or queenside"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6",
+      "name": "Ruy Lopez: Morphy Defense",
+      "eco": "C70",
+      "category": "Spanish Opening",
+      "variations": ["Morphy Defense: Exchange Variation", "Morphy Defense: Closed Variation"],
+      "popularity": 15.8,
+      "whiteWinRate": 38.9,
+      "drawRate": 36.4,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Retreat bishop to a4", "Castle kingside", "Build central tension with d4", "Launch kingside attack"],
+        "black": ["Play Nf6 and Be7", "Castle kingside", "Prepare d6 and b5", "Look for queenside counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 Nf6",
+      "name": "Ruy Lopez: Berlin Defense",
+      "eco": "C65",
+      "category": "Spanish Opening",
+      "variations": ["Berlin Defense: Rio de Janeiro Variation", "Berlin Defense: l'Hermet Variation"],
+      "popularity": 8.5,
+      "whiteWinRate": 35.2,
+      "drawRate": 42.8,
+      "blackWinRate": 22.0,
+      "plans": {
+        "white": ["Castle and play d4", "Accept endgame after Nxe4", "Use slight advantage in Berlin endgame"],
+        "black": ["Trade knights on e4", "Accept solid but drawish endgame", "Defend precisely in endgame"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4",
+      "name": "Italian Game",
+      "eco": "C50",
+      "category": "Italian Opening",
+      "variations": ["Giuoco Piano", "Two Knights Defense", "Evans Gambit"],
+      "popularity": 12.4,
+      "whiteWinRate": 37.6,
+      "drawRate": 33.9,
+      "blackWinRate": 28.5,
+      "plans": {
+        "white": ["Control center", "Develop rapidly", "Attack f7 square", "Castle kingside"],
+        "black": ["Play Bc5 for symmetry or Nf6", "Develop pieces", "Castle early", "Challenge white's center"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5",
+      "name": "Italian Game: Giuoco Piano",
+      "eco": "C50",
+      "category": "Italian Opening",
+      "variations": ["Giuoco Pianissimo", "Main Line"],
+      "popularity": 9.8,
+      "whiteWinRate": 36.7,
+      "drawRate": 35.1,
+      "blackWinRate": 28.2,
+      "plans": {
+        "white": ["Play c3 and d4", "Build strong center", "Castle and develop", "Attack in center or kingside"],
+        "black": ["Develop Nf6", "Castle kingside", "Counter with d6 or d5", "Maintain central tension"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Nf6",
+      "name": "Italian Game: Two Knights Defense",
+      "eco": "C55",
+      "category": "Italian Opening",
+      "variations": ["Fried Liver Attack", "Modern Bishop's Opening", "Max Lange Attack"],
+      "popularity": 7.2,
+      "whiteWinRate": 38.4,
+      "drawRate": 32.6,
+      "blackWinRate": 29.0,
+      "plans": {
+        "white": ["Ng5 attacking f7", "d4 for central control", "Consider tactical complications"],
+        "black": ["Defend with d5 or Na5", "Counterattack in center", "Develop and castle"]
+      }
+    },
+    {
+      "moves": "e4 c5",
+      "name": "Sicilian Defense",
+      "eco": "B20",
+      "category": "Sicilian Defense",
+      "variations": ["Najdorf", "Dragon", "Sveshnikov", "Classical", "Accelerated Dragon", "Kan"],
+      "popularity": 17.3,
+      "whiteWinRate": 34.8,
+      "drawRate": 31.5,
+      "blackWinRate": 33.7,
+      "plans": {
+        "white": ["Play Nf3 and d4", "Open center", "Attack on kingside", "Play for initiative"],
+        "black": ["Create asymmetrical position", "Counterattack on queenside", "Fight for central control", "Prepare d5 or d6 structures"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3",
+      "name": "Sicilian Defense: Open",
+      "eco": "B20",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 15.8,
+      "whiteWinRate": 35.2,
+      "drawRate": 31.8,
+      "blackWinRate": 33.0,
+      "plans": {
+        "white": ["Play d4 next", "Open the position", "Develop quickly", "Attack black's king"],
+        "black": ["Prepare d6 and Nc6", "Develop pieces", "Create queenside play with a6/b5"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6",
+      "name": "Sicilian Defense: Old Sicilian",
+      "eco": "B50",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 8.9,
+      "whiteWinRate": 36.1,
+      "drawRate": 32.4,
+      "blackWinRate": 31.5,
+      "plans": {
+        "white": ["Play d4 cxd4 Nxd4", "Develop with Nc3, Be3", "Castle and attack"],
+        "black": ["Develop Nf6, Nc6", "Play a6 and e6 or e5", "Castle and counterattack"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6",
+      "name": "Sicilian Defense: Najdorf Variation",
+      "eco": "B90",
+      "category": "Sicilian Defense",
+      "variations": ["English Attack", "Main Line", "Poisoned Pawn"],
+      "popularity": 6.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 33.2,
+      "blackWinRate": 30.0,
+      "plans": {
+        "white": ["Be3 and f3 (English Attack)", "Bg5 (Main Line)", "Castle queenside and attack", "Control d5 square"],
+        "black": ["Play e6 or e5", "Develop pieces flexibly", "Create queenside play", "Launch counterattacks"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 g6",
+      "name": "Sicilian Defense: Dragon Variation",
+      "eco": "B70",
+      "category": "Sicilian Defense",
+      "variations": ["Yugoslav Attack", "Classical Dragon"],
+      "popularity": 4.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 30.8,
+      "blackWinRate": 31.7,
+      "plans": {
+        "white": ["Be3, f3, Qd2, O-O-O (Yugoslav)", "Launch pawn storm with h4-h5", "Attack black's king"],
+        "black": ["Fianchetto bishop on g7", "Castle kingside", "Counterattack on queenside with a6, b5", "Create pressure on c-file"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 Nc6",
+      "name": "Sicilian Defense: Closed",
+      "eco": "B23",
+      "category": "Sicilian Defense",
+      "variations": ["Grand Prix Attack", "Chameleon Variation"],
+      "popularity": 5.3,
+      "whiteWinRate": 35.9,
+      "drawRate": 32.1,
+      "blackWinRate": 32.0,
+      "plans": {
+        "white": ["Avoid d4, play Nc3", "Prepare f4 (Grand Prix)", "Attack on kingside", "Maintain closed center"],
+        "black": ["Develop normally", "Challenge white's setup", "Play d5 or e6", "Counterattack in center"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 e6",
+      "name": "Sicilian Defense: French Variation",
+      "eco": "B40",
+      "category": "Sicilian Defense",
+      "variations": ["Paulsen", "Kan", "Taimanov"],
+      "popularity": 4.2,
+      "whiteWinRate": 35.4,
+      "drawRate": 33.8,
+      "blackWinRate": 30.8,
+      "plans": {
+        "white": ["Play d4", "Control center", "Develop pieces", "Attack weaknesses"],
+        "black": ["Flexible pawn structure", "Develop based on white's setup", "Play a6, Qc7", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 c6",
+      "name": "Caro-Kann Defense",
+      "eco": "B10",
+      "category": "Semi-Open Games",
+      "variations": ["Classical", "Advance", "Exchange", "Panov-Botvinnik Attack"],
+      "popularity": 7.8,
+      "whiteWinRate": 34.2,
+      "drawRate": 38.5,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Choose between d4 or d3 setups", "Attack black's solid structure"],
+        "black": ["Play d5", "Develop pieces without blocking light-square bishop", "Solid structure", "Counterattack when white overextends"]
+      }
+    },
+    {
+      "moves": "e4 c6 d4 d5",
+      "name": "Caro-Kann Defense: Main Line",
+      "eco": "B10",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 7.1,
+      "whiteWinRate": 34.5,
+      "drawRate": 38.9,
+      "blackWinRate": 26.6,
+      "plans": {
+        "white": ["Choose between Nc3, e5, or exd5", "Develop actively", "Create imbalances"],
+        "black": ["Challenge white's center", "Develop bishop outside pawn chain", "Solid defensive setup"]
+      }
+    },
+    {
+      "moves": "e4 c6 d4 d5 Nc3",
+      "name": "Caro-Kann Defense: Classical Variation",
+      "eco": "B18",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 4.2,
+      "whiteWinRate": 33.8,
+      "drawRate": 40.2,
+      "blackWinRate": 26.0,
+      "plans": {
+        "white": ["Develop pieces", "Maintain central tension", "Attack on kingside or center"],
+        "black": ["Play dxe4 or Bf5", "Develop pieces", "Solid structure", "Counterplay in center"]
+      }
+    },
+    {
+      "moves": "e4 c6 d4 d5 e5",
+      "name": "Caro-Kann Defense: Advance Variation",
+      "eco": "B12",
+      "category": "Semi-Open Games",
+      "variations": ["Short Variation", "Tal Variation"],
+      "popularity": 2.8,
+      "whiteWinRate": 36.2,
+      "drawRate": 35.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Maintain space advantage", "Develop pieces", "Attack on kingside", "Prevent c5 break"],
+        "black": ["Play c5 to challenge center", "Play Bf5 or Bg4", "Create queenside counterplay", "Undermine white's center"]
+      }
+    },
+    {
+      "moves": "e4 c6 d4 d5 exd5",
+      "name": "Caro-Kann Defense: Exchange Variation",
+      "eco": "B13",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 2.3,
+      "whiteWinRate": 32.8,
+      "drawRate": 42.1,
+      "blackWinRate": 25.1,
+      "plans": {
+        "white": ["Symmetrical structure", "Slight edge due to move advantage", "Develop normally", "Create small advantages"],
+        "black": ["Solid equality", "Develop pieces", "Look for tactical opportunities", "Draw is likely outcome"]
+      }
+    },
+    {
+      "moves": "e4 e6",
+      "name": "French Defense",
+      "eco": "C00",
+      "category": "Semi-Open Games",
+      "variations": ["Winawer", "Classical", "Tarrasch", "Advance", "Exchange"],
+      "popularity": 6.4,
+      "whiteWinRate": 35.8,
+      "drawRate": 36.2,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Control center with d4", "Develop pieces", "Exploit light-square weaknesses", "Attack on kingside"],
+        "black": ["Play d5", "Challenge white's center", "Develop queenside bishop", "Counterattack with c5 or f6"]
+      }
+    },
+    {
+      "moves": "e4 e6 d4 d5",
+      "name": "French Defense: Main Line",
+      "eco": "C00",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 5.8,
+      "whiteWinRate": 36.1,
+      "drawRate": 36.5,
+      "blackWinRate": 27.4,
+      "plans": {
+        "white": ["Choose between Nc3, e5, or exd5", "Build central advantage", "Attack"],
+        "black": ["Solid pawn chain", "Develop pieces", "Play c5 or f6", "Counterattack"]
+      }
+    },
+    {
+      "moves": "e4 e6 d4 d5 Nc3",
+      "name": "French Defense: Classical Variation",
+      "eco": "C11",
+      "category": "Semi-Open Games",
+      "variations": ["Steinitz Variation", "Burn Variation"],
+      "popularity": 3.2,
+      "whiteWinRate": 35.4,
+      "drawRate": 37.8,
+      "blackWinRate": 26.8,
+      "plans": {
+        "white": ["Develop with Nf3 and Be2/Bd3", "Control center", "Attack on kingside"],
+        "black": ["Play Nf6", "Develop Be7", "Castle", "Play c5 for counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e6 d4 d5 Nc3 Bb4",
+      "name": "French Defense: Winawer Variation",
+      "eco": "C15",
+      "category": "Semi-Open Games",
+      "variations": ["Poisoned Pawn", "Advance Variation"],
+      "popularity": 2.9,
+      "whiteWinRate": 37.2,
+      "drawRate": 34.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Play e5 for space", "Accept doubled pawns after Bxc3", "Attack on kingside", "Use bishop pair"],
+        "black": ["Pin knight", "Play c5", "Create queenside play", "Exploit white's pawn weaknesses"]
+      }
+    },
+    {
+      "moves": "e4 e6 d4 d5 e5",
+      "name": "French Defense: Advance Variation",
+      "eco": "C02",
+      "category": "Semi-Open Games",
+      "variations": ["Milner-Barry Gambit", "Euwe Variation"],
+      "popularity": 2.1,
+      "whiteWinRate": 37.8,
+      "drawRate": 34.2,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Maintain space advantage", "Attack on kingside", "Prevent c5 break"],
+        "black": ["Play c5 to undermine center", "Play f6 to challenge e5", "Queenside counterplay", "Develop Qb6"]
+      }
+    },
+    {
+      "moves": "e4 e6 d4 d5 exd5",
+      "name": "French Defense: Exchange Variation",
+      "eco": "C01",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 33.2,
+      "drawRate": 41.5,
+      "blackWinRate": 25.3,
+      "plans": {
+        "white": ["Symmetrical position", "Small edge with first move", "Develop normally"],
+        "black": ["Solid equality", "Develop pieces", "Simplified position favors draws"]
+      }
+    },
+    {
+      "moves": "e4 d6",
+      "name": "Pirc Defense",
+      "eco": "B07",
+      "category": "Semi-Open Games",
+      "variations": ["Austrian Attack", "Classical Variation"],
+      "popularity": 3.2,
+      "whiteWinRate": 37.4,
+      "drawRate": 32.8,
+      "blackWinRate": 29.8,
+      "plans": {
+        "white": ["Build strong center with d4", "Attack with f4 (Austrian)", "Control space"],
+        "black": ["Fianchetto king's bishop", "Flexible setup", "Counterattack white's center", "Play d6, Nf6, g6, Bg7"]
+      }
+    },
+    {
+      "moves": "e4 d6 d4 Nf6 Nc3 g6",
+      "name": "Pirc Defense: Classical Variation",
+      "eco": "B08",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 2.1,
+      "whiteWinRate": 36.8,
+      "drawRate": 33.5,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Develop normally", "Control center", "Prepare kingside attack"],
+        "black": ["Complete fianchetto", "Castle kingside", "Counterattack center with c5 or e5"]
+      }
+    },
+    {
+      "moves": "e4 g6",
+      "name": "Modern Defense",
+      "eco": "B06",
+      "category": "Semi-Open Games",
+      "variations": ["Pterodactyl Variation", "Standard Line"],
+      "popularity": 2.1,
+      "whiteWinRate": 38.2,
+      "drawRate": 31.4,
+      "blackWinRate": 30.4,
+      "plans": {
+        "white": ["Control center with d4", "Build strong pawn center", "Attack"],
+        "black": ["Fianchetto kingside", "Hypermodern approach", "Strike at white's center later", "Flexible development"]
+      }
+    },
+    {
+      "moves": "e4 Nf6",
+      "name": "Alekhine's Defense",
+      "eco": "B02",
+      "category": "Semi-Open Games",
+      "variations": ["Modern Variation", "Exchange Variation", "Four Pawns Attack"],
+      "popularity": 1.8,
+      "whiteWinRate": 38.5,
+      "drawRate": 32.1,
+      "blackWinRate": 29.4,
+      "plans": {
+        "white": ["Chase knight with pawns", "Build big center", "Attack"],
+        "black": ["Provoke white's pawns forward", "Undermine pawn center", "Counterattack central pawns"]
+      }
+    },
+    {
+      "moves": "e4 Nc6",
+      "name": "Nimzowitsch Defense",
+      "eco": "B00",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 39.2,
+      "drawRate": 30.5,
+      "blackWinRate": 30.3,
+      "plans": {
+        "white": ["Build strong center", "Develop normally", "Exploit unusual development"],
+        "black": ["Flexible and unorthodox", "Challenge white's center", "Transpose to other openings"]
+      }
+    },
+    {
+      "moves": "e4 d5",
+      "name": "Scandinavian Defense",
+      "eco": "B01",
+      "category": "Semi-Open Games",
+      "variations": ["Modern Variation", "Main Line"],
+      "popularity": 2.4,
+      "whiteWinRate": 37.8,
+      "drawRate": 31.2,
+      "blackWinRate": 31.0,
+      "plans": {
+        "white": ["Capture on d5", "Develop with tempo", "Exploit black's queen early development"],
+        "black": ["Recapture with queen", "Develop quickly", "Solid position despite queen exposure"]
+      }
+    },
+    {
+      "moves": "d4",
+      "name": "Queen's Pawn Game",
+      "eco": "D00",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 42.8,
+      "whiteWinRate": 37.2,
+      "drawRate": 36.5,
+      "blackWinRate": 26.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Play c4 for Queen's Gambit", "Solid position"],
+        "black": ["Challenge center", "Develop pieces", "Choose defense based on style"]
+      }
+    },
+    {
+      "moves": "d4 d5",
+      "name": "Queen's Pawn Game: Symmetrical",
+      "eco": "D00",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 18.5,
+      "whiteWinRate": 36.8,
+      "drawRate": 38.2,
+      "blackWinRate": 25.0,
+      "plans": {
+        "white": ["Play c4", "Control center", "Develop pieces"],
+        "black": ["Solid defense", "Challenge center", "Develop pieces"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4",
+      "name": "Queen's Gambit",
+      "eco": "D06",
+      "category": "Closed Games",
+      "variations": ["Queen's Gambit Accepted", "Queen's Gambit Declined", "Slav Defense", "Semi-Slav"],
+      "popularity": 16.2,
+      "whiteWinRate": 37.5,
+      "drawRate": 38.8,
+      "blackWinRate": 23.7,
+      "plans": {
+        "white": ["Offer pawn to control center", "Develop pieces", "Build central control"],
+        "black": ["Accept or decline gambit", "Develop pieces", "Challenge white's center"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 dxc4",
+      "name": "Queen's Gambit Accepted",
+      "eco": "D20",
+      "category": "Closed Games",
+      "variations": ["Central Variation", "Alekhine Defense"],
+      "popularity": 4.8,
+      "whiteWinRate": 36.2,
+      "drawRate": 37.5,
+      "blackWinRate": 26.3,
+      "plans": {
+        "white": ["Recover pawn", "Build strong center", "Develop pieces quickly"],
+        "black": ["Hold onto pawn temporarily", "Develop pieces", "Return pawn for active play"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 e6",
+      "name": "Queen's Gambit Declined",
+      "eco": "D30",
+      "category": "Closed Games",
+      "variations": ["Orthodox Defense", "Tartakower Variation", "Cambridge Springs"],
+      "popularity": 8.5,
+      "whiteWinRate": 37.8,
+      "drawRate": 39.5,
+      "blackWinRate": 22.7,
+      "plans": {
+        "white": ["Maintain central pressure", "Develop pieces", "Attack on queenside or kingside"],
+        "black": ["Solid pawn structure", "Defend d5", "Develop pieces", "Look for c5 or e5 breaks"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 e6 Nc3 Nf6",
+      "name": "Queen's Gambit Declined: Orthodox Defense",
+      "eco": "D63",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 5.2,
+      "whiteWinRate": 37.2,
+      "drawRate": 40.8,
+      "blackWinRate": 22.0,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Minority attack on queenside"],
+        "black": ["Solid defense", "Develop Be7", "Castle", "Look for c5 break"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 c6",
+      "name": "Slav Defense",
+      "eco": "D10",
+      "category": "Closed Games",
+      "variations": ["Exchange Variation", "Czech Variation", "Chameleon Variation"],
+      "popularity": 5.8,
+      "whiteWinRate": 36.5,
+      "drawRate": 40.2,
+      "blackWinRate": 23.3,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Attack"],
+        "black": ["Support d5 with c6", "Develop Bf5 outside pawn chain", "Solid structure"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 c6 Nf3 Nf6 Nc3 e6",
+      "name": "Semi-Slav Defense",
+      "eco": "D43",
+      "category": "Closed Games",
+      "variations": ["Meran Variation", "Anti-Meran", "Botvinnik Variation"],
+      "popularity": 3.2,
+      "whiteWinRate": 37.8,
+      "drawRate": 38.5,
+      "blackWinRate": 23.7,
+      "plans": {
+        "white": ["Control center", "Develop actively", "Attack"],
+        "black": ["Flexible pawn structure", "Play dxc4 and b5", "Active piece play", "Complex tactical positions"]
+      }
+    },
+    {
+      "moves": "d4 Nf6",
+      "name": "Indian Defense",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": ["King's Indian", "Nimzo-Indian", "Queen's Indian", "Bogo-Indian"],
+      "popularity": 21.5,
+      "whiteWinRate": 36.8,
+      "drawRate": 37.2,
+      "blackWinRate": 26.0,
+      "plans": {
+        "white": ["Play c4", "Control center", "Develop pieces"],
+        "black": ["Hypermodern approach", "Control center from distance", "Flexible development"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4",
+      "name": "Indian Game",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 19.8,
+      "whiteWinRate": 37.2,
+      "drawRate": 37.5,
+      "blackWinRate": 25.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Build strong position"],
+        "black": ["Choose between various Indian defenses", "Hypermodern play"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6",
+      "name": "Indian Game: General",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 12.4,
+      "whiteWinRate": 37.5,
+      "drawRate": 38.2,
+      "blackWinRate": 24.3,
+      "plans": {
+        "white": ["Develop Nc3", "Control center", "Prepare various setups"],
+        "black": ["Play d5, Bb4, or b6", "Flexible development", "Transpose to various defenses"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nc3 Bb4",
+      "name": "Nimzo-Indian Defense",
+      "eco": "E20",
+      "category": "Indian Defenses",
+      "variations": ["Samisch", "Classical", "Rubinstein", "Leningrad"],
+      "popularity": 8.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 39.8,
+      "blackWinRate": 23.4,
+      "plans": {
+        "white": ["Accept doubled pawns or avoid", "Control center", "Use bishop pair"],
+        "black": ["Pin knight", "Control e4 square", "Solid structure", "Active piece play"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nc3 Bb4 e3",
+      "name": "Nimzo-Indian Defense: Rubinstein Variation",
+      "eco": "E40",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 3.5,
+      "whiteWinRate": 35.8,
+      "drawRate": 41.2,
+      "blackWinRate": 23.0,
+      "plans": {
+        "white": ["Avoid doubled pawns", "Develop pieces", "Control center"],
+        "black": ["Maintain pin", "Develop pieces", "Look for c5 or d5 breaks"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nc3 Bb4 Qc2",
+      "name": "Nimzo-Indian Defense: Classical Variation",
+      "eco": "E32",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 2.8,
+      "whiteWinRate": 37.2,
+      "drawRate": 39.5,
+      "blackWinRate": 23.3,
+      "plans": {
+        "white": ["Avoid doubled pawns", "Control e4", "Develop pieces"],
+        "black": ["Maintain flexibility", "Consider Bxc3", "Develop pieces"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nf3 b6",
+      "name": "Queen's Indian Defense",
+      "eco": "E12",
+      "category": "Indian Defenses",
+      "variations": ["Petrosian Variation", "Fianchetto Variation"],
+      "popularity": 4.5,
+      "whiteWinRate": 36.5,
+      "drawRate": 40.2,
+      "blackWinRate": 23.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Prevent Bb4 pin"],
+        "black": ["Fianchetto queenside bishop", "Control e4", "Solid structure", "Flexible development"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nf3 Bb4+",
+      "name": "Bogo-Indian Defense",
+      "eco": "E11",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 2.1,
+      "whiteWinRate": 37.8,
+      "drawRate": 38.5,
+      "blackWinRate": 23.7,
+      "plans": {
+        "white": ["Block with Bd2 or Nbd2", "Develop pieces", "Control center"],
+        "black": ["Trade bishop for knight", "Solid structure", "Simple development"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6",
+      "name": "King's Indian Defense",
+      "eco": "E60",
+      "category": "Indian Defenses",
+      "variations": ["Classical", "Samisch", "Four Pawns Attack", "Fianchetto"],
+      "popularity": 6.8,
+      "whiteWinRate": 38.2,
+      "drawRate": 35.5,
+      "blackWinRate": 26.3,
+      "plans": {
+        "white": ["Control center", "Build space advantage", "Attack on queenside"],
+        "black": ["Fianchetto kingside", "Play d6 and e5", "Attack on kingside", "Pawn storm with f5, g5, h5"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6 Nc3 Bg7",
+      "name": "King's Indian Defense: Main Line",
+      "eco": "E60",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 5.2,
+      "whiteWinRate": 38.5,
+      "drawRate": 35.8,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Play e4", "Build strong center", "Castle and develop"],
+        "black": ["Play d6 and O-O", "Prepare e5", "Kingside attack"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6 Nc3 Bg7 e4 d6",
+      "name": "King's Indian Defense: Classical Variation",
+      "eco": "E90",
+      "category": "Indian Defenses",
+      "variations": ["Orthodox Variation", "Petrosian System"],
+      "popularity": 3.8,
+      "whiteWinRate": 39.2,
+      "drawRate": 34.8,
+      "blackWinRate": 26.0,
+      "plans": {
+        "white": ["Develop with Nf3, Be2", "Castle", "Build center", "Queenside play"],
+        "black": ["Castle", "Play e5", "Kingside attack", "Pawn storm"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6 Nc3 d5",
+      "name": "Grunfeld Defense",
+      "eco": "D70",
+      "category": "Indian Defenses",
+      "variations": ["Exchange Variation", "Russian Variation", "Three Knights"],
+      "popularity": 4.2,
+      "whiteWinRate": 37.8,
+      "drawRate": 37.5,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Accept central pawn majority", "Use space advantage", "Control center"],
+        "black": ["Give up center", "Pressure center with Bg7", "Dynamic piece play", "Counter white's pawns"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6 Nc3 d5 cxd5 Nxd5 e4 Nxc3 bxc3 Bg7",
+      "name": "Grunfeld Defense: Exchange Variation",
+      "eco": "D85",
+      "category": "Indian Defenses",
+      "variations": ["Classical Line", "Modern Exchange"],
+      "popularity": 2.5,
+      "whiteWinRate": 38.5,
+      "drawRate": 36.8,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Build big pawn center", "Maintain central pawns", "Attack"],
+        "black": ["Pressure d4 and c3 pawns", "Use Bg7 and queen", "Create dynamic counterplay"]
+      }
+    },
+    {
+      "moves": "d4 d6",
+      "name": "Old Indian Defense",
+      "eco": "A53",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 38.5,
+      "drawRate": 34.2,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Build strong center", "Develop pieces", "Control space"],
+        "black": ["Solid setup", "Play Nf6 and e5", "Flexible development"]
+      }
+    },
+    {
+      "moves": "Nf3",
+      "name": "Reti Opening",
+      "eco": "A04",
+      "category": "Flank Openings",
+      "variations": ["King's Indian Attack", "Reti Gambit"],
+      "popularity": 3.8,
+      "whiteWinRate": 36.2,
+      "drawRate": 36.8,
+      "blackWinRate": 27.0,
+      "plans": {
+        "white": ["Hypermodern approach", "Control center from sides", "Flexible development", "Transpose to various openings"],
+        "black": ["Occupy center", "Develop normally", "Maintain flexibility"]
+      }
+    },
+    {
+      "moves": "Nf3 d5",
+      "name": "Reti Opening: 1...d5",
+      "eco": "A06",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 2.2,
+      "whiteWinRate": 35.8,
+      "drawRate": 37.5,
+      "blackWinRate": 26.7,
+      "plans": {
+        "white": ["Play c4 or d4", "Hypermodern control", "Flexible setup"],
+        "black": ["Control center", "Develop pieces", "Solid structure"]
+      }
+    },
+    {
+      "moves": "Nf3 Nf6",
+      "name": "Reti Opening: 1...Nf6",
+      "eco": "A09",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 36.5,
+      "drawRate": 36.2,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Play c4 or g3", "Flexible development", "Control center from distance"],
+        "black": ["Symmetrical development", "Maintain flexibility", "Control center"]
+      }
+    },
+    {
+      "moves": "c4",
+      "name": "English Opening",
+      "eco": "A10",
+      "category": "Flank Openings",
+      "variations": ["Symmetrical", "Anglo-Indian", "Reversed Sicilian", "Four Knights"],
+      "popularity": 5.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 37.5,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Control center from side", "Flexible piece placement", "Transpose to various structures"],
+        "black": ["Choose setup based on preference", "Maintain flexibility", "Control center"]
+      }
+    },
+    {
+      "moves": "c4 c5",
+      "name": "English Opening: Symmetrical Variation",
+      "eco": "A30",
+      "category": "Flank Openings",
+      "variations": ["Hedgehog", "Four Knights"],
+      "popularity": 2.8,
+      "whiteWinRate": 35.2,
+      "drawRate": 40.5,
+      "blackWinRate": 24.3,
+      "plans": {
+        "white": ["Symmetrical structure", "Small advantage with first move", "Flexible play"],
+        "black": ["Mirror white's setup", "Equal chances", "Complex middlegame"]
+      }
+    },
+    {
+      "moves": "c4 e5",
+      "name": "English Opening: Reversed Sicilian",
+      "eco": "A20",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 35.8,
+      "blackWinRate": 26.7,
+      "plans": {
+        "white": ["Sicilian structure with extra tempo", "Control center", "Attack"],
+        "black": ["Central control", "Develop pieces", "Counter white's plans"]
+      }
+    },
+    {
+      "moves": "c4 Nf6",
+      "name": "English Opening: Anglo-Indian Defense",
+      "eco": "A15",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 2.5,
+      "whiteWinRate": 37.2,
+      "drawRate": 37.8,
+      "blackWinRate": 25.0,
+      "plans": {
+        "white": ["Play Nf3 and g3", "Flexible development", "Control center"],
+        "black": ["Indian defense setup", "Flexible development", "Counter based on white's setup"]
+      }
+    },
+    {
+      "moves": "c4 e6",
+      "name": "English Opening: Agincourt Defense",
+      "eco": "A13",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 1.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 38.5,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Flexible setup"],
+        "black": ["Play d5", "Solid pawn structure", "Counter white's plans"]
+      }
+    },
+    {
+      "moves": "f4",
+      "name": "Bird's Opening",
+      "eco": "A02",
+      "category": "Flank Openings",
+      "variations": ["From's Gambit", "Dutch Variation"],
+      "popularity": 0.6,
+      "whiteWinRate": 37.5,
+      "drawRate": 33.2,
+      "blackWinRate": 29.3,
+      "plans": {
+        "white": ["Control e5 square", "Kingside attack", "Aggressive play"],
+        "black": ["Challenge center", "Develop pieces", "Counter in center"]
+      }
+    },
+    {
+      "moves": "g3",
+      "name": "King's Fianchetto Opening",
+      "eco": "A00",
+      "category": "Flank Openings",
+      "variations": [],
+      "popularity": 0.5,
+      "whiteWinRate": 35.8,
+      "drawRate": 36.5,
+      "blackWinRate": 27.7,
+      "plans": {
+        "white": ["Fianchetto king's bishop", "Hypermodern play", "Flexible development"],
+        "black": ["Control center", "Develop normally", "Exploit white's slow development"]
+      }
+    },
+    {
+      "moves": "b3",
+      "name": "Larsen's Opening",
+      "eco": "A01",
+      "category": "Flank Openings",
+      "variations": ["Nimzowitsch Variation", "Classical Variation"],
+      "popularity": 0.4,
+      "whiteWinRate": 36.2,
+      "drawRate": 35.8,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Fianchetto queen's bishop", "Hypermodern control", "Unusual setup"],
+        "black": ["Occupy center", "Develop normally", "Exploit white's slow development"]
+      }
+    },
+    {
+      "moves": "d4 f5",
+      "name": "Dutch Defense",
+      "eco": "A80",
+      "category": "Indian Defenses",
+      "variations": ["Stonewall", "Leningrad", "Classical"],
+      "popularity": 1.8,
+      "whiteWinRate": 39.5,
+      "drawRate": 32.8,
+      "blackWinRate": 27.7,
+      "plans": {
+        "white": ["Control center", "Exploit e6 weakness", "Attack on queenside"],
+        "black": ["Control e4", "Kingside attack", "Play e6 and develop"]
+      }
+    },
+    {
+      "moves": "d4 f5 c4 Nf6 g3 e6 Bg2 Be7",
+      "name": "Dutch Defense: Stonewall Variation",
+      "eco": "A90",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 38.5,
+      "drawRate": 34.2,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Attack on queenside", "Control center", "Exploit e5 weakness"],
+        "black": ["Build Stonewall formation with d5, e6, f5", "Attack on kingside", "Play Bd6, Qe8-h5"]
+      }
+    },
+    {
+      "moves": "d4 f5 g3",
+      "name": "Dutch Defense: Leningrad Variation",
+      "eco": "A87",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.6,
+      "whiteWinRate": 40.2,
+      "drawRate": 31.8,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Fianchetto kingside", "Control center", "Attack"],
+        "black": ["Fianchetto kingside with g6 and Bg7", "Attack on kingside", "Dynamic play"]
+      }
+    },
+    {
+      "moves": "e4 e5 f4",
+      "name": "King's Gambit",
+      "eco": "C30",
+      "category": "Open Games",
+      "variations": ["King's Gambit Accepted", "King's Gambit Declined"],
+      "popularity": 1.2,
+      "whiteWinRate": 38.8,
+      "drawRate": 29.5,
+      "blackWinRate": 31.7,
+      "plans": {
+        "white": ["Sacrifice pawn for rapid development", "Attack f7", "Open lines for attack"],
+        "black": ["Accept or decline gambit", "Counter in center", "Defend carefully"]
+      }
+    },
+    {
+      "moves": "e4 e5 f4 exf4",
+      "name": "King's Gambit Accepted",
+      "eco": "C33",
+      "category": "Open Games",
+      "variations": ["Fischer Defense", "Kieseritzky Gambit"],
+      "popularity": 0.8,
+      "whiteWinRate": 39.5,
+      "drawRate": 28.2,
+      "blackWinRate": 32.3,
+      "plans": {
+        "white": ["Develop quickly", "Attack f7", "Recover pawn or continue attack"],
+        "black": ["Hold onto pawn", "Defend carefully", "Return pawn for development"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nf6",
+      "name": "Petrov's Defense",
+      "eco": "C42",
+      "category": "Open Games",
+      "variations": ["Classical Attack", "Modern Attack"],
+      "popularity": 3.2,
+      "whiteWinRate": 34.5,
+      "drawRate": 40.8,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Small advantage"],
+        "black": ["Solid defense", "Symmetrical structure", "Aim for draws"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 d6",
+      "name": "Philidor Defense",
+      "eco": "C41",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 1.2,
+      "whiteWinRate": 38.2,
+      "drawRate": 33.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Attack"],
+        "black": ["Solid but passive", "Defend e5", "Limited counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 d4",
+      "name": "Scotch Game",
+      "eco": "C44",
+      "category": "Open Games",
+      "variations": ["Classical Variation", "Mieses Variation"],
+      "popularity": 2.8,
+      "whiteWinRate": 37.8,
+      "drawRate": 34.2,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Open center early", "Develop quickly", "Active piece play"],
+        "black": ["Recapture on d4", "Develop pieces", "Counter in open position"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 d4 exd4 Nxd4",
+      "name": "Scotch Game: Main Line",
+      "eco": "C45",
+      "category": "Open Games",
+      "variations": ["Classical Variation", "Schmidt Variation"],
+      "popularity": 2.2,
+      "whiteWinRate": 37.2,
+      "drawRate": 35.5,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Control center", "Develop pieces", "Attack"],
+        "black": ["Challenge white's center", "Develop actively", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6 Ba4",
+      "name": "Ruy Lopez: Morphy Defense, Main Line",
+      "eco": "C70",
+      "category": "Spanish Opening",
+      "variations": [],
+      "popularity": 12.5,
+      "whiteWinRate": 38.5,
+      "drawRate": 36.8,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Maintain bishop", "Castle", "Build center with d4"],
+        "black": ["Play Nf6 and Be7", "Castle", "Prepare b5 and d6"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6",
+      "name": "Ruy Lopez: Morphy Defense, Modern Line",
+      "eco": "C78",
+      "category": "Spanish Opening",
+      "variations": [],
+      "popularity": 10.2,
+      "whiteWinRate": 38.2,
+      "drawRate": 37.5,
+      "blackWinRate": 24.3,
+      "plans": {
+        "white": ["Castle", "Develop Re1", "Prepare d4"],
+        "black": ["Play Be7", "Castle", "Prepare d6"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O",
+      "name": "Ruy Lopez: Morphy Defense, Castled",
+      "eco": "C80",
+      "category": "Spanish Opening",
+      "variations": ["Closed Variation", "Open Variation"],
+      "popularity": 8.5,
+      "whiteWinRate": 38.8,
+      "drawRate": 37.2,
+      "blackWinRate": 24.0,
+      "plans": {
+        "white": ["Play Re1 and c3", "Build center with d4", "Attack on kingside"],
+        "black": ["Play Be7 and castle", "Choose between Open (Nxe4) or Closed (...b5)", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Be7",
+      "name": "Ruy Lopez: Closed Variation",
+      "eco": "C84",
+      "category": "Spanish Opening",
+      "variations": ["Closed Defense", "Chigorin Variation"],
+      "popularity": 7.2,
+      "whiteWinRate": 39.2,
+      "drawRate": 37.8,
+      "blackWinRate": 23.0,
+      "plans": {
+        "white": ["Play Re1 and c3", "Build center", "Maneuver Nd2-f1-g3 (or e3)", "Attack on kingside"],
+        "black": ["Castle", "Play b5 and Bb7", "Prepare d6", "Counterattack on queenside"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bb5 a6 Ba4 Nf6 O-O Nxe4",
+      "name": "Ruy Lopez: Open Variation",
+      "eco": "C80",
+      "category": "Spanish Opening",
+      "variations": ["Main Line", "Riga Variation"],
+      "popularity": 2.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 35.8,
+      "blackWinRate": 26.7,
+      "plans": {
+        "white": ["Play d4", "Open center", "Attack", "Develop quickly"],
+        "black": ["Hold extra pawn temporarily", "Defend precisely", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 b4",
+      "name": "Italian Game: Evans Gambit",
+      "eco": "C51",
+      "category": "Italian Opening",
+      "variations": ["Accepted", "Declined"],
+      "popularity": 0.8,
+      "whiteWinRate": 40.2,
+      "drawRate": 30.5,
+      "blackWinRate": 29.3,
+      "plans": {
+        "white": ["Sacrifice pawn", "Rapid development", "Attack on f7", "Open lines"],
+        "black": ["Accept or decline", "Defend carefully", "Return pawn for equality"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 c3",
+      "name": "Italian Game: Giuoco Piano, Main Line",
+      "eco": "C53",
+      "category": "Italian Opening",
+      "variations": [],
+      "popularity": 6.5,
+      "whiteWinRate": 37.2,
+      "drawRate": 35.8,
+      "blackWinRate": 27.0,
+      "plans": {
+        "white": ["Prepare d4", "Build strong center", "Develop pieces", "Attack"],
+        "black": ["Develop pieces", "Castle", "Challenge center with d5 or d6"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 c3 Nf6",
+      "name": "Italian Game: Giuoco Piano, Classical",
+      "eco": "C53",
+      "category": "Italian Opening",
+      "variations": [],
+      "popularity": 4.8,
+      "whiteWinRate": 36.8,
+      "drawRate": 36.5,
+      "blackWinRate": 26.7,
+      "plans": {
+        "white": ["Play d4", "Open center", "Active piece play"],
+        "black": ["Develop", "Castle", "Counter with d5 or exd4"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Bc5 O-O Nf6 d3",
+      "name": "Italian Game: Giuoco Pianissimo",
+      "eco": "C50",
+      "category": "Italian Opening",
+      "variations": [],
+      "popularity": 3.2,
+      "whiteWinRate": 35.5,
+      "drawRate": 37.8,
+      "blackWinRate": 26.7,
+      "plans": {
+        "white": ["Slow buildup", "Play Re1 and c3", "Prepare d4 slowly"],
+        "black": ["Develop normally", "Castle", "Maintain flexibility"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Nf6 Ng5",
+      "name": "Italian Game: Two Knights Defense, Fried Liver Attack",
+      "eco": "C57",
+      "category": "Italian Opening",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 42.5,
+      "drawRate": 28.8,
+      "blackWinRate": 28.7,
+      "plans": {
+        "white": ["Sacrifice knight on f7", "Attack black's king", "Maintain initiative"],
+        "black": ["Accept sacrifice", "Defend precisely", "Counter with Kxf7 and Kf8"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Bc4 Nf6 d4",
+      "name": "Italian Game: Scotch Gambit",
+      "eco": "C55",
+      "category": "Italian Opening",
+      "variations": [],
+      "popularity": 1.2,
+      "whiteWinRate": 38.5,
+      "drawRate": 32.8,
+      "blackWinRate": 28.7,
+      "plans": {
+        "white": ["Sacrifice pawn", "Open center", "Quick development", "Attack"],
+        "black": ["Accept pawn", "Defend and develop", "Return pawn for equality"]
+      }
+    },
+    {
+      "moves": "e4 d6 d4 Nf6 Nc3 g6 f4",
+      "name": "Pirc Defense: Austrian Attack",
+      "eco": "B09",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 1.5,
+      "whiteWinRate": 39.8,
+      "drawRate": 31.2,
+      "blackWinRate": 29.0,
+      "plans": {
+        "white": ["Build big pawn center", "Attack with f4-f5", "Kingside assault"],
+        "black": ["Fianchetto", "Counter white's center", "Play c5 or e5"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 e6 Nc3 Nf6 Bg5",
+      "name": "Queen's Gambit Declined: Orthodox Defense, Main Line",
+      "eco": "D60",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 3.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 41.2,
+      "blackWinRate": 21.3,
+      "plans": {
+        "white": ["Pin knight", "Control center", "Develop", "Minority attack"],
+        "black": ["Develop Be7", "Castle", "Break with c5", "Solid defense"]
+      }
+    },
+    {
+      "moves": "d4 d5 c4 e6 Nc3 Nf6 Bg5 Be7",
+      "name": "Queen's Gambit Declined: Orthodox Defense, Classical",
+      "eco": "D63",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 2.5,
+      "whiteWinRate": 37.2,
+      "drawRate": 42.5,
+      "blackWinRate": 20.3,
+      "plans": {
+        "white": ["Maintain pin", "Castle", "Build pressure", "Minority attack"],
+        "black": ["Castle", "Prepare c5", "Break pin with h6", "Develop queenside"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 g6 Nc3 d5 Nf3",
+      "name": "Grunfeld Defense: Three Knights Variation",
+      "eco": "D90",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 36.5,
+      "drawRate": 38.8,
+      "blackWinRate": 24.7,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Attack"],
+        "black": ["Challenge center", "Fianchetto", "Dynamic play"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nf3 d5",
+      "name": "Queen's Gambit Declined: General",
+      "eco": "D30",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 5.5,
+      "whiteWinRate": 37.8,
+      "drawRate": 39.2,
+      "blackWinRate": 23.0,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Build pressure"],
+        "black": ["Solid structure", "Develop pieces", "Look for breaks"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 e6 Nc3 d5 cxd5",
+      "name": "Queen's Gambit Declined: Exchange Variation",
+      "eco": "D35",
+      "category": "Closed Games",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 34.5,
+      "drawRate": 43.8,
+      "blackWinRate": 21.7,
+      "plans": {
+        "white": ["Symmetrical structure", "Minority attack", "Small advantage"],
+        "black": ["Solid equality", "Develop pieces", "Draw oriented"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 Nf3",
+      "name": "Indian Game: 2.Nf3",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 8.5,
+      "whiteWinRate": 36.8,
+      "drawRate": 37.5,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Develop pieces", "Play c4", "Flexible setup"],
+        "black": ["Choose Indian defense", "Hypermodern play", "Flexible development"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 Nf3 g6",
+      "name": "Indian Game: East Indian Defense",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 3.2,
+      "whiteWinRate": 37.5,
+      "drawRate": 36.8,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Play c4", "Control center", "Develop pieces"],
+        "black": ["Fianchetto", "Flexible development", "Hypermodern play"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Nc3",
+      "name": "Three Knights Opening",
+      "eco": "C46",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 1.5,
+      "whiteWinRate": 36.2,
+      "drawRate": 35.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Flexible setup"],
+        "black": ["Play Nf6 or Bb4", "Develop pieces", "Maintain central control"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Nc3 Nf6",
+      "name": "Four Knights Game",
+      "eco": "C47",
+      "category": "Open Games",
+      "variations": ["Spanish Variation", "Scotch Variation"],
+      "popularity": 1.2,
+      "whiteWinRate": 35.8,
+      "drawRate": 37.2,
+      "blackWinRate": 27.0,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Small advantage"],
+        "black": ["Symmetrical development", "Solid equality", "Limited winning chances"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Nc3 Nf6 Bb5",
+      "name": "Four Knights Game: Spanish Variation",
+      "eco": "C48",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 36.5,
+      "drawRate": 37.8,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Pin knight", "Control center", "Develop pieces"],
+        "black": ["Play Bb4 or Nd4", "Develop pieces", "Maintain equality"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nf3 Nc6 Nc3 Nf6 d4",
+      "name": "Four Knights Game: Scotch Variation",
+      "eco": "C47",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.5,
+      "whiteWinRate": 37.2,
+      "drawRate": 35.5,
+      "blackWinRate": 27.3,
+      "plans": {
+        "white": ["Open center", "Active piece play", "Attack"],
+        "black": ["Recapture on d4", "Develop pieces", "Counter in open position"]
+      }
+    },
+    {
+      "moves": "e4 c5 c3",
+      "name": "Sicilian Defense: Alapin Variation",
+      "eco": "B22",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 2.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 32.8,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Avoid main Sicilian theory", "Play d4", "Control center", "Solid setup"],
+        "black": ["Challenge center with d5", "Develop pieces", "Create imbalances"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nc3",
+      "name": "Sicilian Defense: Closed Variation",
+      "eco": "B23",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 3.5,
+      "whiteWinRate": 36.2,
+      "drawRate": 32.5,
+      "blackWinRate": 31.3,
+      "plans": {
+        "white": ["Avoid Open Sicilian", "Play g3 and Bg2", "Kingside attack"],
+        "black": ["Develop flexibly", "Counter in center", "Queenside play"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4",
+      "name": "Sicilian Defense: Open Variation",
+      "eco": "B50",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 11.5,
+      "whiteWinRate": 35.8,
+      "drawRate": 31.5,
+      "blackWinRate": 32.7,
+      "plans": {
+        "white": ["Develop Nc3 and Be3", "Castle", "Attack on kingside or queenside"],
+        "black": ["Develop Nf6 and Nc6", "Castle", "Counterattack"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3",
+      "name": "Sicilian Defense: Classical Variation",
+      "eco": "B56",
+      "category": "Sicilian Defense",
+      "variations": ["Richter-Rauzer", "Sozin Attack"],
+      "popularity": 7.8,
+      "whiteWinRate": 36.2,
+      "drawRate": 32.8,
+      "blackWinRate": 31.0,
+      "plans": {
+        "white": ["Develop pieces", "Castle", "Choose between various attacking schemes"],
+        "black": ["Develop Nc6", "Choose between e6 or e5", "Castle and counterattack"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 Nc6",
+      "name": "Sicilian Defense: Classical, General",
+      "eco": "B57",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 5.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 33.2,
+      "blackWinRate": 30.0,
+      "plans": {
+        "white": ["Develop Be3 or Bg5", "Castle", "Attack"],
+        "black": ["Develop pieces", "Castle", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 Nc6 Bg5",
+      "name": "Sicilian Defense: Richter-Rauzer Variation",
+      "eco": "B60",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 2.5,
+      "whiteWinRate": 37.5,
+      "drawRate": 32.5,
+      "blackWinRate": 30.0,
+      "plans": {
+        "white": ["Pin knight", "Castle queenside", "Attack on kingside"],
+        "black": ["Play e6 or e5", "Develop Be7", "Castle and defend"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 Nc6 Bc4",
+      "name": "Sicilian Defense: Sozin Attack",
+      "eco": "B57",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 37.2,
+      "drawRate": 31.8,
+      "blackWinRate": 31.0,
+      "plans": {
+        "white": ["Attack f7", "Castle", "Kingside attack"],
+        "black": ["Play e6", "Develop pieces", "Castle and defend"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 Nf6 Nc3 e5",
+      "name": "Sicilian Defense: Sveshnikov Variation",
+      "eco": "B33",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 2.2,
+      "whiteWinRate": 37.8,
+      "drawRate": 32.5,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Exploit d5 weakness", "Control d5 square", "Attack"],
+        "black": ["Accept d5 weakness", "Create active piece play", "Dynamic counterplay"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 e6 d4 cxd4 Nxd4 a6",
+      "name": "Sicilian Defense: Kan Variation",
+      "eco": "B42",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 1.5,
+      "whiteWinRate": 36.5,
+      "drawRate": 33.8,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Attack"],
+        "black": ["Flexible pawn structure", "Develop based on white's setup", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 e6 d4 cxd4 Nxd4 Nc6",
+      "name": "Sicilian Defense: Taimanov Variation",
+      "eco": "B44",
+      "category": "Sicilian Defense",
+      "variations": [],
+      "popularity": 1.8,
+      "whiteWinRate": 36.8,
+      "drawRate": 33.5,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Attack"],
+        "black": ["Flexible development", "Play Qc7 and a6", "Create counterplay"]
+      }
+    },
+    {
+      "moves": "e4 c5 Nf3 Nc6 d4 cxd4 Nxd4 g6",
+      "name": "Sicilian Defense: Accelerated Dragon",
+      "eco": "B35",
+      "category": "Sicilian Defense",
+      "variations": ["Maroczy Bind"],
+      "popularity": 1.2,
+      "whiteWinRate": 37.8,
+      "drawRate": 31.5,
+      "blackWinRate": 30.7,
+      "plans": {
+        "white": ["Play c4 (Maroczy Bind)", "Control center", "Restrict black's play"],
+        "black": ["Fianchetto without d6", "Flexible development", "Counter white's bind"]
+      }
+    },
+    {
+      "moves": "e4 Nf6 e5 Nd5 d4 d6",
+      "name": "Alekhine's Defense: Modern Variation",
+      "eco": "B04",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 1.2,
+      "whiteWinRate": 38.2,
+      "drawRate": 32.5,
+      "blackWinRate": 29.3,
+      "plans": {
+        "white": ["Build pawn center", "Control space", "Attack"],
+        "black": ["Undermine white's center", "Play c6 and Bg4", "Counterattack pawns"]
+      }
+    },
+    {
+      "moves": "e4 Nf6 e5 Nd5 d4 d6 c4",
+      "name": "Alekhine's Defense: Four Pawns Attack",
+      "eco": "B03",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 0.5,
+      "whiteWinRate": 40.5,
+      "drawRate": 30.8,
+      "blackWinRate": 28.7,
+      "plans": {
+        "white": ["Build massive pawn center", "Control space", "Attack"],
+        "black": ["Undermine pawn center with c5, dxe5", "Create weaknesses", "Counterattack"]
+      }
+    },
+    {
+      "moves": "e4 d5 exd5 Qxd5",
+      "name": "Scandinavian Defense: Main Line",
+      "eco": "B01",
+      "category": "Semi-Open Games",
+      "variations": ["Modern Variation", "Classical Variation"],
+      "popularity": 2.2,
+      "whiteWinRate": 37.5,
+      "drawRate": 31.5,
+      "blackWinRate": 31.0,
+      "plans": {
+        "white": ["Develop with tempo", "Attack queen", "Build center"],
+        "black": ["Retreat queen to a5 or d6/d8", "Develop quickly", "Solid position"]
+      }
+    },
+    {
+      "moves": "e4 d5 exd5 Qxd5 Nc3 Qa5",
+      "name": "Scandinavian Defense: Modern Variation",
+      "eco": "B01",
+      "category": "Semi-Open Games",
+      "variations": [],
+      "popularity": 1.5,
+      "whiteWinRate": 37.2,
+      "drawRate": 32.8,
+      "blackWinRate": 30.0,
+      "plans": {
+        "white": ["Develop pieces", "Control center", "Attack"],
+        "black": ["Queen on a5", "Develop Nf6 and Bf5", "Solid structure"]
+      }
+    },
+    {
+      "moves": "d4 e6",
+      "name": "Indian Game: 1.d4 e6",
+      "eco": "A40",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 5.8,
+      "whiteWinRate": 36.5,
+      "drawRate": 37.8,
+      "blackWinRate": 25.7,
+      "plans": {
+        "white": ["Play c4 or e4", "Control center", "Develop pieces"],
+        "black": ["Flexible", "Play d5", "Transpose to French or other defenses"]
+      }
+    },
+    {
+      "moves": "d4 e6 c4 Nf6",
+      "name": "Indian Game: 2.c4 Nf6",
+      "eco": "E00",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 4.2,
+      "whiteWinRate": 37.2,
+      "drawRate": 38.5,
+      "blackWinRate": 24.3,
+      "plans": {
+        "white": ["Play Nc3", "Control center", "Develop pieces"],
+        "black": ["Choose Indian defense", "Flexible development", "Hypermodern play"]
+      }
+    },
+    {
+      "moves": "d4 c5",
+      "name": "Benoni Defense",
+      "eco": "A43",
+      "category": "Indian Defenses",
+      "variations": ["Modern Benoni", "Czech Benoni"],
+      "popularity": 1.2,
+      "whiteWinRate": 39.5,
+      "drawRate": 32.8,
+      "blackWinRate": 27.7,
+      "plans": {
+        "white": ["Control center", "Build space advantage", "Attack"],
+        "black": ["Counter-attack on queenside", "Play f5", "Create imbalances"]
+      }
+    },
+    {
+      "moves": "d4 c5 d5",
+      "name": "Benoni Defense: Modern Benoni",
+      "eco": "A60",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 40.2,
+      "drawRate": 31.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Maintain space advantage", "Attack on kingside", "Control center"],
+        "black": ["Play e6 and exd5", "Queenside counterplay with b5", "Play f5"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 c5",
+      "name": "Benoni Defense: General",
+      "eco": "A43",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.9,
+      "whiteWinRate": 39.8,
+      "drawRate": 32.2,
+      "blackWinRate": 28.0,
+      "plans": {
+        "white": ["Play d5", "Control center", "Space advantage"],
+        "black": ["Create imbalances", "Queenside play", "Dynamic counterplay"]
+      }
+    },
+    {
+      "moves": "d4 Nf6 c4 c5 d5 e6",
+      "name": "Benoni Defense: Modern Benoni Main Line",
+      "eco": "A61",
+      "category": "Indian Defenses",
+      "variations": [],
+      "popularity": 0.6,
+      "whiteWinRate": 40.5,
+      "drawRate": 31.8,
+      "blackWinRate": 27.7,
+      "plans": {
+        "white": ["Maintain pawn on d5", "Space advantage", "Attack"],
+        "black": ["Play exd5 and d6", "Queenside counterplay", "Play f5"]
+      }
+    },
+    {
+      "moves": "e4 e5 Bc4",
+      "name": "Bishop's Opening",
+      "eco": "C23",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 37.5,
+      "drawRate": 33.2,
+      "blackWinRate": 29.3,
+      "plans": {
+        "white": ["Attack f7", "Develop pieces", "Control center"],
+        "black": ["Defend f7", "Develop pieces", "Counter in center"]
+      }
+    },
+    {
+      "moves": "e4 e5 d4",
+      "name": "Center Game",
+      "eco": "C21",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.5,
+      "whiteWinRate": 38.2,
+      "drawRate": 31.5,
+      "blackWinRate": 30.3,
+      "plans": {
+        "white": ["Open center early", "Develop quickly", "Active piece play"],
+        "black": ["Recapture on d4", "Develop pieces", "Counter in open position"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nc3",
+      "name": "Vienna Game",
+      "eco": "C25",
+      "category": "Open Games",
+      "variations": ["Vienna Gambit", "Max Lange Defense"],
+      "popularity": 1.5,
+      "whiteWinRate": 38.5,
+      "drawRate": 32.8,
+      "blackWinRate": 28.7,
+      "plans": {
+        "white": ["Prepare f4", "Control center", "Attack"],
+        "black": ["Develop pieces", "Counter in center", "Defend e5"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nc3 Nf6",
+      "name": "Vienna Game: 2...Nf6",
+      "eco": "C25",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.8,
+      "whiteWinRate": 38.8,
+      "drawRate": 32.5,
+      "blackWinRate": 28.7,
+      "plans": {
+        "white": ["Play f4 or Nf3", "Control center", "Attack"],
+        "black": ["Develop pieces", "Counter white's plans", "Solid defense"]
+      }
+    },
+    {
+      "moves": "e4 e5 Nc3 Nc6",
+      "name": "Vienna Game: 2...Nc6",
+      "eco": "C25",
+      "category": "Open Games",
+      "variations": [],
+      "popularity": 0.7,
+      "whiteWinRate": 38.2,
+      "drawRate": 33.5,
+      "blackWinRate": 28.3,
+      "plans": {
+        "white": ["Play Nf3 or f4", "Control center", "Develop pieces"],
+        "black": ["Develop pieces", "Maintain central control", "Counter"]
+      }
+    },
+    {
+      "moves": "a3",
+      "name": "Anderssen's Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": [],
+      "popularity": 0.1,
+      "whiteWinRate": 34.5,
+      "drawRate": 35.2,
+      "blackWinRate": 30.3,
+      "plans": {
+        "white": ["Prevent Bb4", "Flexible development", "Unusual approach"],
+        "black": ["Control center", "Develop normally", "Exploit white's slow start"]
+      }
+    },
+    {
+      "moves": "b4",
+      "name": "Polish Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": ["Sokolsky Opening"],
+      "popularity": 0.2,
+      "whiteWinRate": 36.8,
+      "drawRate": 32.5,
+      "blackWinRate": 30.7,
+      "plans": {
+        "white": ["Control a5 and c5", "Fianchetto queenside", "Unusual setup"],
+        "black": ["Control center", "Develop normally", "Exploit weaknesses"]
+      }
+    },
+    {
+      "moves": "e3",
+      "name": "Van't Kruijs Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": [],
+      "popularity": 0.1,
+      "whiteWinRate": 33.8,
+      "drawRate": 36.5,
+      "blackWinRate": 29.7,
+      "plans": {
+        "white": ["Slow buildup", "Develop pieces", "Flexible"],
+        "black": ["Control center", "Develop normally", "Exploit white's passivity"]
+      }
+    },
+    {
+      "moves": "h3",
+      "name": "Clemenz Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": [],
+      "popularity": 0.05,
+      "whiteWinRate": 32.5,
+      "drawRate": 35.8,
+      "blackWinRate": 31.7,
+      "plans": {
+        "white": ["Prevent Bg4", "Very slow", "Dubious opening"],
+        "black": ["Control center", "Develop normally", "Exploit white's time loss"]
+      }
+    },
+    {
+      "moves": "Na3",
+      "name": "Durkin Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": [],
+      "popularity": 0.05,
+      "whiteWinRate": 31.8,
+      "drawRate": 34.5,
+      "blackWinRate": 33.7,
+      "plans": {
+        "white": ["Offbeat knight development", "Dubious opening", "Surprise value only"],
+        "black": ["Control center", "Develop normally", "Exploit knight on rim"]
+      }
+    },
+    {
+      "moves": "Nh3",
+      "name": "Amar Opening",
+      "eco": "A00",
+      "category": "Unusual Openings",
+      "variations": [],
+      "popularity": 0.05,
+      "whiteWinRate": 32.2,
+      "drawRate": 33.8,
+      "blackWinRate": 34.0,
+      "plans": {
+        "white": ["Knight to f4", "Offbeat approach", "Dubious"],
+        "black": ["Control center", "Develop normally", "Exploit white's awkward knight"]
+      }
+    }
+  ]
+}

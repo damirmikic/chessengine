@@ -1,61 +1,82 @@
 /**
  * @fileoverview Chess opening detection and display module
- * Provides opening name detection based on move sequences
+ * Provides opening name detection based on move sequences with ECO codes,
+ * variations, typical plans, and statistics
  */
 
 /**
- * Dictionary of chess openings mapped by move sequences
- * @type {Object.<string, string>}
+ * Opening database loaded from JSON
+ * @type {Array<Object>}
  */
-const OPENINGS = {
-    "e4": "King's Pawn Game",
-    "e4 e5": "Open Game",
-    "e4 e5 Nf3": "King's Knight Opening",
-    "e4 e5 Nf3 Nc6": "King's Knight Opening: Normal",
-    "e4 e5 Nf3 Nc6 Bb5": "Ruy Lopez",
-    "e4 e5 Nf3 Nc6 Bc4": "Italian Game",
-    "e4 c5": "Sicilian Defense",
-    "e4 c6": "Caro-Kann Defense",
-    "e4 e6": "French Defense",
-    "d4": "Queen's Pawn Game",
-    "d4 d5": "Queen's Gambit Game",
-    "d4 d5 c4": "Queen's Gambit",
-    "d4 Nf6": "Indian Defense",
-    "d4 Nf6 c4 g6": "King's Indian / Grunfeld",
-    "Nf3": "Reti Opening",
-    "c4": "English Opening"
-};
+let openingsDatabase = [];
 
 /**
- * Detects the opening name based on the current move sequence
+ * Loads the opening database from JSON file
+ * @returns {Promise<void>}
+ */
+export async function loadOpeningsDatabase() {
+    try {
+        const response = await fetch('openings-database.json');
+        const data = await response.json();
+        openingsDatabase = data.openings;
+        console.log(`Loaded ${openingsDatabase.length} openings`);
+    } catch (error) {
+        console.error('Failed to load openings database:', error);
+        // Fallback to basic openings
+        openingsDatabase = [
+            {
+                moves: "e4",
+                name: "King's Pawn Game",
+                eco: "B00",
+                category: "Open Games",
+                variations: [],
+                popularity: 45.2,
+                whiteWinRate: 37.8,
+                drawRate: 32.1,
+                blackWinRate: 30.1,
+                plans: {
+                    white: ["Control the center"],
+                    black: ["Challenge white's center"]
+                }
+            }
+        ];
+    }
+}
+
+/**
+ * Detects the opening based on the current move sequence
  * @param {Chess} chess - The chess.js game instance
- * @returns {string} The detected opening name
+ * @returns {Object|null} The detected opening object or null
  */
 export function detectOpening(chess) {
     const history = chess.history().join(" ");
 
-    // Exact match
-    if (OPENINGS[history]) {
-        return OPENINGS[history];
+    if (history === "") {
+        return null; // Starting position
     }
 
-    // Partial match (find longest matching prefix)
-    let found = "Unknown / Custom";
+    // Find exact match first
+    let exactMatch = openingsDatabase.find(opening => opening.moves === history);
+    if (exactMatch) {
+        return { ...exactMatch, isExact: true };
+    }
+
+    // Find longest matching prefix
+    let bestMatch = null;
     let bestLen = 0;
 
-    for (const [seq, name] of Object.entries(OPENINGS)) {
-        if (history.startsWith(seq) && seq.length > bestLen) {
-            found = name;
-            bestLen = seq.length;
+    for (const opening of openingsDatabase) {
+        if (history.startsWith(opening.moves) && opening.moves.length > bestLen) {
+            bestMatch = opening;
+            bestLen = opening.moves.length;
         }
     }
 
-    // Handle starting position
-    if (history === "") {
-        return "Starting Position";
+    if (bestMatch) {
+        return { ...bestMatch, isExact: false };
     }
 
-    return found;
+    return null; // Unknown opening
 }
 
 /**
@@ -64,14 +85,106 @@ export function detectOpening(chess) {
  */
 export function updateOpeningDisplay(chess) {
     const nameEl = document.getElementById('opening-name');
+    const ecoEl = document.getElementById('opening-eco');
+    const categoryEl = document.getElementById('opening-category');
+    const variationsEl = document.getElementById('opening-variations');
+    const statsEl = document.getElementById('opening-stats');
+    const plansEl = document.getElementById('opening-plans');
+
     if (!nameEl) return;
 
-    const openingName = detectOpening(chess);
     const history = chess.history().join(" ");
 
-    // Highlight exact matches in green
-    const isExactMatch = OPENINGS[history] !== undefined;
+    // Handle starting position
+    if (history === "") {
+        nameEl.innerText = "Starting Position";
+        nameEl.style.color = "#888";
+        if (ecoEl) ecoEl.innerText = "";
+        if (categoryEl) categoryEl.innerText = "";
+        if (variationsEl) variationsEl.innerHTML = "";
+        if (statsEl) statsEl.innerHTML = "";
+        if (plansEl) plansEl.innerHTML = "";
+        return;
+    }
 
-    nameEl.innerText = openingName;
-    nameEl.style.color = isExactMatch ? "#4caf50" : "#888";
+    const opening = detectOpening(chess);
+
+    if (!opening) {
+        nameEl.innerText = "Unknown / Custom";
+        nameEl.style.color = "#888";
+        if (ecoEl) ecoEl.innerText = "";
+        if (categoryEl) categoryEl.innerText = "";
+        if (variationsEl) variationsEl.innerHTML = "";
+        if (statsEl) statsEl.innerHTML = "";
+        if (plansEl) plansEl.innerHTML = "";
+        return;
+    }
+
+    // Update opening name
+    nameEl.innerText = opening.name;
+    nameEl.style.color = opening.isExact ? "#4caf50" : "#888";
+
+    // Update ECO code
+    if (ecoEl) {
+        ecoEl.innerText = opening.eco;
+        ecoEl.style.color = opening.isExact ? "#4caf50" : "#888";
+    }
+
+    // Update category
+    if (categoryEl) {
+        categoryEl.innerText = opening.category;
+    }
+
+    // Update variations
+    if (variationsEl && opening.variations && opening.variations.length > 0) {
+        const variationsHtml = opening.variations.slice(0, 3).map(v =>
+            `<div class="variation-item">• ${v}</div>`
+        ).join('');
+        variationsEl.innerHTML = `<div class="variations-label">Variations:</div>${variationsHtml}`;
+    } else if (variationsEl) {
+        variationsEl.innerHTML = "";
+    }
+
+    // Update statistics
+    if (statsEl) {
+        statsEl.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Popularity</div>
+                    <div class="stat-value">${opening.popularity.toFixed(1)}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">White</div>
+                    <div class="stat-value stat-white">${opening.whiteWinRate.toFixed(1)}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Draw</div>
+                    <div class="stat-value stat-draw">${opening.drawRate.toFixed(1)}%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Black</div>
+                    <div class="stat-value stat-black">${opening.blackWinRate.toFixed(1)}%</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Update typical plans
+    if (plansEl && opening.plans) {
+        const turn = chess.turn();
+        const currentSidePlans = turn === 'w' ? opening.plans.white : opening.plans.black;
+        const sideName = turn === 'w' ? 'White' : 'Black';
+
+        if (currentSidePlans && currentSidePlans.length > 0) {
+            const plansHtml = currentSidePlans.map(plan =>
+                `<div class="plan-item">• ${plan}</div>`
+            ).join('');
+            plansEl.innerHTML = `
+                <div class="plans-label">Typical Plans for ${sideName}:</div>
+                ${plansHtml}
+            `;
+        } else {
+            plansEl.innerHTML = "";
+        }
+    }
 }
