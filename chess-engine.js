@@ -22,8 +22,10 @@ const engineState = {
     currentEval: 0,
     currentPv: "",
     badMoveRefutation: "",
+    bestMoves: [],  // Array of {move: string, eval: number, pv: string}
     onBestMove: null,
     onEvaluation: null,
+    onMultiPv: null,
     onError: null
 };
 
@@ -48,10 +50,11 @@ let initRetryCount = 0;
  * @param {Function} callbacks.onError - Called when error occurs
  * @returns {Promise<boolean>} True if initialization successful
  */
-export async function initializeEngine({ onReady, onBestMove, onEvaluation, onError }) {
+export async function initializeEngine({ onReady, onBestMove, onEvaluation, onMultiPv, onError }) {
     try {
         engineState.onBestMove = onBestMove;
         engineState.onEvaluation = onEvaluation;
+        engineState.onMultiPv = onMultiPv;
         engineState.onError = onError;
 
         // Show loading state
@@ -108,6 +111,50 @@ function handleEngineMessage(event) {
     const line = event.data;
 
     try {
+        // Parse multipv info lines
+        if (line.startsWith('info') && line.includes('multipv')) {
+            const parts = line.split(' ');
+            const multipvIndex = parts.indexOf('multipv');
+            const pvNumber = multipvIndex > 0 ? parseInt(parts[multipvIndex + 1]) : 1;
+
+            // Extract score
+            let score = 0;
+            const cpIndex = parts.indexOf('cp');
+            if (cpIndex > 0 && cpIndex + 1 < parts.length) {
+                score = parseInt(parts[cpIndex + 1]) / 100;
+            }
+
+            // Extract PV (principal variation)
+            let pv = '';
+            const pvIndex = parts.indexOf('pv');
+            if (pvIndex > 0) {
+                pv = parts.slice(pvIndex + 1).join(' ');
+            }
+
+            // Extract first move from PV
+            const firstMove = pv.split(' ')[0];
+
+            // Store in bestMoves array
+            if (pvNumber > 0 && firstMove) {
+                // Ensure array is large enough
+                while (engineState.bestMoves.length < pvNumber) {
+                    engineState.bestMoves.push({ move: '', eval: 0, pv: '' });
+                }
+
+                engineState.bestMoves[pvNumber - 1] = {
+                    move: firstMove,
+                    eval: score,
+                    pv: pv
+                };
+
+                // Notify multipv callback
+                if (engineState.onMultiPv && pvNumber === 3) {
+                    // Wait for all 3 lines
+                    engineState.onMultiPv([...engineState.bestMoves]);
+                }
+            }
+        }
+
         // Capture Principal Variation (best line)
         if (line.startsWith('info') && line.includes(' pv ')) {
             const pvIndex = line.indexOf(' pv ') + 4;
@@ -145,7 +192,8 @@ function handleEngineMessage(event) {
                     move: moveStr,
                     status: engineState.status,
                     pv: engineState.currentPv,
-                    refutation: engineState.badMoveRefutation
+                    refutation: engineState.badMoveRefutation,
+                    bestMoves: [...engineState.bestMoves]
                 });
             }
         }
@@ -238,6 +286,30 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
  */
 export function findBestMove(fen, depth = 12) {
     evaluatePosition(fen, depth, 'play');
+}
+
+/**
+ * Analyzes a position with multiple principal variations
+ * @param {string} fen - FEN string of the position
+ * @param {number} depth - Search depth
+ * @param {number} numLines - Number of lines to analyze (default 3)
+ */
+export function analyzeWithMultiPv(fen, depth = 15, numLines = 3) {
+    if (!engineState.worker || engineState.status === 'error') {
+        console.error('Engine not available');
+        return;
+    }
+
+    // Reset best moves array
+    engineState.bestMoves = [];
+    engineState.status = 'analyzing';
+
+    // Configure multipv
+    engineState.worker.postMessage(`setoption name MultiPV value ${numLines}`);
+
+    // Send position and analysis request
+    engineState.worker.postMessage(`position fen ${fen}`);
+    engineState.worker.postMessage(`go depth ${depth}`);
 }
 
 /**
