@@ -98,6 +98,27 @@ export function annotateLastMove(evalLoss) {
 }
 
 /**
+ * Removes the last move from history (used for undo)
+ * @param {boolean} [singleMove=false] - If true, remove only one move, otherwise remove two (user + engine)
+ */
+export function removeLastMove(singleMove = false) {
+    if (historyState.moves.length === 0) return;
+
+    if (singleMove) {
+        historyState.moves.pop();
+    } else {
+        // Remove user move + engine response
+        historyState.moves.pop();
+        if (historyState.moves.length > 0) {
+            historyState.moves.pop();
+        }
+    }
+
+    historyState.currentMoveIndex = -1;
+    renderMoveList();
+}
+
+/**
  * Updates the evaluation of the last move
  * @param {number} evaluation - Evaluation score in pawns
  */
@@ -170,7 +191,7 @@ function createMoveElement(move, index) {
 
     // Highlight current move
     const isCurrent = historyState.currentMoveIndex === index ||
-                     (historyState.currentMoveIndex === -1 && index === historyState.moves.length - 1);
+        (historyState.currentMoveIndex === -1 && index === historyState.moves.length - 1);
     if (isCurrent) {
         moveDiv.classList.add('current');
     }

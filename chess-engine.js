@@ -20,6 +20,7 @@ const engineState = {
     worker: null,
     status: 'initializing',
     currentEval: 0,
+    currentTurn: 'w', // Track turn of position being evaluated
     currentPv: "",
     badMoveRefutation: "",
     bestMoves: [],  // Array of {move: string, eval: number, pv: string}
@@ -166,20 +167,36 @@ function handleEngineMessage(event) {
             }
         }
 
-        // Parse score (centipawns)
-        if (line.startsWith('info') && line.includes('score cp')) {
+        // Parse score (centipawns or mate)
+        if (line.startsWith('info') && line.includes('score ')) {
             const parts = line.split(' ');
-            const scoreIndex = parts.indexOf('cp') + 1;
-            if (scoreIndex > 0 && scoreIndex < parts.length) {
-                let score = parseInt(parts[scoreIndex]) / 100;
+            let score = 0;
+            const scoreIndex = parts.indexOf('cp');
+            const mateIndex = parts.indexOf('mate');
 
-                // Store evaluation
-                engineState.currentEval = score;
+            if (scoreIndex > 0 && scoreIndex + 1 < parts.length) {
+                // Centipawn score
+                score = parseInt(parts[scoreIndex + 1]) / 100;
+            } else if (mateIndex > 0 && mateIndex + 1 < parts.length) {
+                // Mate score - convert to large centipawn equivalent
+                const mateIn = parseInt(parts[mateIndex + 1]);
+                // Score is from side to move's perspective
+                // M1 for side to move = positive (they win)
+                score = mateIn > 0 ? (100 - mateIn) : (-100 - mateIn);
+            } else {
+                return; // No score found in this line
+            }
 
-                // Notify callback
-                if (engineState.onEvaluation) {
-                    engineState.onEvaluation(score, engineState.currentPv);
-                }
+            // NORMALIZE: Stockfish returns score for side-to-move.
+            // Convert everything to White's perspective for consistency.
+            const normalizedScore = engineState.currentTurn === 'b' ? -score : score;
+
+            // Store normalized evaluation
+            engineState.currentEval = normalizedScore;
+
+            // Notify callback
+            if (engineState.onEvaluation) {
+                engineState.onEvaluation(normalizedScore, engineState.currentPv);
             }
         }
 
@@ -259,6 +276,9 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
         return;
     }
 
+    // Stop previous search to ensure freshness
+    engineState.worker.postMessage('stop');
+
     // Reset state for new evaluation
     engineState.currentPv = "";
     if (evaluationType === 'current') {
@@ -276,6 +296,11 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
 
     // Send position and evaluation request
     engineState.worker.postMessage(`position fen ${fen}`);
+
+    // Parse turn from FEN (second field)
+    const fenParts = fen.split(' ');
+    engineState.currentTurn = fenParts[1] || 'w';
+
     engineState.worker.postMessage(`go depth ${depth}`);
 }
 
@@ -326,8 +351,8 @@ export function getEngineState() {
  */
 export function isEngineReady() {
     return engineState.status !== 'error' &&
-           engineState.status !== 'initializing' &&
-           engineState.worker !== null;
+        engineState.status !== 'initializing' &&
+        engineState.worker !== null;
 }
 
 /**

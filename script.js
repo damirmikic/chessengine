@@ -47,12 +47,12 @@ import {
     initializeMoveHistory,
     addMove,
     annotateLastMove,
+    removeLastMove,
     updateLastMoveEvaluation,
-    resetMoveHistory,
-    getMoves,
     loadMoveHistory,
-    setNavigationMode,
-    isViewingHistory
+    getMoves,
+    isViewingHistory,
+    setNavigationMode
 } from './move-history.js';
 
 import {
@@ -114,7 +114,8 @@ const appState = {
     previousEval: 0.3,
     gamePaused: false,
     pendingUserMove: null,
-    clockEnabled: false
+    clockEnabled: false,
+    gameRecorded: false
 };
 
 /**
@@ -188,6 +189,7 @@ async function initializeApp() {
 
         // Set up UI event listeners
         setupEventListeners();
+        setupTabs();
 
         // Update opening display
         updateOpeningDisplay(getChess());
@@ -196,6 +198,44 @@ async function initializeApp() {
         console.error('Application initialization error:', error);
         showMessage('Failed to start application. Please refresh the page.');
     }
+}
+
+/**
+ * Sets up tab navigation for the sidebar
+ */
+function setupTabs() {
+    const tabs = document.querySelectorAll('.sidebar-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            switchTab(target);
+        });
+    });
+}
+
+/**
+ * Switches the sidebar to a specific tab
+ * @param {string} tabId - 'play' | 'analysis' | 'settings'
+ */
+function switchTab(tabId) {
+    const tabs = document.querySelectorAll('.sidebar-tab');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    tabs.forEach(tab => {
+        if (tab.dataset.tab === tabId) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+
+    panels.forEach(panel => {
+        if (panel.id === `tab-${tabId}`) {
+            panel.classList.add('active');
+        } else {
+            panel.classList.remove('active');
+        }
+    });
 }
 
 /**
@@ -230,8 +270,14 @@ function setupEventListeners() {
     if (importPgnBtn) importPgnBtn.addEventListener('click', () => pgnFileInput?.click());
     if (closeModalBtn) closeModalBtn.addEventListener('click', hideLoadGameModal);
     if (pgnFileInput) pgnFileInput.addEventListener('change', handleImportPGN);
-    if (hintBtn) hintBtn.addEventListener('click', handleHint);
-    if (analyzeBtn) analyzeBtn.addEventListener('click', handleAnalyze);
+    if (hintBtn) hintBtn.addEventListener('click', () => {
+        handleHint();
+        switchTab('analysis');
+    });
+    if (analyzeBtn) analyzeBtn.addEventListener('click', () => {
+        handleAnalyze();
+        switchTab('analysis');
+    });
     if (analysisModeCheckbox) analysisModeCheckbox.addEventListener('change', handleAnalysisModeToggle);
     if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
     if (learningDashboardBtn) learningDashboardBtn.addEventListener('click', showLearningDashboard);
@@ -403,6 +449,8 @@ function analyzeUserMove(move, previousFen, currentFen) {
         // Make engine move if game is not over and not in analysis mode
         if (!isGameOver() && !isAnalysisMode()) {
             requestEngineMove();
+        } else if (isGameOver()) {
+            handleGameOver();
         }
     }
 }
@@ -504,16 +552,10 @@ function completeUserMoveAnalysis(bestMoveUci, bestLinePv) {
     appState.pendingUserMove = null;
 }
 
-/**
- * Handles engine evaluation updates
- * @param {number} score - Evaluation score
- * @param {string} pv - Principal Variation
- */
 function handleEngineEvaluation(score, pv) {
     // Update evaluation bar in real-time
-    const turn = getChess().turn();
-    const adjustedScore = turn === 'b' ? -score : score;
-    updateEvaluationBar(adjustedScore);
+    // score is now auto-normalized to White's perspective by the engine module
+    updateEvaluationBar(score);
 }
 
 /**
@@ -540,10 +582,13 @@ function handleGameOver() {
     pauseClock();
 
     // Record game session for learning
-    const moves = getMoves();
-    if (moves.length > 5) {
-        recordAndNotify(moves);
-        updateRatingDisplay();
+    if (!appState.gameRecorded) {
+        const moves = getMoves();
+        if (moves.length > 5) {
+            recordAndNotify(moves);
+            updateRatingDisplay();
+            appState.gameRecorded = true;
+        }
     }
 }
 
@@ -656,6 +701,7 @@ function handleReset() {
     appState.previousEval = 0.3;
     appState.gamePaused = false;
     appState.pendingUserMove = null;
+    appState.gameRecorded = false;
     toggleContinueButton(false);
 
     // Clear analysis panels
@@ -693,11 +739,13 @@ function handleUndo() {
     // If game is paused, just undo the user's bad move
     if (appState.gamePaused) {
         undoMove(true);
+        removeLastMove(true);
         appState.gamePaused = false;
         toggleContinueButton(false);
     } else {
         // Undo both user and engine moves
         undoMove(false);
+        removeLastMove(false);
     }
 
     updateOpeningDisplay(getChess());

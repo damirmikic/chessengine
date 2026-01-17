@@ -23,254 +23,232 @@
         <div id="board" class="board is2d"></div>
 
         <div class="sidebar">
-            <!-- Opening Information Panel -->
-            <div class="opening-panel">
-                <div class="opening-header">
-                    <div id="opening-name" class="opening-name">Starting Position</div>
-                    <div class="opening-meta">
-                        <span id="opening-eco" class="opening-eco"></span>
-                        <span id="opening-category" class="opening-category"></span>
+            <!-- Fixed Top Section (Clocks & Essential Info) -->
+            <div class="sidebar-top">
+                <div class="chess-clock-panel" id="chessClockPanel">
+                    <div class="clock-display">
+                        <div class="clock-player" id="whiteClockPlayer">
+                            <div class="clock-player-label">White</div>
+                            <div class="clock-time" id="whiteClock">10:00</div>
+                        </div>
+                        <div class="clock-player" id="blackClockPlayer">
+                            <div class="clock-player-label">Black</div>
+                            <div class="clock-time" id="blackClock">10:00</div>
+                        </div>
                     </div>
                 </div>
-                <div id="opening-variations" class="opening-variations"></div>
-                <div id="opening-stats" class="opening-stats"></div>
-                <div id="opening-plans" class="opening-plans"></div>
-            </div>
 
-            <!-- Move History Panel -->
-            <div class="move-history-panel">
-                <div class="move-history-header">
-                    <h3>Move History</h3>
-                    <div class="game-controls">
-                        <button id="saveGameBtn" class="icon-btn" title="Save Game">💾</button>
-                        <button id="loadGameBtn" class="icon-btn" title="Load Game">📂</button>
-                        <button id="exportPgnBtn" class="icon-btn" title="Export PGN">📤</button>
-                        <button id="importPgnBtn" class="icon-btn" title="Import PGN">📥</button>
+                <div class="essential-info">
+                    <div id="status">White to move</div>
+                    <div id="ratingBadge" class="rating-badge" style="display: none;">
+                        <span class="rating-icon">📊</span>
+                        <span id="ratingValue">~800</span>
                     </div>
                 </div>
-                <div id="move-list" class="move-list">
-                    <div class="move-list-empty">No moves yet</div>
+
+                <div id="evaluation-bar">
+                    <div id="eval-fill"></div>
                 </div>
             </div>
 
-            <h2>Coach Feedback</h2>
-            <div id="status">White to move</div>
-
-            <!-- Rating Badge -->
-            <div id="ratingBadge" class="rating-badge" style="display: none;">
-                <span class="rating-icon">📊</span>
-                <span id="ratingValue">~800</span>
+            <!-- Tab Navigation -->
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-tab="play">🎮 Play</button>
+                <button class="sidebar-tab" data-tab="analysis">🧠 Analysis</button>
+                <button class="sidebar-tab" data-tab="settings">⚙️ Settings</button>
             </div>
 
-            <!-- Evaluation Bar -->
-            <div id="evaluation-bar">
-                <div id="eval-fill"></div>
-            </div>
+            <!-- Tab Content Area -->
+            <div class="tab-content">
+                <!-- PLAY TAB -->
+                <div class="tab-panel active" id="tab-play">
+                    <!-- Action Buttons - Moved up for accessibility -->
+                    <div class="button-group compact">
+                        <button id="resetBtn" class="primary-btn" title="Start a fresh new game">New Game</button>
+                        <button id="undoBtn" title="Undo the last move">Undo</button>
+                        <button id="flipBtn" title="Flip the board to play from the other side">Flip</button>
+                    </div>
 
-            <div id="feedback" class="feedback-box">
-                Make a move to get coaching...
-            </div>
+                    <div id="feedback" class="feedback-box">
+                        Make a move to get coaching...
+                    </div>
 
-            <!-- Continue Button -->
-            <button id="continueBtn" class="continue-btn" style="display: none;">
-                Ignore & Continue Game
-            </button>
-
-            <!-- Analysis Panel -->
-            <div class="analysis-panel">
-                <h3>Analysis Tools</h3>
-
-                <!-- Multiple Best Moves Display -->
-                <div id="bestMovesPanel" class="best-moves-panel" style="display: none;">
-                    <div class="best-moves-header">Top Moves:</div>
-                    <div id="bestMovesList" class="best-moves-list"></div>
-                </div>
-
-                <!-- Analysis Controls -->
-                <div class="analysis-controls">
-                    <button id="hintBtn" class="analysis-btn" title="Get a hint for the current position">
-                        💡 Get Hint
+                    <button id="continueBtn" class="continue-btn" style="display: none;">
+                        Ignore & Continue Game
                     </button>
-                    <button id="analyzeBtn" class="analysis-btn" title="Analyze current position">
-                        🔍 Analyze
+
+                    <div class="move-history-panel">
+                        <div class="move-history-header">
+                            <h3>Move History</h3>
+                            <div class="game-controls">
+                                <button id="saveGameBtn" class="icon-btn"
+                                    title="Save current game to browser storage">💾</button>
+                                <button id="loadGameBtn" class="icon-btn"
+                                    title="Load a previously saved game">📂</button>
+                                <button id="exportPgnBtn" class="icon-btn" title="Save game as a PGN file">📤</button>
+                                <button id="importPgnBtn" class="icon-btn"
+                                    title="Import game from a PGN file">📥</button>
+                            </div>
+                        </div>
+                        <div id="move-list" class="move-list">
+                            <div class="move-list-empty">No moves yet</div>
+                        </div>
+                    </div>
+
+                    <button id="learningDashboardBtn" class="learning-btn">
+                        📊 Learning Dashboard
                     </button>
                 </div>
-            </div>
 
-            <!-- Critical Moments Panel -->
-            <div id="criticalMomentsPanel" class="critical-moments-panel" style="display: none;">
-                <h3>Critical Moments</h3>
-                <div id="criticalMomentsList" class="critical-moments-list"></div>
-            </div>
-
-            <!-- Puzzles Panel -->
-            <div id="puzzlesPanel" class="puzzles-panel" style="display: none;">
-                <h3>Generated Puzzles</h3>
-                <div id="puzzlesList" class="puzzles-list"></div>
-                <button id="showPuzzlesBtn" class="show-puzzles-btn" style="display: none;">
-                    View Puzzles (0)
-                </button>
-            </div>
-
-            <!-- Settings Group -->
-            <div class="control-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="showHints" checked>
-                    Pause & Explain Mistakes
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="analysisMode">
-                    Analysis Mode (No Engine Moves)
-                </label>
-            </div>
-
-            <!-- Difficulty Control -->
-            <div class="control-group">
-                <label for="difficulty">Opponent Level:</label>
-                <select id="difficulty">
-                    <option value="2">Easy (Beginner)</option>
-                    <option value="6">Medium (Casual)</option>
-                    <option value="12">Hard (Club)</option>
-                    <option value="18" selected>Master (Pro)</option>
-                </select>
-            </div>
-
-            <!-- Analysis Depth Control -->
-            <div class="control-group">
-                <label for="analysisDepth">Analysis Depth:</label>
-                <select id="analysisDepth">
-                    <option value="10">Depth 10 (Fast)</option>
-                    <option value="15" selected>Depth 15 (Balanced)</option>
-                    <option value="20">Depth 20 (Deep)</option>
-                    <option value="25">Depth 25 (Very Deep)</option>
-                </select>
-            </div>
-
-            <!-- Visual Themes Panel -->
-            <div class="themes-panel">
-                <h3>Visual Settings</h3>
-
-                <!-- Dark/Light Mode Toggle -->
-                <div class="control-group">
-                    <label class="theme-toggle-label">
-                        <span>Dark Mode</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="darkModeToggle" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </label>
-                </div>
-
-                <!-- Board Theme -->
-                <div class="control-group">
-                    <label for="boardTheme">Board Theme:</label>
-                    <select id="boardTheme">
-                        <option value="brown">Brown (Classic)</option>
-                        <option value="blue">Blue</option>
-                        <option value="green">Green</option>
-                        <option value="gray">Gray</option>
-                        <option value="marble">Marble</option>
-                    </select>
-                </div>
-
-                <!-- Piece Set -->
-                <div class="control-group">
-                    <label for="pieceSet">Piece Set:</label>
-                    <select id="pieceSet">
-                        <option value="cburnett">Classic (Cburnett)</option>
-                        <option value="merida">Merida</option>
-                        <option value="alpha">Alpha</option>
-                        <option value="chess7">Chess7</option>
-                        <option value="companion">Companion</option>
-                        <option value="fantasy">Fantasy</option>
-                    </select>
-                </div>
-
-                <!-- Board Size -->
-                <div class="control-group">
-                    <label for="boardSize">Board Size: <span id="boardSizeValue">600px</span></label>
-                    <input type="range" id="boardSize" min="300" max="800" value="600" step="50">
-                </div>
-
-                <!-- Animation Speed -->
-                <div class="control-group">
-                    <label for="animationSpeed">Animation:</label>
-                    <select id="animationSpeed">
-                        <option value="instant">Instant</option>
-                        <option value="fast">Fast</option>
-                        <option value="normal" selected>Normal</option>
-                        <option value="slow">Slow</option>
-                    </select>
-                </div>
-
-                <!-- Sound Toggle -->
-                <div class="control-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="soundToggle" checked>
-                        Sound Effects
-                    </label>
-                </div>
-            </div>
-
-            <!-- Chess Clock Panel -->
-            <div class="chess-clock-panel" id="chessClockPanel">
-                <h3>
-                    <span>⏱️ Chess Clock</span>
-                    <label class="toggle-switch" style="margin: 0;">
-                        <input type="checkbox" id="clockEnabled">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </h3>
-                <div class="clock-display">
-                    <div class="clock-player" id="whiteClockPlayer">
-                        <div class="clock-player-label">White</div>
-                        <div class="clock-time" id="whiteClock">10:00</div>
+                <!-- ANALYSIS TAB -->
+                <div class="tab-panel" id="tab-analysis">
+                    <!-- Opening Information -->
+                    <div class="opening-panel">
+                        <div class="opening-header">
+                            <div id="opening-name" class="opening-name">Starting Position</div>
+                            <div class="opening-meta">
+                                <span id="opening-eco" class="opening-eco"></span>
+                                <span id="opening-category" class="opening-category"></span>
+                            </div>
+                        </div>
+                        <div id="opening-variations" class="opening-variations"></div>
                     </div>
-                    <div class="clock-player" id="blackClockPlayer">
-                        <div class="clock-player-label">Black</div>
-                        <div class="clock-time" id="blackClock">10:00</div>
+
+                    <!-- Analysis Tools -->
+                    <div class="analysis-panel">
+                        <h3>Analysis Tools</h3>
+                        <div class="analysis-controls">
+                            <button id="hintBtn" class="analysis-btn">💡 Get Hint</button>
+                            <button id="analyzeBtn" class="analysis-btn">🔍 Analyze</button>
+                        </div>
+
+                        <div id="bestMovesPanel" class="best-moves-panel" style="display: none;">
+                            <div class="best-moves-header">Top Moves:</div>
+                            <div id="bestMovesList" class="best-moves-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Critical Moments & Puzzles -->
+                    <div id="criticalMomentsPanel" class="critical-moments-panel" style="display: none;">
+                        <h3>Critical Moments</h3>
+                        <div id="criticalMomentsList" class="critical-moments-list"></div>
+                    </div>
+
+                    <div id="puzzlesPanel" class="puzzles-panel" style="display: none;">
+                        <h3>Generated Puzzles</h3>
+                        <div id="puzzlesList" class="puzzles-list"></div>
                     </div>
                 </div>
-                <div class="clock-controls">
-                    <select id="clockPreset" class="clock-preset-select">
-                        <optgroup label="Bullet">
-                            <option value="bullet_1">1+0</option>
-                            <option value="bullet_2">2+1</option>
-                        </optgroup>
-                        <optgroup label="Blitz">
-                            <option value="blitz_3">3+0</option>
-                            <option value="blitz_3_2">3+2</option>
-                            <option value="blitz_5">5+0</option>
-                            <option value="blitz_5_3">5+3</option>
-                        </optgroup>
-                        <optgroup label="Rapid">
-                            <option value="rapid_10" selected>10+0</option>
-                            <option value="rapid_10_5">10+5</option>
-                            <option value="rapid_15_10">15+10</option>
-                        </optgroup>
-                        <optgroup label="Classical">
-                            <option value="classical_30">30+0</option>
-                            <option value="classical_30_20">30+20</option>
-                        </optgroup>
-                        <optgroup label="Casual">
-                            <option value="unlimited">Unlimited</option>
-                        </optgroup>
-                    </select>
+
+                <!-- SETTINGS TAB -->
+                <div class="tab-panel" id="tab-settings">
+                    <div class="settings-section">
+                        <h4>Game Settings</h4>
+                        <div class="control-group">
+                            <label class="toggle-switch-label">
+                                <span>⏱️ Enable Clock</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="clockEnabled">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                            <select id="clockPreset" class="clock-preset-select">
+                                <option value="bullet_1">1+0 Bullet</option>
+                                <option value="blitz_3">3+0 Blitz</option>
+                                <option value="blitz_5">5+0 Blitz</option>
+                                <option value="rapid_10" selected>10+0 Rapid</option>
+                                <option value="classical_30">30+0 Classical</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showHints" checked>
+                                Pause & Explain Mistakes
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="analysisMode">
+                                Analysis Mode (No AI)
+                            </label>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="difficulty">Opponent Level:</label>
+                            <select id="difficulty">
+                                <option value="2">Easy</option>
+                                <option value="6">Medium</option>
+                                <option value="12">Hard</option>
+                                <option value="18" selected>Master</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="analysisDepth">Analysis Depth:</label>
+                            <select id="analysisDepth">
+                                <option value="10">Fast</option>
+                                <option value="15" selected>Balanced</option>
+                                <option value="20">Deep</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>Appearance</h4>
+                        <div class="control-group">
+                            <label class="toggle-switch-label">
+                                <span>🌙 Dark Mode</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="darkModeToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="boardTheme">Board:</label>
+                            <select id="boardTheme">
+                                <option value="brown">Brown</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="marble">Marble</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="pieceSet">Pieces:</label>
+                            <select id="pieceSet">
+                                <option value="cburnett">Classic</option>
+                                <option value="merida">Merida</option>
+                                <option value="chess7">Chess7</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="boardSize">Board Size: <span id="boardSizeValue">600px</span></label>
+                            <input type="range" id="boardSize" min="300" max="800" value="600" step="50">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="animationSpeed">Animation:</label>
+                            <select id="animationSpeed">
+                                <option value="instant">Instant</option>
+                                <option value="fast">Fast</option>
+                                <option value="normal" selected>Normal</option>
+                                <option value="slow">Slow</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="soundToggle" checked>
+                                Sound Effects
+                            </label>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Learning Dashboard Button -->
-            <button id="learningDashboardBtn" class="learning-btn">
-                📊 Learning Dashboard
-            </button>
-
-            <!-- Action Buttons -->
-            <div class="button-group">
-                <button id="undoBtn">Undo Move</button>
-                <button id="flipBtn">Play as Black</button>
-                <button id="resetBtn" class="primary-btn">New Game</button>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Hidden file input for PGN import -->
