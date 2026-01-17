@@ -15,7 +15,7 @@ body {
     background: #222;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .board {
@@ -154,22 +154,70 @@ body {
 }
 
 /* PIECE IMAGES */
-piece { background-size: 100%; background-repeat: no-repeat; background-position: center; }
-piece.pawn.white   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg'); }
-piece.knight.white { background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg'); }
-piece.bishop.white { background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg'); }
-piece.rook.white   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg'); }
-piece.queen.white  { background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg'); }
-piece.king.white   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'); }
-piece.pawn.black   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg'); }
-piece.knight.black { background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg'); }
-piece.bishop.black { background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg'); }
-piece.rook.black   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg'); }
-piece.queen.black  { background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg'); }
-piece.king.black   { background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'); }
+piece {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
-h2 { margin: 0 0 10px 0; color: #eee; }
-h3 { margin: 0; color: #eee; font-size: 1em; }
+piece.pawn.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg');
+}
+
+piece.knight.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg');
+}
+
+piece.bishop.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg');
+}
+
+piece.rook.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg');
+}
+
+piece.queen.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg');
+}
+
+piece.king.white {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg');
+}
+
+piece.pawn.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg');
+}
+
+piece.knight.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg');
+}
+
+piece.bishop.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg');
+}
+
+piece.rook.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg');
+}
+
+piece.queen.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg');
+}
+
+piece.king.black {
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg');
+}
+
+h2 {
+    margin: 0 0 10px 0;
+    color: #eee;
+}
+
+h3 {
+    margin: 0;
+    color: #eee;
+    font-size: 1em;
+}
 
 /* MOVE HISTORY PANEL */
 .move-history-panel {
@@ -438,7 +486,10 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-label { font-size: 0.9em; color: #bbb; }
+label {
+    font-size: 0.9em;
+    color: #bbb;
+}
 
 select {
     padding: 10px;
@@ -478,16 +529,33 @@ select {
     font-size: 1.1em;
 }
 
-.good { border-color: #4caf50; background: #2e3b2f; }
-.inaccuracy { border-color: #ffeb3b; color: #fffde7; background: #3b3a2e; }
-.mistake { border-color: #ff9800; background: #3b3229; }
-.blunder { border-color: #f44336; background: #3b2929; }
+.good {
+    border-color: #4caf50;
+    background: #2e3b2f;
+}
+
+.inaccuracy {
+    border-color: #ffeb3b;
+    color: #fffde7;
+    background: #3b3a2e;
+}
+
+.mistake {
+    border-color: #ff9800;
+    background: #3b3229;
+}
+
+.blunder {
+    border-color: #f44336;
+    background: #3b2929;
+}
 
 /* Continue Button */
 .continue-btn {
     width: 100%;
     padding: 10px;
-    background: #4caf50; /* Green */
+    background: #4caf50;
+    /* Green */
     color: white;
     border: none;
     border-radius: 4px;
@@ -495,7 +563,10 @@ select {
     cursor: pointer;
     margin-bottom: 10px;
 }
-.continue-btn:hover { background: #43a047; }
+
+.continue-btn:hover {
+    background: #43a047;
+}
 
 /* Analysis Panel */
 .analysis-panel {
@@ -770,12 +841,27 @@ select {
     transition: background 0.2s;
 }
 
-#undoBtn { grid-column: span 2; background: #4a4a4a; }
-#flipBtn { background: #4a4a4a; }
-#resetBtn { background: #2196f3; font-weight: bold; }
+#undoBtn {
+    grid-column: span 2;
+    background: #4a4a4a;
+}
 
-button:hover { background: #666; }
-#resetBtn:hover { background: #1976d2; }
+#flipBtn {
+    background: #4a4a4a;
+}
+
+#resetBtn {
+    background: #2196f3;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #666;
+}
+
+#resetBtn:hover {
+    background: #1976d2;
+}
 
 /* CSS Variables for animations */
 :root {
@@ -809,7 +895,7 @@ body.light-mode :root {
 
 body.light-mode .container {
     background: #f5f5f5;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 body.light-mode h2,
@@ -991,6 +1077,7 @@ body.light-mode .modal-header {
     0% {
         background-color: rgba(255, 255, 0, 0.8) !important;
     }
+
     100% {
         background-color: rgba(155, 199, 0, 0.41) !important;
     }
@@ -999,7 +1086,7 @@ body.light-mode .modal-header {
 /* Move animation */
 piece {
     transition: transform var(--animation-duration) ease-out,
-                opacity calc(var(--animation-duration) / 2) ease-out;
+        opacity calc(var(--animation-duration) / 2) ease-out;
 }
 
 /* Themes Panel */
@@ -1062,11 +1149,11 @@ piece {
     border-radius: 50%;
 }
 
-input:checked + .toggle-slider {
+input:checked+.toggle-slider {
     background-color: #2196f3;
 }
 
-input:checked + .toggle-slider:before {
+input:checked+.toggle-slider:before {
     transform: translateX(26px);
 }
 
@@ -1074,7 +1161,7 @@ body.light-mode .toggle-slider {
     background-color: #ccc;
 }
 
-body.light-mode input:checked + .toggle-slider {
+body.light-mode input:checked+.toggle-slider {
     background-color: #2196f3;
 }
 
@@ -1086,6 +1173,7 @@ input[type="range"] {
     background: #444;
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -1239,4 +1327,1132 @@ body,
 select,
 button {
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ==================== CHESS CLOCK ==================== */
+.chess-clock-panel {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+}
+
+.chess-clock-panel h3 {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clock-display {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.clock-player {
+    flex: 1;
+    background: #333;
+    border-radius: 6px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.clock-player.active {
+    background: #2c4a7c;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+}
+
+.clock-player.warning-low {
+    background: #3b3a2e;
+}
+
+.clock-player.warning-danger {
+    background: #3b3229;
+}
+
+.clock-player.warning-critical {
+    background: #3b2929;
+    animation: clock-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes clock-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.clock-player-label {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.clock-time {
+    font-size: 1.8em;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+.clock-time.low {
+    color: #ffeb3b;
+}
+
+.clock-time.danger {
+    color: #ff9800;
+}
+
+.clock-time.critical {
+    color: #f44336;
+}
+
+.clock-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.clock-preset-select {
+    flex: 1;
+    min-width: 120px;
+}
+
+.clock-btn {
+    padding: 8px 12px;
+    background: #4a4a4a;
+    color: white;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.2s;
+}
+
+.clock-btn:hover {
+    background: #555;
+}
+
+.clock-btn.start {
+    background: #4caf50;
+}
+
+.clock-btn.start:hover {
+    background: #43a047;
+}
+
+.clock-btn.pause {
+    background: #ff9800;
+}
+
+.clock-btn.pause:hover {
+    background: #f57c00;
+}
+
+/* ==================== LEARNING MODAL ==================== */
+.learning-modal {
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.learning-modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid #444;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.learning-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #444;
+}
+
+.learning-modal-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.learning-tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0 20px;
+    gap: 4px;
+    overflow-x: auto;
+}
+
+.learning-tab {
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.9em;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.learning-tab:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.learning-tab.active {
+    color: #4facfe;
+    border-bottom-color: #4facfe;
+}
+
+.learning-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* ==================== PROGRESS TAB ==================== */
+.progress-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.stat-icon {
+    font-size: 2em;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.progress-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.progress-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 1em;
+    color: #bbb;
+}
+
+.chart-container {
+    min-height: 200px;
+}
+
+.bar-chart {
+    display: flex;
+    gap: 10px;
+    height: 200px;
+}
+
+.chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.7em;
+    color: #666;
+    padding: 0 8px 20px 0;
+}
+
+.chart-bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    border-bottom: 1px solid #444;
+}
+
+.chart-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 40px;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s ease;
+}
+
+.chart-bar-label {
+    font-size: 0.6em;
+    color: #666;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.line-chart {
+    display: flex;
+    gap: 10px;
+    height: 150px;
+}
+
+.chart-line-area {
+    flex: 1;
+    position: relative;
+    border-bottom: 1px solid #444;
+    border-left: 1px solid #444;
+}
+
+.chart-line-area svg {
+    width: 100%;
+    height: 100%;
+}
+
+.current-rating-badge {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: #2196f3;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.recent-games-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.recent-game-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.game-date {
+    font-size: 0.85em;
+    color: #888;
+    min-width: 80px;
+}
+
+.game-stats {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.game-moves {
+    font-size: 0.85em;
+    color: #aaa;
+}
+
+.game-accuracy {
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.game-accuracy.good {
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.game-accuracy.average {
+    color: #ff9800;
+    background: rgba(255, 152, 0, 0.2);
+}
+
+.game-accuracy.bad {
+    color: #f44336;
+    background: rgba(244, 67, 54, 0.2);
+}
+
+.game-rating {
+    font-size: 0.85em;
+    color: #2196f3;
+}
+
+.game-breakdown {
+    display: flex;
+    gap: 8px;
+    font-size: 0.8em;
+}
+
+.good-count {
+    color: #4caf50;
+}
+
+.inaccuracy-count {
+    color: #ffeb3b;
+}
+
+.mistake-count {
+    color: #ff9800;
+}
+
+.blunder-count {
+    color: #f44336;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+    font-style: italic;
+}
+
+/* ==================== MISTAKES TAB ==================== */
+.mistakes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.mistakes-summary {
+    font-size: 0.9em;
+}
+
+.unreview-count {
+    color: #ff9800;
+    background: rgba(255, 152, 0, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.mistakes-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filter-select {
+    flex: 1;
+    padding: 10px;
+    background: #333;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 6px;
+}
+
+.mistakes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.mistake-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 14px;
+    border-left: 4px solid #555;
+}
+
+.mistake-item.inaccuracy {
+    border-left-color: #ffeb3b;
+}
+
+.mistake-item.mistake {
+    border-left-color: #ff9800;
+}
+
+.mistake-item.blunder {
+    border-left-color: #f44336;
+}
+
+.mistake-item.reviewed {
+    opacity: 0.7;
+}
+
+.mistake-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mistake-type {
+    font-size: 0.75em;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mistake-date {
+    font-size: 0.8em;
+    color: #888;
+}
+
+.reviewed-badge {
+    font-size: 0.75em;
+    color: #4caf50;
+    margin-left: auto;
+}
+
+.mistake-body {
+    margin-bottom: 10px;
+}
+
+.mistake-move {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.move-number {
+    color: #888;
+    font-size: 0.85em;
+}
+
+.player-move {
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.eval-loss {
+    color: #f44336;
+    font-size: 0.85em;
+}
+
+.best-move {
+    font-size: 0.9em;
+    color: #4caf50;
+}
+
+.mistake-theme {
+    font-size: 0.8em;
+    color: #888;
+    font-style: italic;
+}
+
+.mistake-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.review-btn,
+.load-position-btn {
+    padding: 6px 12px;
+    font-size: 0.8em;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.review-btn:hover:not(:disabled),
+.load-position-btn:hover {
+    background: #555;
+}
+
+.review-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==================== INSIGHTS TAB ==================== */
+.insights-section {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.insights-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.95em;
+    color: #aaa;
+}
+
+.trend-indicator {
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.trend-indicator.positive {
+    color: #4caf50;
+}
+
+.trend-indicator.negative {
+    color: #f44336;
+}
+
+.trend-label {
+    font-size: 0.5em;
+    color: #888;
+    font-weight: normal;
+}
+
+.weakness-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.weakness-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.weakness-rank {
+    color: #888;
+    font-size: 0.85em;
+    min-width: 30px;
+}
+
+.weakness-theme {
+    flex: 1;
+}
+
+.weakness-count {
+    color: #f44336;
+    font-size: 0.85em;
+}
+
+.recent-patterns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pattern-badge {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.recommendation-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(33, 150, 243, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #2196f3;
+}
+
+.rec-icon {
+    font-size: 1.5em;
+}
+
+.rec-content {
+    flex: 1;
+}
+
+.rec-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.rec-description {
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.insights-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.insight-stat {
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.insight-stat-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #4facfe;
+}
+
+.insight-stat-label {
+    font-size: 0.8em;
+    color: #888;
+}
+
+/* ==================== TRAINING TAB ==================== */
+.training-header {
+    margin-bottom: 20px;
+}
+
+.training-intro {
+    color: #888;
+    margin: 8px 0 0 0;
+}
+
+.training-exercises {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.exercise-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.exercise-theme {
+    font-weight: bold;
+    color: #2196f3;
+}
+
+.exercise-count {
+    font-size: 0.85em;
+    color: #888;
+}
+
+.exercise-description {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-bottom: 12px;
+}
+
+.exercise-positions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.position-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.position-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.position-number {
+    color: #888;
+    font-size: 0.85em;
+}
+
+.position-move {
+    flex: 1;
+}
+
+.position-loss {
+    color: #f44336;
+    font-size: 0.85em;
+}
+
+.no-exercises {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-exercises-icon {
+    font-size: 4em;
+    margin-bottom: 16px;
+}
+
+.no-exercises h4 {
+    margin: 0 0 8px 0;
+}
+
+.no-exercises p {
+    color: #888;
+    margin: 0;
+}
+
+/* ==================== ACHIEVEMENTS TAB ==================== */
+.achievements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.achievements-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.earned-count {
+    font-weight: bold;
+    color: #4facfe;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar.small {
+    width: 60px;
+    height: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.achievement-category {
+    margin-bottom: 24px;
+}
+
+.category-title {
+    margin: 0 0 12px 0;
+    font-size: 1em;
+    color: #aaa;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+}
+
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.achievement-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    transition: transform 0.2s;
+}
+
+.achievement-card:hover {
+    transform: translateY(-2px);
+}
+
+.achievement-card.earned {
+    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(0, 242, 254, 0.15));
+    border: 1px solid rgba(79, 172, 254, 0.3);
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+}
+
+.achievement-icon {
+    font-size: 2em;
+}
+
+.locked .achievement-icon {
+    filter: grayscale(100%);
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.achievement-desc {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.achievement-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-text {
+    font-size: 0.75em;
+    color: #4facfe;
+}
+
+.earned-date {
+    font-size: 0.75em;
+    color: #4caf50;
+}
+
+/* ==================== ACHIEVEMENT NOTIFICATION ==================== */
+.achievement-notification {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    width: 350px;
+    z-index: 3000;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #4facfe;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+    transition: right 0.5s ease;
+}
+
+.achievement-notification.show {
+    right: 20px;
+}
+
+.achievement-notification-content {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.notification-icon {
+    font-size: 3em;
+    animation: achievement-bounce 0.6s ease;
+}
+
+@keyframes achievement-bounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+.notification-text {
+    flex: 1;
+}
+
+.notification-title {
+    font-size: 0.75em;
+    color: #4facfe;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.notification-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.notification-desc {
+    font-size: 0.85em;
+    color: #888;
+}
+
+/* ==================== LEARNING BUTTON IN SIDEBAR ==================== */
+.learning-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.learning-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+}
+
+/* ==================== RATING BADGE ==================== */
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.rating-badge .rating-icon {
+    font-size: 1.1em;
+}
+
+/* ==================== LIGHT MODE ADJUSTMENTS ==================== */
+body.light-mode .chess-clock-panel,
+body.light-mode .learning-modal-content {
+    background: #fff;
+}
+
+body.light-mode .clock-player,
+body.light-mode .stat-card,
+body.light-mode .progress-section,
+body.light-mode .recent-game-item,
+body.light-mode .mistake-item,
+body.light-mode .insights-section,
+body.light-mode .exercise-card,
+body.light-mode .achievement-card {
+    background: #f5f5f5;
+}
+
+body.light-mode .learning-tabs {
+    background: #f0f0f0;
+}
+
+body.light-mode .learning-tab {
+    color: #666;
+}
+
+body.light-mode .learning-tab:hover {
+    color: #222;
+    background: #e0e0e0;
+}
+
+body.light-mode .learning-tab.active {
+    color: #2196f3;
+}
+
+body.light-mode .filter-select {
+    background: #fff;
+    color: #222;
+    border-color: #ccc;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+    .learning-modal-content {
+        width: 95%;
+        max-height: 90vh;
+        margin: 20px;
+    }
+
+    .learning-tabs {
+        padding: 0 10px;
+    }
+
+    .learning-tab {
+        padding: 10px 12px;
+        font-size: 0.8em;
+    }
+
+    .progress-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .achievement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .insights-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .achievement-notification {
+        width: calc(100% - 40px);
+        right: -100%;
+    }
+
+    .achievement-notification.show {
+        right: 20px;
+    }
 }

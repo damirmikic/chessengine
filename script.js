@@ -81,13 +81,40 @@ import {
 
 import { themeManager } from './themes.js';
 
+// Learning Features
+import {
+    initializeLearningDashboard,
+    showLearningDashboard,
+    recordAndNotify
+} from './learning-dashboard.js';
+
+import {
+    loadLearningData,
+    getAverageRating,
+    getLearningState
+} from './learning-tracker.js';
+
+// Chess Clock
+import {
+    initializeClock,
+    startClock,
+    pauseClock,
+    resetClock,
+    switchPlayer,
+    setActivePlayer,
+    getClockState,
+    isClockEnabled,
+    isClockRunning
+} from './chess-clock.js';
+
 /**
  * Application state
  */
 const appState = {
     previousEval: 0.3,
     gamePaused: false,
-    pendingUserMove: null
+    pendingUserMove: null,
+    clockEnabled: false
 };
 
 /**
@@ -97,6 +124,28 @@ async function initializeApp() {
     try {
         // Initialize theme manager and apply saved settings
         themeManager.applyAllSettings();
+
+        // Load learning data
+        loadLearningData();
+
+        // Initialize learning dashboard
+        initializeLearningDashboard({
+            onPositionLoad: (fen) => {
+                loadPosition(fen);
+                updateOpeningDisplay(getChess());
+            }
+        });
+
+        // Initialize chess clock
+        initializeClock({
+            preset: 'rapid_10',
+            onTimeUpdate: handleClockUpdate,
+            onTimeUp: handleTimeUp,
+            onWarning: handleClockWarning
+        });
+
+        // Update rating display
+        updateRatingDisplay();
 
         // Load opening database
         await loadOpeningsDatabase();
@@ -167,6 +216,9 @@ function setupEventListeners() {
     const analyzeBtn = document.getElementById('analyzeBtn');
     const analysisModeCheckbox = document.getElementById('analysisMode');
     const showPuzzlesBtn = document.getElementById('showPuzzlesBtn');
+    const learningDashboardBtn = document.getElementById('learningDashboardBtn');
+    const clockEnabledToggle = document.getElementById('clockEnabled');
+    const clockPresetSelect = document.getElementById('clockPreset');
 
     if (resetBtn) resetBtn.addEventListener('click', handleReset);
     if (undoBtn) undoBtn.addEventListener('click', handleUndo);
@@ -182,6 +234,16 @@ function setupEventListeners() {
     if (analyzeBtn) analyzeBtn.addEventListener('click', handleAnalyze);
     if (analysisModeCheckbox) analysisModeCheckbox.addEventListener('change', handleAnalysisModeToggle);
     if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
+    if (learningDashboardBtn) learningDashboardBtn.addEventListener('click', showLearningDashboard);
+
+    // Chess Clock controls
+    if (clockEnabledToggle) {
+        clockEnabledToggle.addEventListener('change', handleClockToggle);
+    }
+
+    if (clockPresetSelect) {
+        clockPresetSelect.addEventListener('change', handleClockPresetChange);
+    }
 
     // Theme controls
     const darkModeToggle = document.getElementById('darkModeToggle');
@@ -243,10 +305,6 @@ function setupEventListeners() {
     }, { once: true });
 }
 
-/**
- * Handles user moves from the board
- * @param {Object} moveData - Move information
- */
 function handleUserMove(moveData) {
     const { move, previousFen, currentFen } = moveData;
 
@@ -254,6 +312,14 @@ function handleUserMove(moveData) {
     if (isViewingHistory()) {
         showMessage('Return to current position to make moves');
         return;
+    }
+
+    // Handle clock
+    if (isClockEnabled()) {
+        if (!isClockRunning()) {
+            startClock();
+        }
+        switchPlayer();
     }
 
     // Hide continue button and unpause
@@ -364,6 +430,16 @@ function handleEngineBestMove(result) {
 
             updateOpeningDisplay(chess);
 
+            // Handle clock
+            if (isClockEnabled()) {
+                switchPlayer();
+            }
+
+            // Check if game is over
+            if (isGameOver()) {
+                handleGameOver();
+            }
+
             // Evaluate new position
             evaluatePosition(currentFen, 10, 'current');
 
@@ -456,12 +532,127 @@ function requestEngineMove() {
     findBestMove(currentFen, depth);
 }
 
+
+/**
+ * Handles game over state
+ */
+function handleGameOver() {
+    pauseClock();
+
+    // Record game session for learning
+    const moves = getMoves();
+    if (moves.length > 5) {
+        recordAndNotify(moves);
+        updateRatingDisplay();
+    }
+}
+
+/**
+ * Handles clock state updates
+ * @param {Object} state - Current clock state
+ */
+function handleClockUpdate(state) {
+    const whiteClock = document.getElementById('whiteClock');
+    const blackClock = document.getElementById('blackClock');
+    const whitePlayer = document.getElementById('whiteClockPlayer');
+    const blackPlayer = document.getElementById('blackClockPlayer');
+
+    if (whiteClock) {
+        whiteClock.textContent = state.whiteTimeFormatted;
+        whiteClock.className = `clock-time ${state.whiteWarning || ''}`;
+    }
+
+    if (blackClock) {
+        blackClock.textContent = state.blackTimeFormatted;
+        blackClock.className = `clock-time ${state.blackWarning || ''}`;
+    }
+
+    if (whitePlayer) {
+        whitePlayer.classList.toggle('active', state.activePlayer === 'white' && state.running);
+        whitePlayer.className = `clock-player ${state.activePlayer === 'white' && state.running ? 'active' : ''} ${state.whiteWarning ? 'warning-' + state.whiteWarning : ''}`;
+    }
+
+    if (blackPlayer) {
+        blackPlayer.classList.toggle('active', state.activePlayer === 'black' && state.running);
+        blackPlayer.className = `clock-player ${state.activePlayer === 'black' && state.running ? 'active' : ''} ${state.blackWarning ? 'warning-' + state.blackWarning : ''}`;
+    }
+}
+
+/**
+ * Handles when a player's time runs out
+ * @param {Object} result - Win/loss information
+ */
+function handleTimeUp(result) {
+    const winner = result.winner === 'white' ? 'White' : 'Black';
+    const loser = result.loser === 'white' ? 'White' : 'Black';
+
+    showMessage(`Time's up! ${winner} wins on time.`);
+    disableBoard();
+
+    handleGameOver();
+}
+
+/**
+ * Handles clock warnings
+ * @param {Object} warning - Warning details
+ */
+function handleClockWarning(warning) {
+    // We can add audio warnings here if needed
+}
+
+/**
+ * Handles clock toggle
+ * @param {Event} event - Toggle event
+ */
+function handleClockToggle(event) {
+    const enabled = event.target.checked;
+    if (enabled) {
+        initializeClock({
+            preset: document.getElementById('clockPreset')?.value || 'rapid_10',
+            onTimeUpdate: handleClockUpdate,
+            onTimeUp: handleTimeUp,
+            onWarning: handleClockWarning
+        });
+    } else {
+        pauseClock();
+    }
+}
+
+/**
+ * Handles clock preset change
+ * @param {Event} event - Selection event
+ */
+function handleClockPresetChange(event) {
+    initializeClock({
+        preset: event.target.value,
+        onTimeUpdate: handleClockUpdate,
+        onTimeUp: handleTimeUp,
+        onWarning: handleClockWarning
+    });
+}
+
+/**
+ * Updates the rating display in the UI
+ */
+function updateRatingDisplay() {
+    const ratingBadge = document.getElementById('ratingBadge');
+    const ratingValue = document.getElementById('ratingValue');
+
+    if (ratingBadge && ratingValue) {
+        const rating = getAverageRating();
+        ratingValue.textContent = `~${rating}`;
+        ratingBadge.style.display = 'inline-flex';
+    }
+}
+
 /**
  * Handles reset button click
  */
 function handleReset() {
     resetBoard();
     resetMoveHistory();
+    resetClock();
+
     appState.previousEval = 0.3;
     appState.gamePaused = false;
     appState.pendingUserMove = null;
@@ -475,6 +666,12 @@ function handleReset() {
     updateOpeningDisplay(getChess());
     showMessage('Make a move...');
     updateEvaluationBar(0.3);
+
+    // Sync clock toggle UI
+    const clockEnabledToggle = document.getElementById('clockEnabled');
+    if (clockEnabledToggle && clockEnabledToggle.checked) {
+        setActivePlayer(getUserColor());
+    }
 
     // If playing as black, engine moves first (unless in analysis mode)
     if (getUserColor() === 'black' && !isAnalysisMode()) {
