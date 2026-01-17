@@ -49,6 +49,7 @@ import {
     annotateLastMove,
     removeLastMove,
     updateLastMoveEvaluation,
+    resetMoveHistory,
     loadMoveHistory,
     getMoves,
     isViewingHistory,
@@ -629,13 +630,13 @@ function handleGameOver() {
     if (!appState.gameRecorded) {
         const moves = getMoves();
         if (moves.length > 5) {
-            recordAndNotify(moves);
+            const result = recordAndNotify(moves);
             updateRatingDisplay();
 
-            // Record in leaderboard (using approximate accuracy or just rating)
-            const stats = getProgressData();
-            const lastSession = stats.history[stats.history.length - 1];
-            if (lastSession) recordGameResult(lastSession.accuracy);
+            // Record in leaderboard
+            if (result && result.session) {
+                recordGameResult(result.session.accuracy);
+            }
 
             appState.gameRecorded = true;
         }
@@ -986,18 +987,19 @@ function handleImportPGN(event) {
     event.target.value = '';
 }
 
-/**
- * Handles move navigation (clicking on moves in history)
- * @param {number} moveIndex - Index of the move in history
- * @param {string} fen - FEN position at that move
- */
 function handleMoveNavigation(moveIndex, fen) {
     setNavigationMode(true);
+
+    const moves = getMoves();
+
+    // If fen is not provided, get it from history
+    if (!fen && moves[moveIndex]) {
+        fen = moves[moveIndex].fen;
+    }
 
     // Load the position
     loadPosition(fen);
 
-    const moves = getMoves();
     const isLatestMove = moveIndex === moves.length - 1;
 
     if (isLatestMove) {

@@ -162,6 +162,7 @@ class ThemeManager {
 
     applyPieceSet() {
         const setConfig = PIECE_SETS[this.settings.pieceSet];
+        const boardElement = document.getElementById('board');
 
         // Remove old piece set link
         const oldLink = document.getElementById('piece-set-css');
@@ -175,6 +176,16 @@ class ThemeManager {
         link.rel = 'stylesheet';
         link.href = setConfig.cssUrl;
         document.head.appendChild(link);
+
+        // Update board class for piece set
+        if (boardElement) {
+            // Remove any existing piece set classes
+            Object.keys(PIECE_SETS).forEach(setName => {
+                boardElement.classList.remove(setName);
+            });
+            // Add the new one
+            boardElement.classList.add(this.settings.pieceSet);
+        }
     }
 
     setDarkMode(enabled) {

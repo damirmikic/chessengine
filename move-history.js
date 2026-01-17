@@ -119,6 +119,15 @@ export function removeLastMove(singleMove = false) {
 }
 
 /**
+ * Resets the move history
+ */
+export function resetMoveHistory() {
+    historyState.moves = [];
+    historyState.currentMoveIndex = -1;
+    renderMoveList();
+}
+
+/**
  * Updates the evaluation of the last move
  * @param {number} evaluation - Evaluation score in pawns
  */
@@ -276,16 +285,6 @@ function scrollToCurrentMove() {
     if (currentMove) {
         currentMove.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-}
-
-/**
- * Resets the move history
- */
-export function resetMoveHistory() {
-    historyState.moves = [];
-    historyState.currentMoveIndex = -1;
-    historyState.isNavigating = false;
-    renderMoveList();
 }
 
 /**
