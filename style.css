@@ -200,12 +200,144 @@ body {
     border-bottom: 1px solid #333;
 }
 
-.settings-section h4 {
+.settings-section h4,
+.community-section h4 {
     margin: 0 0 12px 0;
     color: #aaa;
     font-size: 0.8em;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.section-hint {
+    font-size: 0.75em;
+    color: #666;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* Online Status */
+.online-status {
+    font-size: 0.75em;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.online-status.disconnected {
+    background: #331a1a;
+    color: #ff6b6b;
+    border: 1px solid #4a1a1a;
+}
+
+.online-status.connecting {
+    background: #33331a;
+    color: #fcc419;
+    border: 1px solid #4a4a1a;
+}
+
+.online-status.connected {
+    background: #1a331a;
+    color: #51cf66;
+    border: 1px solid #1a4a1a;
+}
+
+/* Peer ID Container */
+.id-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #111;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #333;
+}
+
+.id-container code {
+    flex: 1;
+    font-family: 'Monaco', 'Consolas', monospace;
+    color: #4caf50;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+}
+
+.connect-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.connect-input-group input {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: white;
+    padding: 10px;
+    font-size: 0.85em;
+}
+
+.connect-input-group input:focus {
+    border-color: #4caf50;
+    outline: none;
+}
+
+/* Leaderboard */
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.leaderboard-item {
+    background: #252525;
+    padding: 12px 15px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #333;
+}
+
+.leaderboard-rank {
+    font-weight: 800;
+    color: #666;
+    width: 30px;
+    font-size: 0.9em;
+}
+
+.leaderboard-name {
+    flex: 1;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.leaderboard-score {
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.community-section {
+    margin-bottom: 25px;
+}
+
+.danger-btn {
+    background: #c92a2a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    width: 100%;
+}
+
+.danger-btn:hover {
+    background: #e03131;
 }
 
 .button-group.compact {

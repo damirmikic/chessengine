@@ -58,12 +58,20 @@ import {
 import {
     saveGame,
     loadGame,
+    getSavedGames,
     exportToPGN,
     importFromPGN,
     downloadPGN,
     showLoadGameModal,
     hideLoadGameModal
 } from './game-manager.js';
+
+import {
+    initializeMultiplayer,
+    sendMove,
+    getMultiplayerState,
+    recordGameResult
+} from './multiplayer.js';
 
 import {
     displayBestMoves,
@@ -91,7 +99,8 @@ import {
 import {
     loadLearningData,
     getAverageRating,
-    getLearningState
+    getLearningState,
+    getProgressData
 } from './learning-tracker.js';
 
 // Chess Clock
@@ -190,6 +199,29 @@ async function initializeApp() {
         // Set up UI event listeners
         setupEventListeners();
         setupTabs();
+
+        // Initialize multiplayer
+        initializeMultiplayer({
+            onLocalModeToggle: (enabled) => {
+                showMessage(enabled ? 'Local Play Enabled' : 'Single Player Enabled');
+                if (!enabled && getChess().turn() !== getUserColor().charAt(0)) {
+                    requestEngineMove();
+                }
+            },
+            onConnected: (id) => showMessage(`Connected to ${id}`),
+            onDisconnected: () => showMessage('Opponent disconnected'),
+            onColorAssigned: (color) => {
+                const flipBtn = document.getElementById('flipBtn');
+                if (getUserColor() !== color) handleFlip();
+                showMessage(`You are playing as ${color}`);
+            },
+            onRemoteMove: (move) => {
+                performEngineMove(move.from + move.to + (move.promotion || ''));
+                handleEngineBestMove({ move: move.from + move.to + (move.promotion || ''), evaluation: 0 });
+            },
+            onResetRequestAccept: () => handleReset(),
+            onTabSwitch: (tabId) => switchTab(tabId)
+        });
 
         // Update opening display
         updateOpeningDisplay(getChess());
@@ -360,6 +392,12 @@ function handleUserMove(moveData) {
         return;
     }
 
+    // If in multiplayer mode, send move to peer
+    const multiState = getMultiplayerState();
+    if (multiState.connected) {
+        sendMove(moveData.move);
+    }
+
     // Handle clock
     if (isClockEnabled()) {
         if (!isClockRunning()) {
@@ -372,13 +410,19 @@ function handleUserMove(moveData) {
     toggleContinueButton(false);
     appState.gamePaused = false;
 
-    // Add move to history (evaluation will be updated later)
+    // Add move to history
     const chess = getChess();
     const turn = chess.turn();
-    addMove(move.san, null, currentFen, turn === 'w' ? 'b' : 'w'); // Color is previous turn
+    addMove(move.san, null, currentFen, turn === 'w' ? 'b' : 'w');
 
     // Update opening display
     updateOpeningDisplay(chess);
+
+    // Don't request engine move if in local multiplayer or online multiplayer
+    if (multiState.isLocalMode || multiState.connected) {
+        enableBoard();
+        return;
+    }
 
     // Show analyzing message
     showAnalyzing('Analyzing...');
@@ -587,6 +631,12 @@ function handleGameOver() {
         if (moves.length > 5) {
             recordAndNotify(moves);
             updateRatingDisplay();
+
+            // Record in leaderboard (using approximate accuracy or just rating)
+            const stats = getProgressData();
+            const lastSession = stats.history[stats.history.length - 1];
+            if (lastSession) recordGameResult(lastSession.accuracy);
+
             appState.gameRecorded = true;
         }
     }

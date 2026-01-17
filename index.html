@@ -15,6 +15,8 @@
         href="https://cdn.jsdelivr.net/gh/lichess-org/lila@master/public/piece-css/cburnett.css">
 
     <link rel="stylesheet" href="style.css">
+    <!-- PeerJS for WebRTC -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 
 <body>
@@ -56,6 +58,7 @@
                 <button class="sidebar-tab active" data-tab="play">🎮 Play</button>
                 <button class="sidebar-tab" data-tab="analysis">🧠 Analysis</button>
                 <button class="sidebar-tab" data-tab="settings">⚙️ Settings</button>
+                <button class="sidebar-tab" data-tab="community">👥 Community</button>
             </div>
 
             <!-- Tab Content Area -->
@@ -243,6 +246,61 @@
                                 <input type="checkbox" id="soundToggle" checked>
                                 Sound Effects
                             </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMMUNITY TAB -->
+                <div class="tab-panel" id="tab-community">
+                    <div class="community-section">
+                        <h4>Local Play</h4>
+                        <div class="control-group">
+                            <label class="toggle-switch-label">
+                                <span>👥 Pass & Play Mode</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="localMultiplayer">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </label>
+                            <p class="section-hint">Play against a friend on the same device. Engine moves are disabled.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="community-section">
+                        <h4>Online Multiplayer (WebRTC)</h4>
+                        <div id="onlineStatus" class="online-status disconnected">Disconnected</div>
+
+                        <div class="multiplayer-controls">
+                            <div id="connectionPanel">
+                                <p class="section-hint">Your Peer ID:</p>
+                                <div class="id-container">
+                                    <code id="myPeerId">---</code>
+                                    <button id="copyIdBtn" class="icon-btn" title="Copy ID">📋</button>
+                                </div>
+
+                                <div class="connect-input-group">
+                                    <input type="text" id="remotePeerId" placeholder="Friend's Peer ID">
+                                    <button id="connectBtn" class="primary-btn">Connect</button>
+                                </div>
+                                <button id="shareLinkBtn" class="secondary-btn" style="margin-top: 10px; width: 100%;">
+                                    🔗 Copy Challenge Link
+                                </button>
+                            </div>
+
+                            <div id="activeConnectionPanel" style="display: none;">
+                                <div class="opponent-info">
+                                    Connected to: <span id="connectedPeerId">---</span>
+                                </div>
+                                <button id="disconnectBtn" class="danger-btn">Disconnect</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="community-section">
+                        <h4>Local Leaderboard</h4>
+                        <div id="leaderboardList" class="leaderboard-list">
+                            <div class="leaderboard-empty">No games recorded yet</div>
                         </div>
                     </div>
                 </div>
