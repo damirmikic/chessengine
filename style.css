@@ -2771,6 +2771,390 @@ body.light-mode .filter-select {
     border-color: #ccc;
 }
 
+/* ==================== ENGINE SELECTOR ==================== */
+.engine-selector-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.engine-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-primary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.engine-option:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+}
+
+.engine-option input[type="radio"] {
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.engine-option input[type="radio"]:checked + .engine-info {
+    color: var(--accent);
+}
+
+.engine-info {
+    flex: 1;
+    transition: color 0.3s;
+}
+
+.engine-name {
+    font-weight: 600;
+    font-size: 1em;
+    margin-bottom: 4px;
+}
+
+.engine-description {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.cloud-settings {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.cloud-settings .control-group {
+    margin-bottom: 12px;
+}
+
+.cloud-settings input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+}
+
+.privacy-notice {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+}
+
+.privacy-notice small {
+    color: var(--text-secondary);
+    font-size: 0.8em;
+    line-height: 1.4;
+}
+
+.engine-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.status-indicator {
+    font-size: 0.6em;
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.connected {
+    color: #4caf50;
+}
+
+.status-indicator.disconnected {
+    color: #f44336;
+}
+
+.status-indicator.connecting {
+    color: #ff9800;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ==================== MATE DETECTION ALERT ==================== */
+.mate-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    animation: mateAlertPulse 1s ease-in-out;
+}
+
+@keyframes mateAlertPulse {
+    0% { transform: scale(0.95); opacity: 0; }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.mate-icon {
+    font-size: 2em;
+    animation: rotateMate 2s infinite;
+}
+
+@keyframes rotateMate {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+}
+
+.mate-info {
+    flex: 1;
+}
+
+.mate-title {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.mate-side {
+    font-size: 0.9em;
+    color: #333;
+    font-weight: 500;
+}
+
+/* ==================== WIN PROBABILITY ==================== */
+.win-probability-panel {
+    padding: 15px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+}
+
+.win-prob-header {
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.win-prob-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.win-prob-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.win-prob-label.white {
+    color: #fff;
+}
+
+.win-prob-label.black {
+    color: #aaa;
+}
+
+.win-prob-bar-container {
+    display: flex;
+    height: 30px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.win-prob-bar {
+    transition: width 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.win-prob-bar.white {
+    background: linear-gradient(90deg, #f0f0f0 0%, #ffffff 100%);
+    color: #333;
+}
+
+.win-prob-bar.black {
+    background: linear-gradient(90deg, #2c2c2c 0%, #1a1a1a 100%);
+    color: #fff;
+}
+
+/* ==================== STREAMING ANALYSIS ==================== */
+.streaming-analysis-panel {
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.streaming-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.cloud-badge {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.depth-progress {
+    margin-bottom: 12px;
+}
+
+.depth-label {
+    font-size: 0.85em;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2196f3 0%, #64b5f6 100%);
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.streaming-eval {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+}
+
+.eval-label {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+.eval-value {
+    font-size: 1.2em;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.eval-value.positive {
+    color: #4caf50;
+}
+
+.eval-value.negative {
+    color: #f44336;
+}
+
+.eval-value.neutral {
+    color: var(--text-primary);
+}
+
+.streaming-continuation {
+    margin-top: 10px;
+}
+
+.continuation-label {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.continuation-moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    padding: 8px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    min-height: 32px;
+}
+
+.continuation-move {
+    background: rgba(33, 150, 243, 0.2);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #64b5f6;
+    font-weight: 500;
+}
+
+/* ==================== LIGHT MODE OVERRIDES ==================== */
+body.light-mode .engine-option {
+    background: #fff;
+}
+
+body.light-mode .cloud-settings {
+    background: #f5f5f5;
+}
+
+body.light-mode .engine-status {
+    background: #f5f5f5;
+}
+
+body.light-mode .win-probability-panel {
+    background: #fff;
+}
+
+body.light-mode .streaming-analysis-panel {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.08) 0%, rgba(33, 150, 243, 0.03) 100%);
+}
+
+body.light-mode .streaming-eval,
+body.light-mode .continuation-moves {
+    background: #f5f5f5;
+}
+
+body.light-mode .progress-bar-container {
+    background: #e0e0e0;
+}
+
+body.light-mode .win-prob-bar.white {
+    background: linear-gradient(90deg, #ffffff 0%, #f5f5f5 100%);
+    color: #1a1a1a;
+}
+
+body.light-mode .win-prob-bar.black {
+    background: linear-gradient(90deg, #424242 0%, #1a1a1a 100%);
+}
+
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     .learning-modal-content {

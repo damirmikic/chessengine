@@ -3,15 +3,7 @@
  * Orchestrates the chess board, engine, and analysis modules
  */
 
-import {
-    initializeEngine,
-    evaluatePosition,
-    findBestMove,
-    getEngineState,
-    isEngineReady,
-    resetEngineStatus,
-    analyzeWithMultiPv
-} from './chess-engine.js';
+import EngineManager from './engine-manager.js';
 
 import {
     initializeBoard,
@@ -118,6 +110,11 @@ import {
 } from './chess-clock.js';
 
 /**
+ * Engine Manager Instance
+ */
+const engineManager = new EngineManager();
+
+/**
  * Application state
  */
 const appState = {
@@ -173,18 +170,28 @@ async function initializeApp() {
             return;
         }
 
-        // Initialize engine
-        const engineInitialized = await initializeEngine({
+        // Initialize engine with stored preference
+        const preferredEngine = EngineManager.getStoredPreference();
+        updateEngineStatusUI('connecting', preferredEngine);
+
+        const engineInitialized = await engineManager.initialize(preferredEngine, {
             onReady: () => {
                 showMessage('Make a move to get coaching...');
                 updateEvaluationBar(0.3);
+                updateEngineStatusUI('connected', engineManager.getEngineType());
             },
             onBestMove: handleEngineBestMove,
             onEvaluation: handleEngineEvaluation,
             onMultiPv: handleMultiPvUpdate,
+            onStreamingUpdate: handleStreamingUpdate,
+            onCloudMultiPv: handleCloudMultiPv,
             onError: (error) => {
-                showMessage('Engine error. Please refresh the page.');
+                const message = error.fallback
+                    ? 'Cloud engine unavailable. Using local Stockfish.'
+                    : 'Engine error. Please refresh the page.';
+                showMessage(message);
                 console.error('Engine error:', error);
+                updateEngineStatusUI(error.fallback ? 'connected' : 'disconnected', engineManager.getEngineType());
             }
         });
 
@@ -378,6 +385,64 @@ function setupEventListeners() {
         });
     }
 
+    // Engine selector controls
+    const engineLocalRadio = document.getElementById('engineLocal');
+    const engineCloudRadio = document.getElementById('engineCloud');
+    const cloudSettings = document.getElementById('cloudSettings');
+    const cloudDepthSlider = document.getElementById('cloudDepth');
+    const cloudDepthValue = document.getElementById('cloudDepthValue');
+    const cloudVariantsSlider = document.getElementById('cloudVariants');
+    const cloudVariantsValue = document.getElementById('cloudVariantsValue');
+
+    // Set initial state based on current engine
+    const currentEngineType = engineManager.getEngineType();
+    if (engineLocalRadio && engineCloudRadio) {
+        if (currentEngineType === 'cloud') {
+            engineCloudRadio.checked = true;
+            if (cloudSettings) cloudSettings.style.display = 'block';
+        } else {
+            engineLocalRadio.checked = true;
+            if (cloudSettings) cloudSettings.style.display = 'none';
+        }
+    }
+
+    // Handle engine switching
+    if (engineLocalRadio) {
+        engineLocalRadio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                handleEngineSwitching('local');
+                if (cloudSettings) cloudSettings.style.display = 'none';
+            }
+        });
+    }
+
+    if (engineCloudRadio) {
+        engineCloudRadio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                handleEngineSwitching('cloud');
+                if (cloudSettings) cloudSettings.style.display = 'block';
+            }
+        });
+    }
+
+    // Cloud engine depth control
+    if (cloudDepthSlider && cloudDepthValue) {
+        cloudDepthSlider.addEventListener('input', (e) => {
+            const depth = e.target.value;
+            cloudDepthValue.textContent = depth;
+            engineManager.setDepth(parseInt(depth));
+        });
+    }
+
+    // Cloud engine variants control
+    if (cloudVariantsSlider && cloudVariantsValue) {
+        cloudVariantsSlider.addEventListener('input', (e) => {
+            const variants = e.target.value;
+            cloudVariantsValue.textContent = variants;
+            engineManager.setVariants(parseInt(variants));
+        });
+    }
+
     // Enable audio on first user interaction
     document.addEventListener('click', () => {
         themeManager.enableAudio();
@@ -429,7 +494,7 @@ function handleUserMove(moveData) {
     showAnalyzing('Analyzing...');
 
     // Request evaluation of the new position
-    evaluatePosition(currentFen, 12, 'current');
+    engineManager.evaluatePosition(currentFen, 12, 'current');
 
     // After engine has time to evaluate, analyze the move
     setTimeout(() => {
@@ -444,7 +509,7 @@ function handleUserMove(moveData) {
  * @param {string} currentFen - FEN after the move
  */
 function analyzeUserMove(move, previousFen, currentFen) {
-    const engineState = getEngineState();
+    const engineState = engineManager.getEngineState();
     const currentEval = engineState.currentEval;
 
     // Calculate evaluation loss
@@ -475,7 +540,7 @@ function analyzeUserMove(move, previousFen, currentFen) {
         };
 
         // Find best move in the previous position
-        evaluatePosition(previousFen, 12, 'hint');
+        engineManager.evaluatePosition(previousFen, 12, 'hint');
 
     } else {
         // Good move or hints disabled - show analysis and continue
@@ -534,23 +599,23 @@ function handleEngineBestMove(result) {
             }
 
             // Evaluate new position
-            evaluatePosition(currentFen, 10, 'current');
+            engineManager.evaluatePosition(currentFen, 10, 'current');
 
             // Store evaluation for the engine's move (will be updated when evaluation completes)
             setTimeout(() => {
-                const engineState = getEngineState();
+                const engineState = engineManager.getEngineState();
                 updateLastMoveEvaluation(engineState.currentEval);
                 appState.previousEval = engineState.currentEval;
             }, 500);
         }
-        resetEngineStatus();
+        engineManager.stopAnalysis();
 
     } else if (status === 'finding_hint') {
         // Engine found the best move (hint)
         if (appState.pendingUserMove) {
             completeUserMoveAnalysis(move, pv);
         }
-        resetEngineStatus();
+        engineManager.stopAnalysis();
     }
 }
 
@@ -607,7 +672,7 @@ function handleEngineEvaluation(score, pv) {
  * Requests the engine to make a move
  */
 function requestEngineMove() {
-    if (!isEngineReady()) {
+    if (!engineManager.getEngineState() || engineManager.getEngineState().status === 'error') {
         console.error('Engine not ready');
         return;
     }
@@ -616,7 +681,7 @@ function requestEngineMove() {
     const depth = levelSelect ? parseInt(levelSelect.value) : 12;
     const currentFen = getCurrentFen();
 
-    findBestMove(currentFen, depth);
+    engineManager.findBestMove(currentFen, depth);
 }
 
 
@@ -780,7 +845,7 @@ function handleReset() {
  * Handles undo button click
  */
 function handleUndo() {
-    const engineState = getEngineState();
+    const engineState = engineManager.getEngineState();
 
     // Don't allow undo during engine processing
     if (engineState.status === 'playing' || engineState.status === 'evaluating_current') {
@@ -804,7 +869,7 @@ function handleUndo() {
 
     // Re-evaluate position
     const currentFen = getCurrentFen();
-    evaluatePosition(currentFen, 10, 'current');
+    engineManager.evaluatePosition(currentFen, 10, 'current');
 }
 
 /**
@@ -1019,7 +1084,7 @@ function handleMoveNavigation(moveIndex, fen) {
  * Handles hint button click
  */
 function handleHint() {
-    if (!isEngineReady()) {
+    if (!engineManager.getEngineState() || engineManager.getEngineState().status === 'error') {
         showMessage('Engine not ready');
         return;
     }
@@ -1031,14 +1096,14 @@ function handleHint() {
     showAnalyzing('Finding best move...');
 
     // Analyze with multipv to get top moves
-    analyzeWithMultiPv(currentFen, depth, 3);
+    engineManager.analyzeWithMultiPv(currentFen, depth, 3);
 }
 
 /**
  * Handles analyze button click
  */
 function handleAnalyze() {
-    if (!isEngineReady()) {
+    if (!engineManager.getEngineState() || engineManager.getEngineState().status === 'error') {
         showMessage('Engine not ready');
         return;
     }
@@ -1050,7 +1115,7 @@ function handleAnalyze() {
     showAnalyzing(`Analyzing position (depth ${depth})...`);
 
     // Analyze with multipv to show top 3 moves
-    analyzeWithMultiPv(currentFen, depth, 3);
+    engineManager.analyzeWithMultiPv(currentFen, depth, 3);
 
     // Also detect critical moments in the current game
     const moves = getMoves();
@@ -1082,6 +1147,224 @@ function handleAnalysisModeToggle(event) {
 function handleMultiPvUpdate(bestMoves) {
     const currentFen = getCurrentFen();
     displayBestMoves(bestMoves, currentFen);
+}
+
+/**
+ * Handles streaming analysis updates (cloud engine only)
+ * @param {Object} data - Streaming analysis data
+ */
+function handleStreamingUpdate(data) {
+    if (!engineManager.isCloudEngine()) {
+        return;
+    }
+
+    // Show streaming panel
+    const streamingPanel = document.getElementById('streamingAnalysis');
+    if (streamingPanel) {
+        streamingPanel.style.display = 'block';
+    }
+
+    // Update depth progress
+    const currentDepthEl = document.getElementById('currentDepth');
+    const maxDepthEl = document.getElementById('maxDepth');
+    const depthProgressEl = document.getElementById('depthProgress');
+
+    if (currentDepthEl && data.depth) {
+        currentDepthEl.textContent = data.depth;
+    }
+    if (maxDepthEl) {
+        const maxDepth = engineManager.getEngineState().depth || 18;
+        maxDepthEl.textContent = maxDepth;
+    }
+    if (depthProgressEl && data.depth) {
+        const maxDepth = engineManager.getEngineState().depth || 18;
+        const progress = (data.depth / maxDepth) * 100;
+        depthProgressEl.style.width = `${progress}%`;
+    }
+
+    // Update evaluation
+    const streamingEvalEl = document.getElementById('streamingEval');
+    if (streamingEvalEl && data.score !== undefined) {
+        const evalValue = (data.score / 100).toFixed(2);
+        const sign = data.score > 0 ? '+' : '';
+        streamingEvalEl.textContent = `${sign}${evalValue}`;
+
+        // Add color class
+        streamingEvalEl.className = 'eval-value';
+        if (data.score > 30) {
+            streamingEvalEl.classList.add('positive');
+        } else if (data.score < -30) {
+            streamingEvalEl.classList.add('negative');
+        } else {
+            streamingEvalEl.classList.add('neutral');
+        }
+    }
+
+    // Update continuation
+    const streamingContinuationEl = document.getElementById('streamingContinuation');
+    if (streamingContinuationEl && data.pv) {
+        const moves = data.pv.split(' ').slice(0, 6); // Show first 6 moves
+        streamingContinuationEl.innerHTML = moves
+            .map(move => `<span class="continuation-move">${move}</span>`)
+            .join(' ');
+    }
+
+    // Update win probability if available
+    if (data.winChance !== undefined) {
+        updateWinProbability(data.winChance);
+    }
+
+    // Check for mate
+    if (data.mate !== null && data.mate !== undefined) {
+        displayMateAlert(data.mate);
+    }
+}
+
+/**
+ * Handles cloud engine multi-PV updates with extended data
+ * @param {Object} data - Cloud multi-PV data
+ */
+function handleCloudMultiPv(data) {
+    if (!engineManager.isCloudEngine()) {
+        return;
+    }
+
+    // Update win probability
+    if (data.winChance !== undefined) {
+        updateWinProbability(data.winChance);
+    }
+
+    // Check for mate
+    if (data.mate !== null && data.mate !== undefined) {
+        displayMateAlert(data.mate);
+    }
+}
+
+/**
+ * Updates win probability display
+ * @param {number} winChance - Win chance percentage (0-100, white's perspective)
+ */
+function updateWinProbability(winChance) {
+    const winProbPanel = document.getElementById('winProbability');
+    if (!winProbPanel) {
+        return;
+    }
+
+    // Show panel
+    winProbPanel.style.display = 'block';
+
+    // Update percentages
+    const whitePercent = winChance.toFixed(1);
+    const blackPercent = (100 - winChance).toFixed(1);
+
+    const whitePercentEl = document.getElementById('whiteWinPercent');
+    const blackPercentEl = document.getElementById('blackWinPercent');
+    const whiteBarEl = document.getElementById('whiteWinBar');
+    const blackBarEl = document.getElementById('blackWinBar');
+
+    if (whitePercentEl) whitePercentEl.textContent = `${whitePercent}%`;
+    if (blackPercentEl) blackPercentEl.textContent = `${blackPercent}%`;
+    if (whiteBarEl) whiteBarEl.style.width = `${whitePercent}%`;
+    if (blackBarEl) blackBarEl.style.width = `${blackPercent}%`;
+}
+
+/**
+ * Displays mate alert
+ * @param {number} mateInMoves - Moves until mate (positive for white, negative for black)
+ */
+function displayMateAlert(mateInMoves) {
+    const mateAlert = document.getElementById('mateAlert');
+    if (!mateAlert || mateInMoves === null) {
+        return;
+    }
+
+    const moves = Math.abs(mateInMoves);
+    const side = mateInMoves > 0 ? 'White' : 'Black';
+
+    const mateInMovesEl = document.getElementById('mateInMoves');
+    const mateSideEl = document.getElementById('mateSide');
+
+    if (mateInMovesEl) mateInMovesEl.textContent = moves;
+    if (mateSideEl) mateSideEl.textContent = `${side} is winning`;
+
+    mateAlert.style.display = 'flex';
+
+    // Hide after 10 seconds
+    setTimeout(() => {
+        mateAlert.style.display = 'none';
+    }, 10000);
+}
+
+/**
+ * Updates engine status UI
+ * @param {string} status - Status ('connected', 'disconnected', 'connecting')
+ * @param {string} type - Engine type ('local' or 'cloud')
+ */
+function updateEngineStatusUI(status, type) {
+    const statusEl = document.getElementById('engineStatus');
+    if (!statusEl) {
+        return;
+    }
+
+    const indicator = statusEl.querySelector('.status-indicator');
+    const text = statusEl.querySelector('.status-text');
+
+    if (indicator) {
+        indicator.className = `status-indicator ${status}`;
+        if (status === 'connected') {
+            indicator.textContent = '🟢';
+        } else if (status === 'connecting') {
+            indicator.textContent = '🟡';
+        } else {
+            indicator.textContent = '🔴';
+        }
+    }
+
+    if (text) {
+        const engineName = type === 'cloud' ? 'Cloud API' : 'Local Stockfish';
+        const statusText = status === 'connected' ? 'Ready' :
+                          status === 'connecting' ? 'Connecting...' : 'Disconnected';
+        text.textContent = `Engine: ${engineName} (${statusText})`;
+    }
+}
+
+/**
+ * Handles engine switching
+ * @param {string} newType - New engine type ('local' or 'cloud')
+ */
+async function handleEngineSwitching(newType) {
+    try {
+        updateEngineStatusUI('connecting', newType);
+        showMessage(`Switching to ${newType} engine...`);
+
+        await engineManager.switchEngine(newType);
+
+        updateEngineStatusUI('connected', newType);
+        showMessage(`${newType === 'cloud' ? 'Cloud' : 'Local'} engine ready!`);
+
+        // Hide/show streaming panel based on engine type
+        const streamingPanel = document.getElementById('streamingAnalysis');
+        if (streamingPanel) {
+            streamingPanel.style.display = newType === 'cloud' ? 'block' : 'none';
+        }
+
+        // Hide win probability if switching to local
+        if (newType === 'local') {
+            const winProbPanel = document.getElementById('winProbability');
+            if (winProbPanel) {
+                winProbPanel.style.display = 'none';
+            }
+            const mateAlert = document.getElementById('mateAlert');
+            if (mateAlert) {
+                mateAlert.style.display = 'none';
+            }
+        }
+
+    } catch (error) {
+        console.error('Failed to switch engine:', error);
+        showMessage('Failed to switch engine. Please try again.');
+        updateEngineStatusUI('disconnected', newType);
+    }
 }
 
 // Initialize application when DOM is ready
