@@ -106,6 +106,56 @@
 
                 <!-- ANALYSIS TAB -->
                 <div class="tab-panel" id="tab-analysis">
+                    <!-- Mate Detection Alert -->
+                    <div id="mateAlert" class="mate-alert" style="display: none;">
+                        <div class="mate-icon">🎯</div>
+                        <div class="mate-info">
+                            <div class="mate-title">Mate in <span id="mateInMoves">0</span>!</div>
+                            <div class="mate-side" id="mateSide">White is winning</div>
+                        </div>
+                    </div>
+
+                    <!-- Win Probability Display -->
+                    <div id="winProbability" class="win-probability-panel" style="display: none;">
+                        <div class="win-prob-header">Win Probability</div>
+                        <div class="win-prob-bars">
+                            <div class="win-prob-label white">
+                                <span>White</span>
+                                <span id="whiteWinPercent">50%</span>
+                            </div>
+                            <div class="win-prob-bar-container">
+                                <div class="win-prob-bar white" id="whiteWinBar" style="width: 50%"></div>
+                                <div class="win-prob-bar black" id="blackWinBar" style="width: 50%"></div>
+                            </div>
+                            <div class="win-prob-label black">
+                                <span>Black</span>
+                                <span id="blackWinPercent">50%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streaming Analysis Panel -->
+                    <div id="streamingAnalysis" class="streaming-analysis-panel" style="display: none;">
+                        <div class="streaming-header">
+                            <span>🔄 Live Analysis</span>
+                            <span class="cloud-badge">Cloud</span>
+                        </div>
+                        <div class="depth-progress">
+                            <div class="depth-label">Depth: <span id="currentDepth">0</span>/<span id="maxDepth">18</span></div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="depthProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="streaming-eval">
+                            <div class="eval-label">Evaluation:</div>
+                            <div class="eval-value" id="streamingEval">+0.00</div>
+                        </div>
+                        <div class="streaming-continuation">
+                            <div class="continuation-label">Best line:</div>
+                            <div class="continuation-moves" id="streamingContinuation">-</div>
+                        </div>
+                    </div>
+
                     <!-- Opening Information -->
                     <div class="opening-panel">
                         <div class="opening-header">
@@ -146,6 +196,50 @@
 
                 <!-- SETTINGS TAB -->
                 <div class="tab-panel" id="tab-settings">
+                    <div class="settings-section">
+                        <h4>⚡ Analysis Engine</h4>
+                        <div class="engine-selector-panel">
+                            <label class="engine-option">
+                                <input type="radio" name="engine" value="local" id="engineLocal" checked>
+                                <div class="engine-info">
+                                    <div class="engine-name">🖥️ Local Stockfish</div>
+                                    <div class="engine-description">Private, works offline, uses your CPU</div>
+                                </div>
+                            </label>
+                            <label class="engine-option">
+                                <input type="radio" name="engine" value="cloud" id="engineCloud">
+                                <div class="engine-info">
+                                    <div class="engine-name">☁️ Cloud API (80 MNPS)</div>
+                                    <div class="engine-description">Instant analysis, zero CPU usage, requires internet</div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Cloud-specific settings -->
+                        <div id="cloudSettings" class="cloud-settings" style="display: none;">
+                            <div class="control-group">
+                                <label for="cloudDepth">
+                                    Cloud Depth: <span id="cloudDepthValue">12</span>
+                                </label>
+                                <input type="range" id="cloudDepth" min="8" max="18" value="12" step="1">
+                            </div>
+                            <div class="control-group">
+                                <label for="cloudVariants">
+                                    Variants: <span id="cloudVariantsValue">3</span>
+                                </label>
+                                <input type="range" id="cloudVariants" min="1" max="5" value="3" step="1">
+                            </div>
+                            <div class="privacy-notice">
+                                <small>ℹ️ Cloud analysis sends board positions to chess-api.com. No personal data is transmitted.</small>
+                            </div>
+                        </div>
+
+                        <div id="engineStatus" class="engine-status">
+                            <span class="status-indicator">⚫</span>
+                            <span class="status-text">Engine: Not initialized</span>
+                        </div>
+                    </div>
+
                     <div class="settings-section">
                         <h4>Game Settings</h4>
                         <div class="control-group">
