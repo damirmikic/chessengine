@@ -3,35 +3,19 @@
 const BOARD_THEMES = {
     brown: {
         name: 'Brown (Classic)',
-        background: 'url("https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/images/board/brown.png")',
-        lightSquare: '#f0d9b5',
-        darkSquare: '#b58863'
+        cssUrl: 'https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.brown.css'
     },
     blue: {
         name: 'Blue',
-        background: 'url("https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/images/board/blue.png")',
-        lightSquare: '#dee3e6',
-        darkSquare: '#8ca2ad'
+        cssUrl: 'https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.blue.css'
     },
     green: {
         name: 'Green',
-        background: 'url("https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/images/board/green.png")',
-        lightSquare: '#ffffdd',
-        darkSquare: '#86a666'
-    },
-    gray: {
-        name: 'Gray',
-        background: 'linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, #eee 25%, #eee 75%, #ccc 75%, #ccc)',
-        lightSquare: '#eee',
-        darkSquare: '#ccc',
-        backgroundSize: '25% 25%',
-        backgroundPosition: '0 0, 12.5% 12.5%'
+        cssUrl: 'https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.green.css'
     },
     marble: {
         name: 'Marble',
-        background: 'url("https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/images/board/marble.png")',
-        lightSquare: '#e8e8e8',
-        darkSquare: '#bfbfbf'
+        cssUrl: 'https://cdn.jsdelivr.net/npm/chessground@8.3.3/assets/chessground.marble.css'
     }
 };
 
@@ -137,19 +121,19 @@ class ThemeManager {
 
     applyBoardTheme() {
         const theme = BOARD_THEMES[this.settings.boardTheme];
-        const boardElement = document.querySelector('.board');
 
-        if (boardElement) {
-            boardElement.style.backgroundImage = theme.background;
-            if (theme.backgroundSize) {
-                boardElement.style.backgroundSize = theme.backgroundSize;
-            } else {
-                boardElement.style.backgroundSize = '100% 100%';
-            }
-            if (theme.backgroundPosition) {
-                boardElement.style.backgroundPosition = theme.backgroundPosition;
-            }
+        // Remove old board theme link
+        const oldLink = document.getElementById('board-theme-css');
+        if (oldLink) {
+            oldLink.remove();
         }
+
+        // Add new board theme link
+        const link = document.createElement('link');
+        link.id = 'board-theme-css';
+        link.rel = 'stylesheet';
+        link.href = theme.cssUrl;
+        document.head.appendChild(link);
     }
 
     setPieceSet(setName) {
