@@ -3,8 +3,66 @@
  * Handles seamless switching between engine types
  */
 
-import ChessEngine from './chess-engine.js';
+import {
+    initializeEngine,
+    evaluatePosition as localEvaluatePosition,
+    findBestMove as localFindBestMove,
+    analyzeWithMultiPv as localAnalyzeWithMultiPv,
+    getEngineState as localGetEngineState,
+    terminateEngine
+} from './chess-engine.js';
+
 import CloudEngine from './cloud-engine.js';
+
+/**
+ * Wrapper class for local Stockfish engine to match CloudEngine API
+ */
+class LocalEngineWrapper {
+    constructor() {
+        this.initialized = false;
+    }
+
+    async initializeEngine(callbacks) {
+        this.initialized = await initializeEngine(callbacks);
+        return this.initialized;
+    }
+
+    evaluatePosition(fen, depth, evaluationType) {
+        localEvaluatePosition(fen, depth, evaluationType);
+    }
+
+    findBestMove(fen, depth) {
+        localFindBestMove(fen, depth);
+    }
+
+    analyzeWithMultiPv(fen, depth, numLines) {
+        localAnalyzeWithMultiPv(fen, depth, numLines);
+    }
+
+    getEngineState() {
+        return localGetEngineState();
+    }
+
+    terminateEngine() {
+        terminateEngine();
+    }
+
+    cleanup() {
+        this.terminateEngine();
+    }
+
+    stopAnalysis() {
+        // Local engine doesn't have explicit stop, status handled internally
+    }
+
+    setDepth(depth) {
+        // Depth is set per-call for local engine
+    }
+
+    setVariants(variants) {
+        // Variants are set per-call for local engine
+    }
+}
 
 class EngineManager {
     constructor() {
@@ -45,7 +103,7 @@ class EngineManager {
 
             } else {
                 console.log('Initializing local Stockfish engine...');
-                this.activeEngine = new ChessEngine();
+                this.activeEngine = new LocalEngineWrapper();
 
                 await this.activeEngine.initializeEngine(callbacks);
                 console.log('Local engine initialized successfully');
