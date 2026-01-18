@@ -235,25 +235,9 @@ class CloudEngine {
             });
         }
 
-        // Callback for multi-PV updates
+        // Callback for multi-PV updates - pass the complete bestMoves array
         if (this.callbacks.onMultiPv) {
-            this.callbacks.onMultiPv({
-                move: data.san,
-                uci: data.lan || data.move,
-                eval: data.eval,
-                centipawns: moveData.centipawns,
-                continuation: data.continuationArr || [],
-                depth: data.depth,
-                winChance: data.winChance,
-                mate: data.mate,
-                from: data.from,
-                to: data.to,
-                piece: data.piece,
-                isCapture: data.isCapture,
-                isCastling: data.isCastling,
-                isPromotion: data.isPromotion,
-                flags: data.flags
-            });
+            this.callbacks.onMultiPv(this.bestMoves);
         }
 
         // Update current PV
