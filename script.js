@@ -299,6 +299,7 @@ function setupEventListeners() {
     const analysisModeCheckbox = document.getElementById('analysisMode');
     const showPuzzlesBtn = document.getElementById('showPuzzlesBtn');
     const learningDashboardBtn = document.getElementById('learningDashboardBtn');
+    const analyzeGameBtn = document.getElementById('analyzeGameBtn');
     const clockEnabledToggle = document.getElementById('clockEnabled');
     const clockPresetSelect = document.getElementById('clockPreset');
 
@@ -323,6 +324,7 @@ function setupEventListeners() {
     if (analysisModeCheckbox) analysisModeCheckbox.addEventListener('change', handleAnalysisModeToggle);
     if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
     if (learningDashboardBtn) learningDashboardBtn.addEventListener('click', showLearningDashboard);
+    if (analyzeGameBtn) analyzeGameBtn.addEventListener('click', handleAnalyzeCompleteGame);
 
     // Chess Clock controls
     if (clockEnabledToggle) {
@@ -526,11 +528,12 @@ function analyzeUserMove(move, previousFen, currentFen) {
 
     // Check if hints are enabled
     const showHints = document.getElementById('showHints')?.checked ?? true;
+    const noHintsMode = document.getElementById('noHintsMode')?.checked ?? false;
 
     // Determine if this is a mistake
     const isMistakeMove = isMistake(evalLoss);
 
-    if (isMistakeMove && showHints && !isGameOver()) {
+    if (isMistakeMove && showHints && !noHintsMode && !isGameOver()) {
         // Mistake detected - find better move
         showAnalyzing('Finding better move...');
 
@@ -549,15 +552,20 @@ function analyzeUserMove(move, previousFen, currentFen) {
 
     } else {
         // Good move or hints disabled - show analysis and continue
-        displayMoveAnalysis({
-            evalLoss,
-            currentEval,
-            bestMoveUci: null,
-            bestLinePv: null,
-            refutationPv: null,
-            previousFen,
-            currentFen
-        });
+        if (!noHintsMode) {
+            displayMoveAnalysis({
+                evalLoss,
+                currentEval,
+                bestMoveUci: null,
+                bestLinePv: null,
+                refutationPv: null,
+                previousFen,
+                currentFen
+            });
+        } else {
+            // In no hints mode, just show a simple message
+            showMessage('Move played');
+        }
 
         appState.previousEval = currentEval;
 
@@ -719,6 +727,15 @@ function handleGameOver() {
             appState.gameRecorded = true;
         }
     }
+
+    // Show analyze game button if in no hints mode
+    const noHintsMode = document.getElementById('noHintsMode')?.checked ?? false;
+    if (noHintsMode) {
+        const analyzeGameBtn = document.getElementById('analyzeGameBtn');
+        if (analyzeGameBtn) {
+            analyzeGameBtn.style.display = 'block';
+        }
+    }
 }
 
 /**
@@ -832,6 +849,12 @@ function handleReset() {
     appState.pendingUserMove = null;
     appState.gameRecorded = false;
     toggleContinueButton(false);
+
+    // Hide analyze game button
+    const analyzeGameBtn = document.getElementById('analyzeGameBtn');
+    if (analyzeGameBtn) {
+        analyzeGameBtn.style.display = 'none';
+    }
 
     // Clear analysis panels
     hideBestMoves();
@@ -1171,6 +1194,97 @@ function handleAnalysisModeToggle(event) {
         showMessage('Analysis mode enabled - engine will not make moves');
     } else {
         showMessage('Analysis mode disabled - normal play resumed');
+    }
+}
+
+/**
+ * Handles complete game analysis after playing without hints
+ */
+function handleAnalyzeCompleteGame() {
+    const moves = getMoves();
+
+    if (moves.length === 0) {
+        showMessage('No moves to analyze');
+        return;
+    }
+
+    // Hide the analyze button
+    const analyzeGameBtn = document.getElementById('analyzeGameBtn');
+    if (analyzeGameBtn) {
+        analyzeGameBtn.style.display = 'none';
+    }
+
+    // Switch to analysis tab
+    switchTab('analysis');
+
+    // Show analyzing message
+    showAnalyzing(`Analyzing complete game (${moves.length} moves)...`);
+
+    // Detect and display critical moments
+    const criticalMoments = detectCriticalMoments(moves);
+    displayCriticalMoments(criticalMoments, handleMoveNavigation);
+
+    // Generate puzzles from mistakes
+    const mistakes = moves.filter(m => {
+        const annotation = m.annotation;
+        return annotation === '?' || annotation === '??' || annotation === '!?';
+    });
+
+    if (mistakes.length > 0) {
+        // Generate puzzles from the mistakes
+        mistakes.forEach(mistake => {
+            if (mistake.fen && mistake.evaluation !== undefined) {
+                generatePuzzle(mistake.fen, mistake.evaluation);
+            }
+        });
+        displayPuzzles(handleMoveNavigation);
+    }
+
+    // Create a detailed summary
+    let inaccuracies = 0;
+    let mistakes_count = 0;
+    let blunders = 0;
+    let goodMoves = 0;
+
+    moves.forEach(move => {
+        const annotation = move.annotation;
+        if (annotation === '??' || annotation === '⁇') blunders++;
+        else if (annotation === '?' || annotation === '⁈') mistakes_count++;
+        else if (annotation === '!?') inaccuracies++;
+        else if (annotation === '!' || annotation === '!!') goodMoves++;
+    });
+
+    // Display summary message
+    const userMoves = moves.filter(m => m.color === getUserColor());
+    const totalUserMoves = userMoves.length;
+    const userBlunders = userMoves.filter(m => m.annotation === '??' || m.annotation === '⁇').length;
+    const userMistakes = userMoves.filter(m => m.annotation === '?' || m.annotation === '⁈').length;
+    const userInaccuracies = userMoves.filter(m => m.annotation === '!?').length;
+    const userGoodMoves = userMoves.filter(m => m.annotation === '!' || m.annotation === '!!' || !m.annotation || m.annotation === '').length;
+
+    const accuracy = totalUserMoves > 0 ? Math.round((userGoodMoves / totalUserMoves) * 100) : 0;
+
+    let summaryHtml = `<div style="padding: 10px; background: var(--bg-primary); border-radius: 6px; margin-bottom: 10px;">`;
+    summaryHtml += `<h4 style="margin: 0 0 10px 0; color: var(--accent);">📊 Game Analysis Complete</h4>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Total moves:</strong> ${totalUserMoves}</p>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Accuracy:</strong> ${accuracy}%</p>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Good moves:</strong> ${userGoodMoves}</p>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Inaccuracies:</strong> ${userInaccuracies}</p>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Mistakes:</strong> ${userMistakes}</p>`;
+    summaryHtml += `<p style="margin: 5px 0;"><strong>Blunders:</strong> ${userBlunders}</p>`;
+    summaryHtml += `</div>`;
+
+    if (criticalMoments.length > 0) {
+        summaryHtml += `<p style="margin: 10px 0; color: var(--text-secondary);">📍 Found ${criticalMoments.length} critical moment(s) - check below for details.</p>`;
+    }
+
+    if (mistakes.length > 0) {
+        summaryHtml += `<p style="margin: 10px 0; color: var(--text-secondary);">🧩 Generated ${mistakes.length} puzzle(s) from your mistakes.</p>`;
+    }
+
+    const feedback = document.getElementById('feedback');
+    if (feedback) {
+        feedback.innerHTML = summaryHtml;
     }
 }
 

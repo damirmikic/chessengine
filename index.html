@@ -78,6 +78,10 @@
                         Ignore & Continue Game
                     </button>
 
+                    <button id="analyzeGameBtn" class="analyze-game-btn" style="display: none;">
+                        📊 Analyze Complete Game
+                    </button>
+
                     <div class="move-history-panel">
                         <div class="move-history-header">
                             <h3>Move History</h3>
@@ -266,15 +270,24 @@
                                 <input type="checkbox" id="analysisMode">
                                 Analysis Mode (No AI)
                             </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="noHintsMode">
+                                Play Without Hints (Analyze Later)
+                            </label>
                         </div>
 
                         <div class="control-group">
                             <label for="difficulty">Opponent Level:</label>
                             <select id="difficulty">
-                                <option value="2">Easy</option>
-                                <option value="6">Medium</option>
-                                <option value="12">Hard</option>
-                                <option value="18" selected>Master</option>
+                                <option value="1">Beginner</option>
+                                <option value="3">Easy</option>
+                                <option value="5">Intermediate</option>
+                                <option value="8" selected>Medium</option>
+                                <option value="10">Challenging</option>
+                                <option value="13">Hard</option>
+                                <option value="16">Expert</option>
+                                <option value="20">Master</option>
+                                <option value="25">Grandmaster</option>
                             </select>
                         </div>
 
