@@ -72,6 +72,10 @@ export function initializeBoard({ containerId, orientation = 'white', onUserMove
                 free: false,
                 dests: calculateDestinations(boardState.chess),
                 events: { after: handleUserMove }
+            },
+            drawable: {
+                enabled: true,
+                visible: true
             }
         };
 
@@ -366,4 +370,54 @@ export function loadPosition(fen) {
         console.error('Error loading position:', error);
         return false;
     }
+}
+
+/**
+ * Draws analysis arrows on the board
+ * @param {string} bestMoveUci - Best move in UCI format (e.g. 'e2e4')
+ * @param {string} [threatUci] - Optional threat move to draw in red
+ */
+export function drawAnalysisShapes(bestMoveUci, threatUci = null) {
+    if (!boardState.board) return;
+
+    const shapes = [];
+
+    // Draw Best Move Arrow (Green)
+    if (bestMoveUci) {
+        const from = bestMoveUci.substring(0, 2);
+        const to = bestMoveUci.substring(2, 4);
+        shapes.push({
+            orig: from,
+            dest: to,
+            brush: 'green',
+            modifiers: { lineWidth: 4 }
+        });
+    }
+
+    // Draw Threat Arrow (Red) - Optional
+    if (threatUci) {
+        const from = threatUci.substring(0, 2);
+        const to = threatUci.substring(2, 4);
+        shapes.push({
+            orig: from,
+            dest: to,
+            brush: 'red'
+        });
+    }
+
+    // Apply shapes to the board
+    boardState.board.set({
+        drawable: {
+            shapes: shapes,
+            autoShapes: shapes
+        }
+    });
+}
+
+/**
+ * Clears all shapes from the board
+ */
+export function clearShapes() {
+    if (!boardState.board) return;
+    boardState.board.set({ drawable: { shapes: [], autoShapes: [] } });
 }
