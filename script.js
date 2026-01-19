@@ -290,6 +290,7 @@ function setupEventListeners() {
     const resetBtn = document.getElementById('resetBtn');
     const undoBtn = document.getElementById('undoBtn');
     const flipBtn = document.getElementById('flipBtn');
+    const resignBtn = document.getElementById('resignBtn');
     const continueBtn = document.getElementById('continueBtn');
     const saveGameBtn = document.getElementById('saveGameBtn');
     const loadGameBtn = document.getElementById('loadGameBtn');
@@ -310,6 +311,7 @@ function setupEventListeners() {
     if (resetBtn) resetBtn.addEventListener('click', handleReset);
     if (undoBtn) undoBtn.addEventListener('click', handleUndo);
     if (flipBtn) flipBtn.addEventListener('click', handleFlip);
+    if (resignBtn) resignBtn.addEventListener('click', handleResign);
     if (continueBtn) continueBtn.addEventListener('click', handleContinue);
     if (saveGameBtn) saveGameBtn.addEventListener('click', handleSaveGame);
     if (loadGameBtn) loadGameBtn.addEventListener('click', handleLoadGame);
@@ -726,10 +728,67 @@ function requestEngineMove() {
 
 
 /**
+ * Handles player resignation
+ */
+function handleResign() {
+    const chess = getChess();
+
+    // Check if game is already over
+    if (chess.game_over()) {
+        showMessage('Game is already over!');
+        return;
+    }
+
+    // Confirm resignation
+    if (!confirm('Are you sure you want to resign?')) {
+        return;
+    }
+
+    // Determine winner (opponent wins)
+    const userColor = getUserColor();
+    const winner = userColor === 'white' ? 'Black' : 'White';
+
+    // Display resignation message
+    showMessage(`You resigned. ${winner} wins! 🏳️`);
+
+    // Disable board
+    disableBoard();
+    pauseClock();
+
+    // Handle game over logic (recording, etc.)
+    handleGameOver();
+}
+
+/**
  * Handles game over state
  */
 function handleGameOver() {
     pauseClock();
+
+    // Display winner or draw message
+    const chess = getChess();
+    let message = '';
+
+    if (chess.in_checkmate()) {
+        // Determine winner based on whose turn it is (loser)
+        const winner = chess.turn() === 'w' ? 'Black' : 'White';
+        message = `Checkmate! ${winner} wins! 🏆`;
+    } else if (chess.in_stalemate()) {
+        message = 'Game Over - Stalemate! ½-½';
+    } else if (chess.in_threefold_repetition()) {
+        message = 'Game Over - Draw by threefold repetition! ½-½';
+    } else if (chess.insufficient_material()) {
+        message = 'Game Over - Draw by insufficient material! ½-½';
+    } else if (chess.in_draw()) {
+        message = 'Game Over - Draw! ½-½';
+    } else if (chess.game_over()) {
+        message = 'Game Over!';
+    }
+
+    if (message) {
+        showMessage(message);
+        disableBoard();
+    }
 
     // Record game session for learning
     if (!appState.gameRecorded) {
