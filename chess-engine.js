@@ -301,6 +301,8 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
     const fenParts = fen.split(' ');
     engineState.currentTurn = fenParts[1] || 'w';
 
+    // Log the depth being sent to engine for debugging
+    console.log(`⚙️ Stockfish command: go depth ${depth} (evaluationType: ${evaluationType})`);
     engineState.worker.postMessage(`go depth ${depth}`);
 }
 
@@ -310,6 +312,29 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
  * @param {number} depth - Search depth
  */
 export function findBestMove(fen, depth = 12) {
+    if (!engineState.worker || engineState.status === 'error') {
+        console.error('Engine not available');
+        return;
+    }
+
+    // Set Stockfish skill level based on depth for weaker play at lower levels
+    // Skill Level ranges from 0 (weakest) to 20 (strongest)
+    let skillLevel = 20; // Default: full strength
+
+    if (depth <= 1) {
+        skillLevel = 0;  // Beginner - very weak
+    } else if (depth <= 3) {
+        skillLevel = 5;  // Easy
+    } else if (depth <= 5) {
+        skillLevel = 10; // Intermediate
+    } else if (depth <= 8) {
+        skillLevel = 15; // Medium
+    }
+    // Depths 10+ use skill level 20 (full strength)
+
+    console.log(`🎮 Setting Stockfish Skill Level: ${skillLevel} (depth: ${depth})`);
+    engineState.worker.postMessage(`setoption name Skill Level value ${skillLevel}`);
+
     evaluatePosition(fen, depth, 'play');
 }
 
