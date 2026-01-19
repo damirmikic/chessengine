@@ -2703,6 +2703,77 @@ button {
     margin: 0;
 }
 
+/* Training sections */
+.training-section {
+    margin-bottom: 32px;
+}
+
+.training-section h4 {
+    margin: 0 0 16px 0;
+    color: #fff;
+    font-size: 1.1em;
+}
+
+/* Drill-specific styles */
+.drill-card {
+    border-left: 3px solid #4caf50;
+}
+
+.drill-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.drill-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+
+.drill-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drill-title {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95em;
+}
+
+.drill-desc {
+    color: #aaa;
+    font-size: 0.85em;
+}
+
+.practice-btn {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.practice-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+}
+
+.practice-btn:active {
+    transform: scale(0.98);
+}
+
 /* ==================== ACHIEVEMENTS TAB ==================== */
 .achievements-header {
     display: flex;
@@ -2979,6 +3050,28 @@ body.light-mode .filter-select {
     background: #fff;
     color: #222;
     border-color: #ccc;
+}
+
+body.light-mode .drill-item,
+body.light-mode .position-item {
+    background: #e8e8e8;
+}
+
+body.light-mode .drill-item:hover,
+body.light-mode .position-item:hover {
+    background: #d8d8d8;
+}
+
+body.light-mode .drill-title {
+    color: #222;
+}
+
+body.light-mode .drill-desc {
+    color: #666;
+}
+
+body.light-mode .training-section h4 {
+    color: #222;
 }
 
 /* ==================== ENGINE SELECTOR ==================== */

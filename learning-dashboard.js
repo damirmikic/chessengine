@@ -20,6 +20,88 @@ import {
 } from './learning-tracker.js';
 
 /**
+ * Drill collections with classic positions
+ */
+const DRILL_COLLECTIONS = [
+    {
+        id: 'basic_endgames',
+        title: '♟️ Essential Endgames',
+        description: 'Must-know endgame patterns for every player.',
+        positions: [
+            {
+                title: 'Lucena Position',
+                fen: '1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1',
+                description: 'The key to winning rook endings. Bridge building!'
+            },
+            {
+                title: 'Philidor Position',
+                fen: '3k4/R7/3K4/8/8/8/r7/8 b - - 0 1',
+                description: 'The standard drawing technique in rook endings.'
+            },
+            {
+                title: 'King & Pawn Opposition',
+                fen: '8/8/4k3/8/4K3/8/4P3/8 w - - 0 1',
+                description: 'Use the opposition to promote the pawn.'
+            },
+            {
+                title: 'Queen vs Pawn (7th Rank)',
+                fen: '8/1k6/8/8/8/8/1p6/1K2Q3 w - - 0 1',
+                description: 'Stop the pawn before it promotes!'
+            }
+        ]
+    },
+    {
+        id: 'tactical_motifs',
+        title: '⚡ Tactical Motifs',
+        description: 'Common tactical patterns to crush your opponents.',
+        positions: [
+            {
+                title: 'Back Rank Mate',
+                fen: '6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',
+                description: 'Exploit the trapped king on the back rank.'
+            },
+            {
+                title: 'Knight Fork Pattern',
+                fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1',
+                description: 'Find the devastating knight fork!'
+            },
+            {
+                title: 'Pin & Win',
+                fen: 'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 1',
+                description: 'The bishop pins the knight to the king.'
+            },
+            {
+                title: 'Smothered Mate Setup',
+                fen: '5rk1/5ppp/8/8/8/8/5PPP/4RNK1 w - - 0 1',
+                description: 'Can you deliver the classic smothered mate?'
+            }
+        ]
+    },
+    {
+        id: 'checkmate_patterns',
+        title: '♔ Checkmate Patterns',
+        description: 'Essential mating patterns every player must know.',
+        positions: [
+            {
+                title: 'Two Rooks Mate',
+                fen: '6k1/8/6K1/8/8/8/R7/R7 w - - 0 1',
+                description: 'Practice the ladder mate with two rooks.'
+            },
+            {
+                title: 'Queen & King Mate',
+                fen: '7k/8/6K1/8/8/8/8/Q7 w - - 0 1',
+                description: 'Deliver checkmate with queen and king.'
+            },
+            {
+                title: 'Rook & King Mate',
+                fen: '7k/8/6K1/8/8/8/8/R7 w - - 0 1',
+                description: 'The fundamental rook endgame mate.'
+            }
+        ]
+    }
+];
+
+/**
  * Dashboard state
  */
 const dashboardState = {
@@ -509,43 +591,93 @@ function renderInsightsTab(container) {
 function renderTrainingTab(container) {
     const exercises = getTrainingExercises();
 
-    container.innerHTML = `
-        <div class="training-header">
-            <h3>🎯 Training Mode</h3>
-            <p class="training-intro">Practice positions where you've made mistakes to improve your weak areas.</p>
-        </div>
-        
-        <div class="training-exercises">
-            ${exercises.length > 0 ? exercises.map(exercise => `
-                <div class="exercise-card">
-                    <div class="exercise-header">
-                        <span class="exercise-theme">${exercise.theme}</span>
-                        <span class="exercise-count">${exercise.positions.length} positions</span>
+    // Helper to render drill collections
+    const renderDrillSection = (collection) => `
+        <div class="exercise-card drill-card">
+            <div class="exercise-header">
+                <span class="exercise-theme">${collection.title}</span>
+                <span class="exercise-count">${collection.positions.length} drills</span>
+            </div>
+            <div class="exercise-description">${collection.description}</div>
+            <div class="exercise-positions">
+                ${collection.positions.map((pos, i) => `
+                    <div class="position-item drill-item" data-fen="${pos.fen}">
+                        <span class="position-number">#${i + 1}</span>
+                        <div class="drill-info">
+                            <span class="drill-title">${pos.title}</span>
+                            <span class="drill-desc">${pos.description}</span>
+                        </div>
+                        <button class="practice-btn">Practice</button>
                     </div>
-                    <div class="exercise-description">${exercise.description}</div>
-                    <div class="exercise-positions">
-                        ${exercise.positions.map((pos, i) => `
-                            <div class="position-item" data-fen="${pos.fen}">
-                                <span class="position-number">#${i + 1}</span>
-                                <span class="position-move">You played: ${pos.yourMove}</span>
-                                <span class="position-loss">-${pos.evalLoss.toFixed(2)}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('') : `
-                <div class="no-exercises">
-                    <div class="no-exercises-icon">🎓</div>
-                    <h4>No Training Exercises Yet</h4>
-                    <p>Play some games and make mistakes to generate personalized training exercises!</p>
-                </div>
-            `}
+                `).join('')}
+            </div>
         </div>
     `;
 
-    // Add position load listeners
+    container.innerHTML = `
+        <div class="training-header">
+            <h3>🎯 Training Mode</h3>
+            <p class="training-intro">Master classic patterns and review your past mistakes.</p>
+        </div>
+
+        <div class="training-section">
+            <h4>📚 Standard Library</h4>
+            <div class="training-exercises">
+                ${DRILL_COLLECTIONS.map(renderDrillSection).join('')}
+            </div>
+        </div>
+
+        <div class="training-section">
+            <h4>🔧 Personal Weaknesses</h4>
+            <div class="training-exercises">
+                ${exercises.length > 0 ? exercises.map(exercise => `
+                    <div class="exercise-card">
+                        <div class="exercise-header">
+                            <span class="exercise-theme">${exercise.theme}</span>
+                            <span class="exercise-count">${exercise.positions.length} positions</span>
+                        </div>
+                        <div class="exercise-description">${exercise.description}</div>
+                        <div class="exercise-positions">
+                            ${exercise.positions.map((pos, i) => `
+                                <div class="position-item" data-fen="${pos.fen}">
+                                    <span class="position-number">#${i + 1}</span>
+                                    <span class="position-move">You played: ${pos.yourMove}</span>
+                                    <span class="position-loss">-${pos.evalLoss.toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('') : `
+                    <div class="no-exercises">
+                        <div class="no-exercises-icon">🎓</div>
+                        <h4>No Personal Exercises Yet</h4>
+                        <p>Play some games to generate personalized training exercises from your mistakes!</p>
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+
+    // Add position load listeners for both drill items and regular positions
     container.querySelectorAll('.position-item').forEach(item => {
-        item.addEventListener('click', () => {
+        item.addEventListener('click', (e) => {
+            // Don't trigger if clicking the practice button
+            if (e.target.classList.contains('practice-btn')) {
+                return;
+            }
+            const fen = item.dataset.fen;
+            if (fen && dashboardState.onPositionLoad) {
+                dashboardState.onPositionLoad(fen);
+                hideLearningDashboard();
+            }
+        });
+    });
+
+    // Add specific listeners for practice buttons
+    container.querySelectorAll('.practice-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const item = btn.closest('.position-item');
             const fen = item.dataset.fen;
             if (fen && dashboardState.onPositionLoad) {
                 dashboardState.onPositionLoad(fen);
