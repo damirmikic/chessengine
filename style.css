@@ -499,6 +499,125 @@ body.light-mode .sidebar-tab:hover {
     line-height: 1.4;
 }
 
+/* Live Opening Stats from Lichess */
+.opening-live-stats {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #444;
+}
+
+.live-stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.live-stats-title {
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.live-stats-badge {
+    font-size: 0.7em;
+    background: #4caf50;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.stat-row {
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.move-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.move-san {
+    font-size: 1em;
+    font-weight: bold;
+    color: #4caf50;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.game-count {
+    font-size: 0.75em;
+    color: #888;
+}
+
+.win-rate-bar {
+    display: flex;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+.white-wins {
+    background: linear-gradient(90deg, #fff, #e0e0e0);
+    transition: width 0.3s ease;
+}
+
+.draws {
+    background: linear-gradient(90deg, #888, #666);
+    transition: width 0.3s ease;
+}
+
+.black-wins {
+    background: linear-gradient(90deg, #444, #222);
+    transition: width 0.3s ease;
+}
+
+.win-percentages {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.percent-white {
+    color: #fff;
+}
+
+.percent-draw {
+    color: #888;
+}
+
+.percent-black {
+    color: #555;
+}
+
+.no-stats {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    padding: 10px;
+    font-style: italic;
+}
+
 /* PIECE IMAGES - Managed by themes.js and fallback */
 piece {
     display: block;
@@ -1287,6 +1406,39 @@ body.light-mode .opening-eco {
 
 body.light-mode .opening-category {
     color: #666;
+}
+
+body.light-mode .opening-live-stats {
+    border-top-color: #ccc;
+}
+
+body.light-mode .live-stats-title {
+    color: #555;
+}
+
+body.light-mode .stat-row {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: #ddd;
+}
+
+body.light-mode .move-san {
+    color: #2e7d32;
+}
+
+body.light-mode .game-count {
+    color: #666;
+}
+
+body.light-mode .win-rate-bar {
+    background: #f0f0f0;
+}
+
+body.light-mode .percent-black {
+    color: #333;
+}
+
+body.light-mode .no-stats {
+    color: #888;
 }
 
 body.light-mode .move-pair {

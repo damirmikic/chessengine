@@ -44,6 +44,26 @@ export async function loadOpeningsDatabase() {
 }
 
 /**
+ * Fetches opening stats from Lichess Explorer
+ * @param {string} fen - Current FEN
+ * @returns {Promise<Object|null>} Opening stats or null if failed
+ */
+export async function fetchOpeningStats(fen) {
+    // Encode FEN for URL
+    const encodedFen = encodeURIComponent(fen);
+    const url = `https://explorer.lichess.ovh/masters?fen=${encodedFen}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch opening stats:', error);
+        return null;
+    }
+}
+
+/**
  * Detects the opening based on the current move sequence
  * @param {Chess} chess - The chess.js game instance
  * @returns {Object|null} The detected opening object or null
@@ -83,7 +103,7 @@ export function detectOpening(chess) {
  * Updates the opening name display in the UI
  * @param {Chess} chess - The chess.js game instance
  */
-export function updateOpeningDisplay(chess) {
+export async function updateOpeningDisplay(chess) {
     const nameEl = document.getElementById('opening-name');
     const ecoEl = document.getElementById('opening-eco');
     const categoryEl = document.getElementById('opening-category');
@@ -185,6 +205,62 @@ export function updateOpeningDisplay(chess) {
             `;
         } else {
             plansEl.innerHTML = "";
+        }
+    }
+
+    // Fetch and display live stats from Lichess API
+    const liveStatsContainer = document.getElementById('opening-live-stats');
+    if (liveStatsContainer) {
+        try {
+            const stats = await fetchOpeningStats(chess.fen());
+            if (stats && stats.moves && stats.moves.length > 0) {
+                // Sort moves by popularity (total games played)
+                const topMoves = stats.moves
+                    .sort((a, b) => (b.white + b.draws + b.black) - (a.white + a.draws + a.black))
+                    .slice(0, 3);
+
+                const statsHtml = topMoves.map(move => {
+                    const totalGames = move.white + move.draws + move.black;
+                    const whitePercent = (move.white / totalGames) * 100;
+                    const drawPercent = (move.draws / totalGames) * 100;
+                    const blackPercent = (move.black / totalGames) * 100;
+
+                    return `
+                        <div class="stat-row">
+                            <div class="move-info">
+                                <span class="move-san">${move.san}</span>
+                                <span class="game-count">${totalGames.toLocaleString()} games</span>
+                            </div>
+                            <div class="win-rate-bar">
+                                <div class="white-wins" style="width:${whitePercent}%" title="White: ${whitePercent.toFixed(1)}%"></div>
+                                <div class="draws" style="width:${drawPercent}%" title="Draws: ${drawPercent.toFixed(1)}%"></div>
+                                <div class="black-wins" style="width:${blackPercent}%" title="Black: ${blackPercent.toFixed(1)}%"></div>
+                            </div>
+                            <div class="win-percentages">
+                                <span class="percent-white">${whitePercent.toFixed(0)}%</span>
+                                <span class="percent-draw">${drawPercent.toFixed(0)}%</span>
+                                <span class="percent-black">${blackPercent.toFixed(0)}%</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                liveStatsContainer.innerHTML = `
+                    <div class="live-stats-header">
+                        <span class="live-stats-title">Masters Database</span>
+                        <span class="live-stats-badge">LIVE</span>
+                    </div>
+                    ${statsHtml}
+                `;
+                liveStatsContainer.style.display = 'block';
+            } else {
+                liveStatsContainer.innerHTML = '<div class="no-stats">No master games found for this position</div>';
+                liveStatsContainer.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error displaying live stats:', error);
+            liveStatsContainer.innerHTML = '<div class="no-stats">Unable to load live stats</div>';
+            liveStatsContainer.style.display = 'block';
         }
     }
 }
