@@ -17,7 +17,9 @@ import {
     getUserColor,
     isGameOver,
     getCurrentFen,
-    loadPosition
+    loadPosition,
+    drawAnalysisShapes,
+    clearShapes
 } from './board-controller.js';
 
 import {
@@ -476,6 +478,9 @@ function handleUserMove(moveData) {
     toggleContinueButton(false);
     appState.gamePaused = false;
 
+    // Clear any existing arrows
+    clearShapes();
+
     // Add move to history
     const chess = getChess();
     const turn = chess.turn();
@@ -638,6 +643,14 @@ function completeUserMoveAnalysis(bestMoveUci, bestLinePv) {
         previousFen: data.previousFen,
         currentFen: data.currentFen
     });
+
+    // Draw best move arrow (green) and threat arrow (red) if available
+    // Load the previous position to draw the arrow
+    loadPosition(data.previousFen);
+    if (bestMoveUci) {
+        const threatMove = data.refutation ? data.refutation.split(' ')[0] : null;
+        drawAnalysisShapes(bestMoveUci, threatMove);
+    }
 
     // Generate puzzle from this mistake
     if (data.evalLoss >= 1.0 && bestMoveUci) {
@@ -825,6 +838,9 @@ function handleReset() {
     hideCriticalMoments();
     clearPuzzles();
 
+    // Clear arrows from the board
+    clearShapes();
+
     updateOpeningDisplay(getChess());
     showMessage('Make a move...');
     updateEvaluationBar(0.3);
@@ -894,6 +910,18 @@ function handleContinue() {
 
     toggleContinueButton(false);
     appState.gamePaused = false;
+
+    // Clear arrows when continuing after a hint
+    clearShapes();
+
+    // Load the current position back (after showing the hint position)
+    const moves = getMoves();
+    if (moves.length > 0) {
+        const lastMove = moves[moves.length - 1];
+        if (lastMove.fen) {
+            loadPosition(lastMove.fen);
+        }
+    }
 
     if (!isGameOver() && !isAnalysisMode()) {
         requestEngineMove();
@@ -1093,6 +1121,9 @@ function handleHint() {
     const depthSelect = document.getElementById('analysisDepth');
     const depth = depthSelect ? parseInt(depthSelect.value) : 15;
 
+    // Clear old arrows before analyzing
+    clearShapes();
+
     showAnalyzing('Finding best move...');
 
     // Analyze with multipv to get top moves
@@ -1111,6 +1142,9 @@ function handleAnalyze() {
     const currentFen = getCurrentFen();
     const depthSelect = document.getElementById('analysisDepth');
     const depth = depthSelect ? parseInt(depthSelect.value) : 15;
+
+    // Clear old arrows before analyzing
+    clearShapes();
 
     showAnalyzing(`Analyzing position (depth ${depth})...`);
 
@@ -1147,6 +1181,11 @@ function handleAnalysisModeToggle(event) {
 function handleMultiPvUpdate(bestMoves) {
     const currentFen = getCurrentFen();
     displayBestMoves(bestMoves, currentFen);
+
+    // Draw the best move arrow on the board
+    if (bestMoves && bestMoves.length > 0 && bestMoves[0].move) {
+        drawAnalysisShapes(bestMoves[0].move);
+    }
 }
 
 /**
