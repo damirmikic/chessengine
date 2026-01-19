@@ -210,6 +210,9 @@ async function initializeApp() {
         setupEventListeners();
         setupTabs();
 
+        // Initialize difficulty badge
+        updateDifficultyBadge();
+
         // Initialize multiplayer
         initializeMultiplayer({
             onLocalModeToggle: (enabled) => {
@@ -300,6 +303,7 @@ function setupEventListeners() {
     const showPuzzlesBtn = document.getElementById('showPuzzlesBtn');
     const learningDashboardBtn = document.getElementById('learningDashboardBtn');
     const analyzeGameBtn = document.getElementById('analyzeGameBtn');
+    const difficultySelect = document.getElementById('difficulty');
     const clockEnabledToggle = document.getElementById('clockEnabled');
     const clockPresetSelect = document.getElementById('clockPreset');
 
@@ -325,6 +329,7 @@ function setupEventListeners() {
     if (showPuzzlesBtn) showPuzzlesBtn.addEventListener('click', togglePuzzlesPanel);
     if (learningDashboardBtn) learningDashboardBtn.addEventListener('click', showLearningDashboard);
     if (analyzeGameBtn) analyzeGameBtn.addEventListener('click', handleAnalyzeCompleteGame);
+    if (difficultySelect) difficultySelect.addEventListener('change', updateDifficultyBadge);
 
     // Chess Clock controls
     if (clockEnabledToggle) {
@@ -702,6 +707,20 @@ function requestEngineMove() {
     const depth = levelSelect ? parseInt(levelSelect.value) : 12;
     const currentFen = getCurrentFen();
 
+    // Log the selected depth for debugging
+    console.log(`🎯 Engine move requested at depth: ${depth}`);
+
+    // Show depth indicator in the UI
+    const status = document.getElementById('status');
+    if (status && depth) {
+        const levelNames = {
+            1: 'Beginner', 3: 'Easy', 5: 'Intermediate', 8: 'Medium',
+            10: 'Challenging', 13: 'Hard', 16: 'Expert', 20: 'Master', 25: 'Grandmaster'
+        };
+        const levelName = levelNames[depth] || `Custom (${depth})`;
+        status.setAttribute('title', `Opponent: ${levelName} (Depth ${depth})`);
+    }
+
     engineManager.findBestMove(currentFen, depth);
 }
 
@@ -837,6 +856,36 @@ function updateRatingDisplay() {
 }
 
 /**
+ * Updates the difficulty badge display
+ */
+function updateDifficultyBadge() {
+    const difficultyBadge = document.getElementById('difficultyBadge');
+    const difficultyValue = document.getElementById('difficultyValue');
+    const difficultySelect = document.getElementById('difficulty');
+
+    if (difficultyBadge && difficultyValue && difficultySelect) {
+        const depth = parseInt(difficultySelect.value);
+        const levelNames = {
+            1: 'Beginner',
+            3: 'Easy',
+            5: 'Intermediate',
+            8: 'Medium',
+            10: 'Challenging',
+            13: 'Hard',
+            16: 'Expert',
+            20: 'Master',
+            25: 'Grandmaster'
+        };
+        const levelName = levelNames[depth] || `Custom (${depth})`;
+
+        difficultyValue.textContent = levelName;
+        difficultyBadge.style.display = 'inline-flex';
+
+        console.log(`📊 Difficulty badge updated: ${levelName} (depth ${depth})`);
+    }
+}
+
+/**
  * Handles reset button click
  */
 function handleReset() {
@@ -867,6 +916,7 @@ function handleReset() {
     updateOpeningDisplay(getChess());
     showMessage('Make a move...');
     updateEvaluationBar(0.3);
+    updateDifficultyBadge();
 
     // Sync clock toggle UI
     const clockEnabledToggle = document.getElementById('clockEnabled');
