@@ -31,6 +31,7 @@ class LayoutController {
         this.isBottomSheetExpanded = false;
         this.isFabMenuOpen = false;
         this.isResizing = false;
+        this.hasRestoredState = false;
 
         this.init();
     }
@@ -439,20 +440,29 @@ class LayoutController {
             }
         }
 
-        // Restore saved panel states
+        // Ensure right panel is visible on desktop
+        if (width >= 768) {
+            // On desktop/tablet, show right panel unless explicitly collapsed
+            if (!this.isRightPanelCollapsed) {
+                this.rightPanel.style.display = 'flex';
+            }
+        }
+
+        // Restore saved panel states on first load only
         const savedLeftCollapsed = localStorage.getItem('leftPanelCollapsed');
         const savedRightCollapsed = localStorage.getItem('rightPanelCollapsed');
 
-        if (savedLeftCollapsed === 'true' && width >= 1400) {
+        if (savedLeftCollapsed === 'true' && width >= 1400 && !this.hasRestoredState) {
             this.isLeftPanelCollapsed = false;
             this.toggleLeftPanel();
         }
 
-        if (savedRightCollapsed === 'true' && width >= 1024) {
+        if (savedRightCollapsed === 'true' && width >= 1024 && !this.hasRestoredState) {
             this.isRightPanelCollapsed = false;
             this.toggleRightPanel();
         }
 
+        this.hasRestoredState = true;
         this.isResizing = false;
     }
 
