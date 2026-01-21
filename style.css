@@ -3622,6 +3622,10 @@ body.light-mode .win-prob-bar.black {
     font-size: 1.1em;
 }
 
+.stat-icon.best {
+    color: #ffd700;
+}
+
 .stat-icon.good {
     color: #4caf50;
 }
@@ -3696,6 +3700,10 @@ body.light-mode .win-prob-bar.black {
     font-weight: bold;
 }
 
+.move-annotation.best {
+    color: #ffd700;
+}
+
 .move-annotation.good {
     color: #4caf50;
 }
@@ -3717,6 +3725,11 @@ body.light-mode .win-prob-bar.black {
     border-radius: 4px;
     font-size: 0.85em;
     display: inline-block;
+}
+
+.move-quality.best {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
 }
 
 .move-quality.good {
