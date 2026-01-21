@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="context-navigation.css">
+    <link rel="stylesheet" href="enhanced-features.css">
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg" type="image/svg+xml">
     <!-- PeerJS for WebRTC -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -246,6 +247,11 @@
                                     title="Import game from a PGN file">📥</button>
                             </div>
                         </div>
+                        <!-- Timeline-style move history -->
+                        <div id="timelineMoveHistory" class="timeline-move-container">
+                            <!-- Populated by visual-analysis.js -->
+                        </div>
+                        <!-- Classic move list (fallback) -->
                         <div id="move-list" class="move-list">
                             <div class="move-list-empty">No moves yet</div>
                         </div>
@@ -368,6 +374,16 @@
                             <div class="continuation-label">Best line:</div>
                             <div class="continuation-moves" id="streamingContinuation">-</div>
                         </div>
+                    </div>
+
+                    <!-- Visual Evaluation Card -->
+                    <div id="visualEvaluationCard" class="visual-evaluation-card">
+                        <!-- Populated by visual-analysis.js -->
+                    </div>
+
+                    <!-- Position Insights Panel -->
+                    <div id="positionInsightsPanel" class="position-insights-panel">
+                        <!-- Populated by visual-analysis.js -->
                     </div>
 
                     <!-- Opening Information -->
@@ -539,6 +555,24 @@
                         </div>
                     </div>
 
+                    <!-- Daily Goals Widget -->
+                    <div class="daily-goals-widget" id="dailyGoalsWidget">
+                        <!-- Populated by daily-goals.js -->
+                    </div>
+
+                    <!-- Progress Tracker (Radar Chart) -->
+                    <div class="progress-tracker-section">
+                        <h4>📊 Your Skills</h4>
+                        <div id="skillsRadarChart" class="skills-radar-container">
+                            <!-- Populated by progress-tracker.js -->
+                        </div>
+                    </div>
+
+                    <!-- Skill Progress Cards -->
+                    <div class="skill-progress-cards" id="skillProgressCards">
+                        <!-- Populated by progress-tracker.js -->
+                    </div>
+
                     <!-- Quick Access to Training -->
                     <div class="learning-quick-access">
                         <h4>Quick Training</h4>
@@ -551,6 +585,11 @@
                         <button class="training-btn" id="tacticsTrainerBtn">
                             ⚡ Tactics Puzzles
                         </button>
+                    </div>
+
+                    <!-- Achievement Showcase -->
+                    <div id="achievementShowcase" class="achievement-showcase">
+                        <!-- Populated by achievement-visuals.js -->
                     </div>
                 </div>
 
@@ -836,6 +875,14 @@
     <!-- Context-aware navigation system -->
     <script type="module" src="context-manager.js"></script>
     <script type="module" src="keyboard-shortcuts.js"></script>
+
+    <!-- Enhanced features modules -->
+    <script type="module" src="welcome-experience.js"></script>
+    <script type="module" src="daily-goals.js"></script>
+    <script type="module" src="progress-tracker.js"></script>
+    <script type="module" src="visual-analysis.js"></script>
+    <script type="module" src="achievement-visuals.js"></script>
+    <script type="module" src="enhanced-features-init.js"></script>
 
     <!-- Existing modules -->
     <script type="module" src="layout-controller.js"></script>
