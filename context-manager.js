@@ -25,15 +25,22 @@ class ContextManager {
         this.previousContext = null;
         this.listeners = [];
         this.transitionDuration = 300; // ms
+        this.initialized = false;
     }
 
     /**
      * Initialize the context manager
      */
     initialize() {
+        if (this.initialized) {
+            console.log('Context Manager already initialized, skipping');
+            return;
+        }
+
         console.log('Context Manager initialized');
         this.detectAndSetContext();
         this.setupEventListeners();
+        this.initialized = true;
     }
 
     /**
