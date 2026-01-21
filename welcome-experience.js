@@ -85,6 +85,9 @@ class WelcomeExperience {
                 <div class="welcome-content" id="welcomeContent">
                     <!-- Content will be inserted here -->
                 </div>
+                <div class="welcome-footer" id="welcomeFooter">
+                    <!-- Action buttons will be inserted here -->
+                </div>
             </div>
         `;
 
@@ -117,6 +120,8 @@ class WelcomeExperience {
         this.updateProgress();
 
         const content = this.modal.querySelector('#welcomeContent');
+        const footer = this.modal.querySelector('#welcomeFooter');
+
         content.innerHTML = `
             <div class="welcome-step step-1">
                 <h3>Choose your experience level</h3>
@@ -150,6 +155,9 @@ class WelcomeExperience {
             </div>
         `;
 
+        // Clear footer for step 1 (no buttons needed)
+        footer.innerHTML = '';
+
         // Add click handlers
         const cards = content.querySelectorAll('.skill-level-card');
         cards.forEach(card => {
@@ -169,6 +177,8 @@ class WelcomeExperience {
         this.updateProgress();
 
         const content = this.modal.querySelector('#welcomeContent');
+        const footer = this.modal.querySelector('#welcomeFooter');
+
         content.innerHTML = `
             <div class="welcome-step step-2">
                 <h3>What do you want to improve?</h3>
@@ -215,11 +225,13 @@ class WelcomeExperience {
                         </div>
                     </label>
                 </div>
+            </div>
+        `;
 
-                <div class="step-actions">
-                    <button class="btn-secondary" id="backToStep1">← Back</button>
-                    <button class="btn-primary" id="continueToStep3">Continue →</button>
-                </div>
+        footer.innerHTML = `
+            <div class="step-actions">
+                <button class="btn-secondary" id="backToStep1">← Back</button>
+                <button class="btn-primary" id="continueToStep3">Continue →</button>
             </div>
         `;
 
@@ -241,6 +253,8 @@ class WelcomeExperience {
         this.updateProgress();
 
         const content = this.modal.querySelector('#welcomeContent');
+        const footer = this.modal.querySelector('#welcomeFooter');
+
         content.innerHTML = `
             <div class="welcome-step step-3">
                 <h3>Quick Tour 🚀</h3>
@@ -301,11 +315,13 @@ class WelcomeExperience {
                         </div>
                     </div>
                 </div>
+            </div>
+        `;
 
-                <div class="step-actions">
-                    <button class="btn-secondary" id="backToStep2">← Back</button>
-                    <button class="btn-primary btn-large" id="finishWelcome">Let's Play! 🎉</button>
-                </div>
+        footer.innerHTML = `
+            <div class="step-actions">
+                <button class="btn-secondary" id="backToStep2">← Back</button>
+                <button class="btn-primary btn-large" id="finishWelcome">Let's Play! 🎉</button>
             </div>
         `;
 
