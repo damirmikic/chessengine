@@ -3841,6 +3841,146 @@ body.light-mode .win-prob-bar.black {
     font-size: 1em;
 }
 
+/* ===========================
+   Captured Pieces Display
+   =========================== */
+
+.board-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+}
+
+.captured-pieces-container {
+    width: 600px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s;
+    margin-bottom: 8px;
+}
+
+.captured-pieces-container.white-captures {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+.captured-pieces-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 60px;
+}
+
+.player-label {
+    font-size: 0.75em;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.material-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--accent);
+    padding: 2px 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    min-width: 30px;
+    text-align: center;
+}
+
+.captured-pieces-list {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 32px;
+}
+
+.captured-piece {
+    font-size: 1.8em;
+    line-height: 1;
+    transition: transform 0.2s;
+    animation: pieceCapture 0.3s ease-out;
+}
+
+@keyframes pieceCapture {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.captured-piece:hover {
+    transform: scale(1.2);
+}
+
+.no-captures {
+    color: var(--text-secondary);
+    font-size: 1.2em;
+    opacity: 0.5;
+}
+
+/* Material Advantage Display */
+.material-advantage-display {
+    width: 600px;
+    text-align: center;
+    padding: 4px 0;
+    margin-top: 4px;
+}
+
+.material-advantage {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.material-advantage.equal {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+}
+
+.material-advantage.white {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.material-advantage.black {
+    background: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+/* Light mode adjustments */
+body.light-mode .material-advantage.white {
+    background: rgba(100, 100, 100, 0.1);
+    color: #333333;
+    border: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+body.light-mode .material-advantage.black {
+    background: rgba(0, 0, 0, 0.15);
+    color: #000000;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .move-comparison {
@@ -3858,5 +3998,15 @@ body.light-mode .win-prob-bar.black {
 
     .accuracy-stat {
         min-width: calc(50% - 6px);
+    }
+
+    .captured-pieces-container,
+    .material-advantage-display {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .captured-piece {
+        font-size: 1.5em;
     }
 }
