@@ -19,6 +19,15 @@ import {
     getTacticalThemes
 } from './learning-tracker.js';
 
+import {
+    OPENINGS_LIBRARY,
+    ENDGAMES_LIBRARY,
+    getOpeningsByCategory,
+    getEndgamesByCategory,
+    getTotalOpeningPositions,
+    getTotalEndgamePositions
+} from './openings-endgames-trainer.js';
+
 /**
  * Drill collections with classic positions
  */
@@ -614,10 +623,94 @@ function renderTrainingTab(container) {
         </div>
     `;
 
+    // Helper to render opening collections
+    const renderOpeningSection = (opening) => `
+        <div class="exercise-card opening-card">
+            <div class="exercise-header">
+                <span class="exercise-theme">${opening.title}</span>
+                <span class="opening-eco">${opening.eco}</span>
+                <span class="difficulty-badge ${opening.difficulty}">${opening.difficulty}</span>
+            </div>
+            <div class="exercise-description">
+                <strong>${opening.category}</strong> - ${opening.positions.length} key positions
+            </div>
+            <div class="exercise-positions">
+                ${opening.positions.map((pos, i) => `
+                    <div class="position-item opening-item" data-fen="${pos.fen}">
+                        <span class="position-number">#${i + 1}</span>
+                        <div class="opening-position-info">
+                            <span class="opening-position-title">${pos.title}</span>
+                            <span class="opening-position-desc">${pos.description}</span>
+                            ${pos.keyIdeas ? `
+                                <div class="key-ideas">
+                                    <strong>Key Ideas:</strong>
+                                    <ul>
+                                        ${pos.keyIdeas.map(idea => `<li>${idea}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="practice-btn">Study</button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    // Helper to render endgame collections
+    const renderEndgameSection = (endgame) => `
+        <div class="exercise-card endgame-card">
+            <div class="exercise-header">
+                <span class="exercise-theme">${endgame.title}</span>
+                <span class="difficulty-badge ${endgame.difficulty}">${endgame.difficulty}</span>
+            </div>
+            <div class="exercise-description">
+                <strong>${endgame.category}</strong> - ${endgame.positions.length} essential positions
+            </div>
+            <div class="exercise-positions">
+                ${endgame.positions.map((pos, i) => `
+                    <div class="position-item endgame-item" data-fen="${pos.fen}">
+                        <span class="position-number">#${i + 1}</span>
+                        <div class="endgame-position-info">
+                            <span class="endgame-position-title">${pos.title}</span>
+                            <span class="endgame-position-desc">${pos.description}</span>
+                            ${pos.goal ? `<div class="endgame-goal"><strong>Goal:</strong> ${pos.goal}</div>` : ''}
+                            ${pos.keyIdeas ? `
+                                <div class="key-ideas">
+                                    <strong>Key Ideas:</strong>
+                                    <ul>
+                                        ${pos.keyIdeas.map(idea => `<li>${idea}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="practice-btn">Practice</button>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
     container.innerHTML = `
         <div class="training-header">
             <h3>🎯 Training Mode</h3>
-            <p class="training-intro">Master classic patterns and review your past mistakes.</p>
+            <p class="training-intro">Master openings, endgames, classic patterns and review your past mistakes.</p>
+        </div>
+
+        <div class="training-section">
+            <h4>📖 Chess Openings (${getTotalOpeningPositions()} positions)</h4>
+            <p class="section-description">Learn the most important chess openings and their key ideas.</p>
+            <div class="training-exercises">
+                ${OPENINGS_LIBRARY.map(renderOpeningSection).join('')}
+            </div>
+        </div>
+
+        <div class="training-section">
+            <h4>♔ Endgame Mastery (${getTotalEndgamePositions()} positions)</h4>
+            <p class="section-description">Master essential endgame positions every chess player must know.</p>
+            <div class="training-exercises">
+                ${ENDGAMES_LIBRARY.map(renderEndgameSection).join('')}
+            </div>
         </div>
 
         <div class="training-section">
@@ -658,7 +751,7 @@ function renderTrainingTab(container) {
         </div>
     `;
 
-    // Add position load listeners for both drill items and regular positions
+    // Add position load listeners for all position items
     container.querySelectorAll('.position-item').forEach(item => {
         item.addEventListener('click', (e) => {
             // Don't trigger if clicking the practice button
