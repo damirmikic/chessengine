@@ -109,21 +109,42 @@ export async function analyzeMatch(moves, engineAnalyzeFn, userColor = 'white') 
 
             // Calculate evaluation loss
             const evalLoss = calculateEvalLoss(previousEval, currentEval, move.color === 'w' ? 'white' : 'black');
-            const quality = classifyMoveQuality(Math.abs(evalLoss));
 
-            // Determine annotation
-            let annotation = move.annotation;
-            if (!annotation) {
-                if (evalLoss < 0.1) {
+            // Check if this is the best move
+            const isBestMove = bestMoveSan && (move.san === bestMoveSan || Math.abs(evalLoss) < 0.05);
+
+            // Determine quality and annotation
+            let quality, annotation;
+
+            if (!move.annotation) {
+                if (isBestMove) {
+                    quality = 'Best Move';
+                    annotation = '⭐';
+                } else if (evalLoss < 0.1) {
+                    quality = 'Excellent';
                     annotation = '!!';
                 } else if (evalLoss < 0.3) {
+                    quality = 'Good Move';
                     annotation = '!';
                 } else if (evalLoss >= 0.3 && evalLoss < 1.0) {
+                    quality = 'Inaccuracy';
                     annotation = '!?';
                 } else if (evalLoss >= 1.0 && evalLoss < 2.5) {
+                    quality = 'Mistake';
                     annotation = '?';
                 } else if (evalLoss >= 2.5) {
+                    quality = 'BLUNDER';
                     annotation = '??';
+                }
+            } else {
+                annotation = move.annotation;
+                // Determine quality from existing annotation
+                if (isBestMove) {
+                    quality = 'Best Move';
+                    annotation = '⭐';
+                } else {
+                    const classifiedQuality = classifyMoveQuality(Math.abs(evalLoss));
+                    quality = classifiedQuality.title;
                 }
             }
 
@@ -140,8 +161,9 @@ export async function analyzeMatch(moves, engineAnalyzeFn, userColor = 'white') 
                 bestMoveUci: bestMoveUci,
                 bestEvaluation: bestEvaluation,
                 evalLoss: Math.abs(evalLoss),
-                quality: quality.title,
-                annotation: annotation
+                quality: quality,
+                annotation: annotation,
+                isBestMove: isBestMove
             });
 
             previousEval = currentEval;
@@ -250,6 +272,7 @@ export function calculateAccuracy() {
         return {
             accuracy: 0,
             totalMoves: 0,
+            bestMoves: 0,
             goodMoves: 0,
             inaccuracies: 0,
             mistakes: 0,
@@ -257,13 +280,16 @@ export function calculateAccuracy() {
         };
     }
 
+    let bestMoves = 0;
     let goodMoves = 0;
     let inaccuracies = 0;
     let mistakes = 0;
     let blunders = 0;
 
     userMoves.forEach(move => {
-        if (move.annotation === '!!' || move.annotation === '!' || !move.annotation) {
+        if (move.annotation === '⭐' || move.isBestMove) {
+            bestMoves++;
+        } else if (move.annotation === '!!' || move.annotation === '!') {
             goodMoves++;
         } else if (move.annotation === '!?') {
             inaccuracies++;
@@ -271,14 +297,19 @@ export function calculateAccuracy() {
             mistakes++;
         } else if (move.annotation === '??') {
             blunders++;
+        } else {
+            // Default to good move if no annotation
+            goodMoves++;
         }
     });
 
-    const accuracy = Math.round((goodMoves / totalMoves) * 100);
+    // Calculate accuracy: best moves and good moves count as accurate
+    const accuracy = Math.round(((bestMoves + goodMoves) / totalMoves) * 100);
 
     return {
         accuracy,
         totalMoves,
+        bestMoves,
         goodMoves,
         inaccuracies,
         mistakes,

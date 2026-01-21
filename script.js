@@ -1804,12 +1804,14 @@ function handleMatchAnalysisUpdate(update) {
         // Update accuracy summary
         if (accuracy) {
             const accuracyValue = document.getElementById('accuracyValue');
+            const bestMovesCount = document.getElementById('bestMovesCount');
             const goodMovesCount = document.getElementById('goodMovesCount');
             const inaccuraciesCount = document.getElementById('inaccuraciesCount');
             const mistakesCount = document.getElementById('mistakesCount');
             const blundersCount = document.getElementById('blundersCount');
 
             if (accuracyValue) accuracyValue.textContent = `${accuracy.accuracy}%`;
+            if (bestMovesCount) bestMovesCount.textContent = accuracy.bestMoves || 0;
             if (goodMovesCount) goodMovesCount.textContent = accuracy.goodMoves;
             if (inaccuraciesCount) inaccuraciesCount.textContent = accuracy.inaccuracies;
             if (mistakesCount) mistakesCount.textContent = accuracy.mistakes;
@@ -1839,7 +1841,9 @@ function handleMatchAnalysisUpdate(update) {
             if (playedAnnotation) {
                 playedAnnotation.textContent = currentMove.annotation || '';
                 playedAnnotation.className = 'move-annotation';
-                if (currentMove.annotation === '!!' || currentMove.annotation === '!') {
+                if (currentMove.annotation === '⭐') {
+                    playedAnnotation.classList.add('best');
+                } else if (currentMove.annotation === '!!' || currentMove.annotation === '!') {
                     playedAnnotation.classList.add('good');
                 } else if (currentMove.annotation === '!?') {
                     playedAnnotation.classList.add('inaccuracy');
@@ -1853,7 +1857,9 @@ function handleMatchAnalysisUpdate(update) {
             if (playedQuality) {
                 playedQuality.textContent = currentMove.quality;
                 playedQuality.className = 'move-quality';
-                if (currentMove.quality === 'Good Move') {
+                if (currentMove.quality === 'Best Move') {
+                    playedQuality.classList.add('best');
+                } else if (currentMove.quality === 'Good Move' || currentMove.quality === 'Excellent') {
                     playedQuality.classList.add('good');
                 } else if (currentMove.quality === 'Inaccuracy') {
                     playedQuality.classList.add('inaccuracy');
@@ -1864,9 +1870,13 @@ function handleMatchAnalysisUpdate(update) {
                 }
             }
 
-            // Show/hide best move section if move was perfect or not
+            // Show/hide best move section
             if (bestMoveSection) {
-                if (currentMove.bestMove && currentMove.bestMove !== currentMove.san) {
+                if (currentMove.isBestMove || currentMove.quality === 'Best Move') {
+                    // Hide best move section when player played the best move
+                    bestMoveSection.style.display = 'none';
+                } else if (currentMove.bestMove && currentMove.bestMove !== currentMove.san) {
+                    // Show alternative best move
                     bestMoveSection.style.display = 'block';
                     if (bestMove) bestMove.textContent = currentMove.bestMove;
                     if (evalLoss) evalLoss.textContent = `Loss: ${currentMove.evalLoss.toFixed(2)} pawns`;
