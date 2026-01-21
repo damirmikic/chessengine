@@ -98,6 +98,24 @@ import {
     getProgressData
 } from './learning-tracker.js';
 
+import {
+    initializeMatchAnalysis,
+    analyzeMatch,
+    goToMove,
+    nextMove,
+    previousMove,
+    firstMove,
+    lastMove,
+    getCurrentMove,
+    getAnalyzedMoves,
+    calculateAccuracy,
+    getCurrentIndex,
+    getTotalMoves,
+    isAnalyzing,
+    getProgress,
+    resetAnalysis
+} from './match-analysis.js';
+
 // Chess Clock
 import {
     initializeClock,
@@ -206,6 +224,11 @@ async function initializeApp() {
             onMoveClick: handleMoveNavigation
         });
 
+        // Initialize match analysis
+        initializeMatchAnalysis({
+            onUpdate: handleMatchAnalysisUpdate
+        });
+
         // Set up UI event listeners
         setupEventListeners();
         setupTabs();
@@ -308,6 +331,14 @@ function setupEventListeners() {
     const clockEnabledToggle = document.getElementById('clockEnabled');
     const clockPresetSelect = document.getElementById('clockPreset');
 
+    // Match Analysis buttons
+    const loadMatchAnalysisBtn = document.getElementById('loadMatchAnalysisBtn');
+    const closeMatchAnalysisBtn = document.getElementById('closeMatchAnalysisBtn');
+    const firstMoveBtn = document.getElementById('firstMoveBtn');
+    const prevMoveBtn = document.getElementById('prevMoveBtn');
+    const nextMoveBtn = document.getElementById('nextMoveBtn');
+    const lastMoveBtn = document.getElementById('lastMoveBtn');
+
     if (resetBtn) resetBtn.addEventListener('click', handleReset);
     if (undoBtn) undoBtn.addEventListener('click', handleUndo);
     if (flipBtn) flipBtn.addEventListener('click', handleFlip);
@@ -332,6 +363,22 @@ function setupEventListeners() {
     if (learningDashboardBtn) learningDashboardBtn.addEventListener('click', showLearningDashboard);
     if (analyzeGameBtn) analyzeGameBtn.addEventListener('click', handleAnalyzeCompleteGame);
     if (difficultySelect) difficultySelect.addEventListener('change', updateDifficultyBadge);
+
+    // Match Analysis event listeners
+    if (loadMatchAnalysisBtn) loadMatchAnalysisBtn.addEventListener('click', handleLoadMatchAnalysis);
+    if (closeMatchAnalysisBtn) closeMatchAnalysisBtn.addEventListener('click', handleCloseMatchAnalysis);
+    if (firstMoveBtn) firstMoveBtn.addEventListener('click', () => {
+        firstMove();
+    });
+    if (prevMoveBtn) prevMoveBtn.addEventListener('click', () => {
+        previousMove();
+    });
+    if (nextMoveBtn) nextMoveBtn.addEventListener('click', () => {
+        nextMove();
+    });
+    if (lastMoveBtn) lastMoveBtn.addEventListener('click', () => {
+        lastMove();
+    });
 
     // Chess Clock controls
     if (clockEnabledToggle) {
@@ -1627,6 +1674,270 @@ async function handleEngineSwitching(newType) {
         showMessage('Failed to switch engine. Please try again.');
         updateEngineStatusUI('disconnected', newType);
     }
+}
+
+/**
+ * Handles loading a saved game for match analysis
+ */
+function handleLoadMatchAnalysis() {
+    // Show load game modal
+    showLoadGameModal((game) => {
+        startMatchAnalysis(game);
+    });
+}
+
+/**
+ * Starts analyzing a loaded game
+ * @param {Object} game - Saved game object
+ */
+async function startMatchAnalysis(game) {
+    if (!game || !game.moves || game.moves.length === 0) {
+        showMessage('No moves to analyze');
+        return;
+    }
+
+    // Switch to analysis tab
+    switchTab('analysis');
+
+    // Show the match analysis panel
+    const panel = document.getElementById('matchAnalysisPanel');
+    if (panel) {
+        panel.style.display = 'block';
+    }
+
+    // Hide other analysis panels
+    hideCriticalMoments();
+    hideBestMoves();
+    const puzzlesPanel = document.getElementById('puzzlesPanel');
+    if (puzzlesPanel) puzzlesPanel.style.display = 'none';
+
+    // Show progress
+    const progressDiv = document.getElementById('analysisProgress');
+    if (progressDiv) progressDiv.style.display = 'block';
+
+    // Create engine analysis function
+    const analyzePosition = async (fen) => {
+        try {
+            // Request analysis from engine (depth 12 for reasonable speed/accuracy balance)
+            engineManager.evaluatePosition(fen, 12, 'analysis');
+
+            // Wait for evaluation result with timeout
+            return await new Promise((resolve) => {
+                let timeoutId;
+                let resolved = false;
+
+                const handler = (data) => {
+                    if (!resolved && data.evaluation !== undefined && data.bestMove) {
+                        resolved = true;
+                        clearTimeout(timeoutId);
+                        resolve({
+                            bestMove: data.bestMove,
+                            evaluation: data.evaluation
+                        });
+                    }
+                };
+
+                // Set up temporary listener
+                const originalHandler = engineManager.callbacks.onEvaluation;
+                engineManager.callbacks.onEvaluation = handler;
+
+                // Timeout after 2 seconds (faster for batch analysis)
+                timeoutId = setTimeout(() => {
+                    if (!resolved) {
+                        resolved = true;
+                        engineManager.callbacks.onEvaluation = originalHandler;
+                        // Return previous evaluation if available
+                        const engineState = engineManager.getEngineState();
+                        resolve({
+                            bestMove: engineState.bestMove || null,
+                            evaluation: engineState.currentEval || 0
+                        });
+                    }
+                }, 2000);
+
+                // Cleanup function
+                setTimeout(() => {
+                    engineManager.callbacks.onEvaluation = originalHandler;
+                }, 2500);
+            });
+        } catch (error) {
+            console.error('Error analyzing position:', error);
+            return { bestMove: null, evaluation: 0 };
+        }
+    };
+
+    // Start the analysis
+    try {
+        await analyzeMatch(game.moves, analyzePosition, 'white');
+    } catch (error) {
+        console.error('Error during match analysis:', error);
+        showMessage('Error analyzing match');
+    }
+}
+
+/**
+ * Handles match analysis state updates
+ * @param {Object} update - Update data from match analysis
+ */
+function handleMatchAnalysisUpdate(update) {
+    const { type, currentMove, currentIndex, totalMoves, accuracy, progress, isAnalyzing } = update;
+
+    if (type === 'analyzing' || type === 'progress') {
+        // Update progress bar
+        const progressText = document.getElementById('analysisProgressText');
+        const progressBar = document.getElementById('matchAnalysisProgressBar');
+        if (progressText && progress) {
+            progressText.textContent = `${progress.percentage}%`;
+        }
+        if (progressBar && progress) {
+            progressBar.style.width = `${progress.percentage}%`;
+        }
+    }
+
+    if (type === 'complete' || type === 'navigate') {
+        // Hide progress
+        const progressDiv = document.getElementById('analysisProgress');
+        if (progressDiv && type === 'complete') {
+            progressDiv.style.display = 'none';
+        }
+
+        // Update accuracy summary
+        if (accuracy) {
+            const accuracyValue = document.getElementById('accuracyValue');
+            const goodMovesCount = document.getElementById('goodMovesCount');
+            const inaccuraciesCount = document.getElementById('inaccuraciesCount');
+            const mistakesCount = document.getElementById('mistakesCount');
+            const blundersCount = document.getElementById('blundersCount');
+
+            if (accuracyValue) accuracyValue.textContent = `${accuracy.accuracy}%`;
+            if (goodMovesCount) goodMovesCount.textContent = accuracy.goodMoves;
+            if (inaccuraciesCount) inaccuraciesCount.textContent = accuracy.inaccuracies;
+            if (mistakesCount) mistakesCount.textContent = accuracy.mistakes;
+            if (blundersCount) blundersCount.textContent = accuracy.blunders;
+        }
+
+        // Update current move display
+        if (currentMove) {
+            const moveProgressText = document.getElementById('moveProgressText');
+            const playedMove = document.getElementById('playedMove');
+            const playedAnnotation = document.getElementById('playedAnnotation');
+            const playedQuality = document.getElementById('playedQuality');
+            const bestMove = document.getElementById('bestMove');
+            const bestMoveSection = document.getElementById('bestMoveSection');
+            const evalLoss = document.getElementById('evalLoss');
+            const evalBefore = document.getElementById('evalBefore');
+            const evalAfter = document.getElementById('evalAfter');
+
+            if (moveProgressText) {
+                moveProgressText.textContent = `Move ${currentIndex + 1} of ${totalMoves}`;
+            }
+
+            if (playedMove) {
+                playedMove.textContent = currentMove.san;
+            }
+
+            if (playedAnnotation) {
+                playedAnnotation.textContent = currentMove.annotation || '';
+                playedAnnotation.className = 'move-annotation';
+                if (currentMove.annotation === '!!' || currentMove.annotation === '!') {
+                    playedAnnotation.classList.add('good');
+                } else if (currentMove.annotation === '!?') {
+                    playedAnnotation.classList.add('inaccuracy');
+                } else if (currentMove.annotation === '?') {
+                    playedAnnotation.classList.add('mistake');
+                } else if (currentMove.annotation === '??') {
+                    playedAnnotation.classList.add('blunder');
+                }
+            }
+
+            if (playedQuality) {
+                playedQuality.textContent = currentMove.quality;
+                playedQuality.className = 'move-quality';
+                if (currentMove.quality === 'Good Move') {
+                    playedQuality.classList.add('good');
+                } else if (currentMove.quality === 'Inaccuracy') {
+                    playedQuality.classList.add('inaccuracy');
+                } else if (currentMove.quality === 'Mistake') {
+                    playedQuality.classList.add('mistake');
+                } else if (currentMove.quality === 'BLUNDER') {
+                    playedQuality.classList.add('blunder');
+                }
+            }
+
+            // Show/hide best move section if move was perfect or not
+            if (bestMoveSection) {
+                if (currentMove.bestMove && currentMove.bestMove !== currentMove.san) {
+                    bestMoveSection.style.display = 'block';
+                    if (bestMove) bestMove.textContent = currentMove.bestMove;
+                    if (evalLoss) evalLoss.textContent = `Loss: ${currentMove.evalLoss.toFixed(2)} pawns`;
+                } else {
+                    bestMoveSection.style.display = 'none';
+                }
+            }
+
+            if (evalBefore) {
+                const prevEval = currentMove.previousEvaluation || 0;
+                evalBefore.textContent = prevEval > 0 ? `+${prevEval.toFixed(1)}` : prevEval.toFixed(1);
+                evalBefore.className = 'eval-value';
+                if (prevEval > 0.5) evalBefore.classList.add('positive');
+                else if (prevEval < -0.5) evalBefore.classList.add('negative');
+            }
+
+            if (evalAfter) {
+                const currEval = currentMove.evaluation || 0;
+                evalAfter.textContent = currEval > 0 ? `+${currEval.toFixed(1)}` : currEval.toFixed(1);
+                evalAfter.className = 'eval-value';
+                if (currEval > 0.5) evalAfter.classList.add('positive');
+                else if (currEval < -0.5) evalAfter.classList.add('negative');
+            }
+
+            // Load position on board
+            loadPosition(currentMove.fen);
+            updateEvaluationBar(currentMove.evaluation || 0);
+
+            // Draw best move arrow if different from played move
+            if (currentMove.bestMoveUci && currentMove.bestMove !== currentMove.san) {
+                drawAnalysisShapes(currentMove.bestMoveUci);
+            } else {
+                clearShapes();
+            }
+        }
+
+        // Update navigation button states
+        const firstBtn = document.getElementById('firstMoveBtn');
+        const prevBtn = document.getElementById('prevMoveBtn');
+        const nextBtn = document.getElementById('nextMoveBtn');
+        const lastBtn = document.getElementById('lastMoveBtn');
+
+        if (firstBtn) firstBtn.disabled = currentIndex === 0;
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex >= totalMoves - 1;
+        if (lastBtn) lastBtn.disabled = currentIndex >= totalMoves - 1;
+    }
+}
+
+/**
+ * Closes the match analysis panel
+ */
+function handleCloseMatchAnalysis() {
+    const panel = document.getElementById('matchAnalysisPanel');
+    if (panel) {
+        panel.style.display = 'none';
+    }
+
+    // Reset analysis state
+    resetAnalysis();
+
+    // Return to current game position
+    const moves = getMoves();
+    if (moves.length > 0) {
+        const lastMove = moves[moves.length - 1];
+        loadPosition(lastMove.fen);
+    } else {
+        loadPosition('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    }
+
+    clearShapes();
 }
 
 // Initialize application when DOM is ready
