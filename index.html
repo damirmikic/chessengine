@@ -12,6 +12,7 @@
     <!-- Piece CSS - dynamically loaded by themes.js -->
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="context-navigation.css">
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg" type="image/svg+xml">
     <!-- PeerJS for WebRTC -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -19,7 +20,7 @@
 
 <body>
 
-    <!-- Adaptive Header -->
+    <!-- Persistent Header with Context-Aware Navigation -->
     <header class="app-header">
         <div class="header-left">
             <div class="app-logo">
@@ -29,27 +30,36 @@
         </div>
 
         <div class="header-center">
-            <div class="quick-actions desktop-only">
-                <button id="headerNewGameBtn" class="quick-action-btn" title="New Game">
-                    <span class="action-icon">🎮</span>
-                    <span class="action-label">New Game</span>
+            <nav class="primary-nav">
+                <button class="nav-btn active" data-context="game-active" id="navPlayBtn" title="Play Chess">
+                    <span class="nav-icon">🎮</span>
+                    <span class="nav-label">New Game</span>
                 </button>
-                <button id="headerUndoBtn" class="quick-action-btn" title="Undo Move">
-                    <span class="action-icon">↶</span>
-                    <span class="action-label">Undo</span>
+                <button class="nav-btn" data-context="analysis" id="navAnalysisBtn" title="Analyze Positions">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">Analysis</span>
                 </button>
-                <button id="headerAnalyzeBtn" class="quick-action-btn" title="Analyze">
-                    <span class="action-icon">🔍</span>
-                    <span class="action-label">Analyze</span>
+                <button class="nav-btn" data-context="learning" id="navLearnBtn" title="Learning & Training">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-label">Learn</span>
                 </button>
-            </div>
+            </nav>
         </div>
 
         <div class="header-right">
-            <div id="headerEngineStatus" class="header-engine-status">
-                <span class="engine-indicator">⚫</span>
-                <span class="engine-text desktop-only">Engine Ready</span>
+            <div class="engine-status-group">
+                <span class="engine-label desktop-only">Engine:</span>
+                <button id="engineToggleBtn" class="engine-toggle" title="Switch between Local and Cloud engine">
+                    <span class="engine-indicator active" id="engineIndicator">●</span>
+                    <span class="engine-text" id="engineText">Local</span>
+                </button>
             </div>
+            <button id="navSettingsBtn" class="settings-btn" data-context="settings" title="Settings">
+                <span class="settings-icon">⚙️</span>
+            </button>
+            <button id="commandPaletteBtn" class="command-palette-btn desktop-only" title="Command Palette (⌘K)">
+                <span class="palette-icon">⌘</span>
+            </button>
             <button id="headerMenuBtn" class="header-menu-btn mobile-only">
                 <span class="menu-icon">☰</span>
             </button>
@@ -196,18 +206,10 @@
                 </div>
             </div>
 
-            <!-- Tab Navigation -->
-            <div class="sidebar-tabs">
-                <button class="sidebar-tab active" data-tab="play">🎮 Play</button>
-                <button class="sidebar-tab" data-tab="analysis">🧠 Analysis</button>
-                <button class="sidebar-tab" data-tab="settings">⚙️ Settings</button>
-                <button class="sidebar-tab" data-tab="community">👥 Community</button>
-            </div>
-
-            <!-- Tab Content Area -->
-            <div class="tab-content">
-                <!-- PLAY TAB -->
-                <div class="tab-panel active" id="tab-play">
+            <!-- Context-Aware Content Area -->
+            <div class="context-content">
+                <!-- CONTEXT: GAME ACTIVE (During gameplay) -->
+                <div class="context-panel active" id="context-game-active">
                     <!-- Action Buttons - Moved up for accessibility -->
                     <div class="button-group compact">
                         <button id="resetBtn" class="primary-btn" title="Start a fresh new game">New Game</button>
@@ -254,8 +256,70 @@
                     </button>
                 </div>
 
-                <!-- ANALYSIS TAB -->
-                <div class="tab-panel" id="tab-analysis">
+                <!-- CONTEXT: GAME ENDED (After game finishes) -->
+                <div class="context-panel" id="context-game-ended">
+                    <!-- Game Summary -->
+                    <div class="game-summary-section">
+                        <div class="summary-header">
+                            <h3>🎯 Game Over</h3>
+                            <div id="gameResult" class="game-result">-</div>
+                        </div>
+
+                        <!-- Accuracy Summary -->
+                        <div id="gameEndedAccuracy" class="accuracy-summary">
+                            <div class="accuracy-main">
+                                <div class="accuracy-label">Your Accuracy</div>
+                                <div class="accuracy-value" id="finalAccuracyValue">--%</div>
+                            </div>
+                            <div class="accuracy-breakdown">
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon best">⭐</span>
+                                    <span id="finalBestMoves">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon good">!</span>
+                                    <span id="finalGoodMoves">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon inaccuracy">!?</span>
+                                    <span id="finalInaccuracies">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon mistake">?</span>
+                                    <span id="finalMistakes">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon blunder">??</span>
+                                    <span id="finalBlunders">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Critical Moments Summary -->
+                        <div id="criticalMomentsEndedPanel" class="critical-moments-summary">
+                            <h4>🔍 Critical Moments</h4>
+                            <div id="criticalMomentsEndedList" class="moments-list">
+                                <!-- Will be populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="post-game-actions">
+                            <button id="reviewGameBtn" class="primary-btn">
+                                📊 Review Full Game
+                            </button>
+                            <button id="newGameFromEndBtn" class="secondary-btn">
+                                🎮 New Game
+                            </button>
+                            <button id="saveCompletedGameBtn" class="secondary-btn">
+                                💾 Save Game
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTEXT: ANALYSIS (Analysis mode) -->
+                <div class="context-panel" id="context-analysis">
                     <!-- Mate Detection Alert -->
                     <div id="mateAlert" class="mate-alert" style="display: none;">
                         <div class="mate-icon">🎯</div>
@@ -447,8 +511,51 @@
                     </div>
                 </div>
 
-                <!-- SETTINGS TAB -->
-                <div class="tab-panel" id="tab-settings">
+                <!-- CONTEXT: LEARNING (Learning Dashboard) -->
+                <div class="context-panel" id="context-learning">
+                    <div class="learning-context-header">
+                        <h3>📚 Learning & Training</h3>
+                        <p class="context-description">Improve your chess with lessons, puzzles, and drills</p>
+                    </div>
+
+                    <!-- Learning Dashboard Button -->
+                    <button id="openLearningBtn" class="primary-btn full-width">
+                        📊 Open Learning Dashboard
+                    </button>
+
+                    <!-- Quick Learning Stats -->
+                    <div class="learning-quick-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalGamesPlayed">0</div>
+                            <div class="stat-label">Games Played</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="averageAccuracy">--%</div>
+                            <div class="stat-label">Avg Accuracy</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="puzzlesSolved">0</div>
+                            <div class="stat-label">Puzzles Solved</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Access to Training -->
+                    <div class="learning-quick-access">
+                        <h4>Quick Training</h4>
+                        <button class="training-btn" id="openingsTrainerBtn">
+                            ♔ Opening Trainer
+                        </button>
+                        <button class="training-btn" id="endgamesTrainerBtn">
+                            ♚ Endgame Trainer
+                        </button>
+                        <button class="training-btn" id="tacticsTrainerBtn">
+                            ⚡ Tactics Puzzles
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTEXT: SETTINGS -->
+                <div class="context-panel" id="context-settings">
                     <div class="settings-section">
                         <h4>⚡ Analysis Engine</h4>
                         <div class="engine-selector-panel">
@@ -605,12 +712,9 @@
                             </label>
                         </div>
                     </div>
-                </div>
 
-                <!-- COMMUNITY TAB -->
-                <div class="tab-panel" id="tab-community">
-                    <div class="community-section">
-                        <h4>Local Play</h4>
+                    <div class="settings-section">
+                        <h4>Multiplayer & Community</h4>
                         <div class="control-group">
                             <label class="toggle-switch-label">
                                 <span>👥 Pass & Play Mode</span>
@@ -619,32 +723,23 @@
                                     <span class="toggle-slider"></span>
                                 </label>
                             </label>
-                            <p class="section-hint">Play against a friend on the same device. Engine moves are disabled.
-                            </p>
+                            <p class="section-hint">Play against a friend on the same device</p>
                         </div>
-                    </div>
 
-                    <div class="community-section">
-                        <h4>Online Multiplayer (WebRTC)</h4>
-                        <div id="onlineStatus" class="online-status disconnected">Disconnected</div>
-
-                        <div class="multiplayer-controls">
+                        <div class="multiplayer-quick-section">
+                            <h5>Online Multiplayer</h5>
+                            <div id="onlineStatus" class="online-status disconnected">Disconnected</div>
                             <div id="connectionPanel">
                                 <p class="section-hint">Your Peer ID:</p>
                                 <div class="id-container">
                                     <code id="myPeerId">---</code>
                                     <button id="copyIdBtn" class="icon-btn" title="Copy ID">📋</button>
                                 </div>
-
                                 <div class="connect-input-group">
                                     <input type="text" id="remotePeerId" placeholder="Friend's Peer ID">
                                     <button id="connectBtn" class="primary-btn">Connect</button>
                                 </div>
-                                <button id="shareLinkBtn" class="secondary-btn" style="margin-top: 10px; width: 100%;">
-                                    🔗 Copy Challenge Link
-                                </button>
                             </div>
-
                             <div id="activeConnectionPanel" style="display: none;">
                                 <div class="opponent-info">
                                     Connected to: <span id="connectedPeerId">---</span>
@@ -653,14 +748,10 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="community-section">
-                        <h4>Local Leaderboard</h4>
-                        <div id="leaderboardList" class="leaderboard-list">
-                            <div class="leaderboard-empty">No games recorded yet</div>
-                        </div>
-                    </div>
                 </div>
+
+                <!-- Multiplayer features now integrated into Settings -->
+                <!-- Community/Multiplayer features can be accessed from Settings context -->
             </div>
         </div>
         </aside>
@@ -742,6 +833,11 @@
         </div>
     </div>
 
+    <!-- Context-aware navigation system -->
+    <script type="module" src="context-manager.js"></script>
+    <script type="module" src="keyboard-shortcuts.js"></script>
+
+    <!-- Existing modules -->
     <script type="module" src="layout-controller.js"></script>
     <script type="module" src="captured-pieces.js"></script>
     <script type="module" src="script.js"></script>
