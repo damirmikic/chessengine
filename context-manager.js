@@ -142,7 +142,12 @@ class ContextManager {
      */
     updateRightPanel() {
         const rightPanel = document.getElementById('rightPanel');
-        if (!rightPanel) return;
+        if (!rightPanel) {
+            console.error('Right panel not found!');
+            return;
+        }
+
+        console.log('Updating right panel for context:', this.currentContext);
 
         // Add transition class
         rightPanel.classList.add('transitioning');
@@ -155,16 +160,23 @@ class ContextManager {
 
         // Hide all context panels
         const allPanels = document.querySelectorAll('.context-panel');
-        allPanels.forEach(panel => panel.classList.remove('active'));
+        console.log('Found context panels:', allPanels.length);
+        allPanels.forEach(panel => {
+            panel.classList.remove('active');
+            console.log('Hiding panel:', panel.id);
+        });
 
         // Show the appropriate context panel
         const targetPanel = document.getElementById(`context-${this.currentContext}`);
         if (targetPanel) {
+            console.log('Showing target panel:', targetPanel.id);
             setTimeout(() => {
                 targetPanel.classList.add('active');
                 rightPanel.classList.remove('transitioning');
+                console.log('Panel activated:', targetPanel.id);
             }, this.transitionDuration);
         } else {
+            console.error('Target panel not found:', `context-${this.currentContext}`);
             rightPanel.classList.remove('transitioning');
         }
 
