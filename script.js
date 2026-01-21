@@ -399,10 +399,16 @@ function setupEventListeners() {
 
     if (navSettingsBtn) {
         navSettingsBtn.addEventListener('click', () => {
+            console.log('Settings button clicked');
             if (window.contextManager) {
+                console.log('Context manager found, switching to settings');
                 window.contextManager.setContext('settings');
+            } else {
+                console.error('Context manager not available');
             }
         });
+    } else {
+        console.error('Settings button not found in DOM');
     }
 
     if (engineToggleBtn) {
@@ -1158,6 +1164,12 @@ function updateDifficultyBadge() {
         difficultyBadge.style.display = 'inline-flex';
 
         console.log(`📊 Difficulty badge updated: ${levelName} (depth ${depth})`);
+    } else {
+        console.error('Difficulty badge elements not found:', {
+            badge: !!difficultyBadge,
+            value: !!difficultyValue,
+            select: !!difficultySelect
+        });
     }
 }
 
