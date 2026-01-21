@@ -440,26 +440,18 @@ class LayoutController {
             }
         }
 
-        // Ensure right panel is visible on desktop
+        // Ensure right panel is visible on desktop/tablet
+        // Always start with panel visible - users can manually collapse if needed
         if (width >= 768) {
-            // On desktop/tablet, show right panel unless explicitly collapsed
-            if (!this.isRightPanelCollapsed) {
+            // On desktop/tablet, always show right panel on load
+            // Don't auto-restore collapsed state as it's essential for gameplay
+            if (!this.hasRestoredState) {
+                this.rightPanel.style.display = 'flex';
+                this.isRightPanelCollapsed = false;
+            } else if (!this.isRightPanelCollapsed) {
+                // On subsequent resizes, respect current state
                 this.rightPanel.style.display = 'flex';
             }
-        }
-
-        // Restore saved panel states on first load only
-        const savedLeftCollapsed = localStorage.getItem('leftPanelCollapsed');
-        const savedRightCollapsed = localStorage.getItem('rightPanelCollapsed');
-
-        if (savedLeftCollapsed === 'true' && width >= 1400 && !this.hasRestoredState) {
-            this.isLeftPanelCollapsed = false;
-            this.toggleLeftPanel();
-        }
-
-        if (savedRightCollapsed === 'true' && width >= 1024 && !this.hasRestoredState) {
-            this.isRightPanelCollapsed = false;
-            this.toggleRightPanel();
         }
 
         this.hasRestoredState = true;
