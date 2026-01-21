@@ -40,6 +40,8 @@
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes slideUp {
@@ -57,6 +59,7 @@
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
     padding: 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
 
 .welcome-title {
@@ -116,7 +119,15 @@
 .welcome-content {
     padding: 2rem;
     overflow-y: auto;
-    max-height: calc(85vh - 180px);
+    max-height: calc(85vh - 260px);
+    flex: 1;
+}
+
+.welcome-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .welcome-step h3 {
@@ -293,7 +304,6 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 2rem;
 }
 
 .btn-secondary {
