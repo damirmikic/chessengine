@@ -20,7 +20,36 @@
 <body>
 
     <div class="container">
-        <div id="board" class="board is2d"></div>
+        <div class="board-wrapper">
+            <!-- Captured Pieces Display (Black's captures - above board) -->
+            <div class="captured-pieces-container black-captures">
+                <div class="captured-pieces-header">
+                    <span class="player-label">Black</span>
+                    <span class="material-value" id="black-material-value">0</span>
+                </div>
+                <div class="captured-pieces-list" id="black-captured-pieces">
+                    <span class="no-captures">—</span>
+                </div>
+            </div>
+
+            <div id="board" class="board is2d"></div>
+
+            <!-- Captured Pieces Display (White's captures - below board) -->
+            <div class="captured-pieces-container white-captures">
+                <div class="captured-pieces-header">
+                    <span class="player-label">White</span>
+                    <span class="material-value" id="white-material-value">0</span>
+                </div>
+                <div class="captured-pieces-list" id="white-captured-pieces">
+                    <span class="no-captures">—</span>
+                </div>
+            </div>
+
+            <!-- Material Advantage Display -->
+            <div class="material-advantage-display">
+                <span id="material-advantage" class="material-advantage equal">Equal material</span>
+            </div>
+        </div>
 
         <div class="sidebar">
             <!-- Fixed Top Section (Clocks & Essential Info) -->
@@ -541,6 +570,7 @@
         </div>
     </div>
 
+    <script type="module" src="captured-pieces.js"></script>
     <script type="module" src="script.js"></script>
 
 </body>

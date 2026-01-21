@@ -38,6 +38,12 @@ import {
 } from './openings.js';
 
 import {
+    resetCapturedPieces,
+    addCapturedPiece,
+    setCapturedPieces
+} from './captured-pieces.js';
+
+import {
     initializeMoveHistory,
     addMove,
     annotateLastMove,
@@ -542,6 +548,14 @@ function handleUserMove(moveData) {
     const turn = chess.turn();
     addMove(move.san, null, currentFen, turn === 'w' ? 'b' : 'w');
 
+    // Track captured pieces
+    if (move.captured) {
+        // The player who moved captured the piece
+        // turn is now the opposite color after the move
+        const capturedBy = turn === 'w' ? 'black' : 'white';
+        addCapturedPiece(move.captured, capturedBy);
+    }
+
     // Update opening display
     updateOpeningDisplay(chess);
 
@@ -652,6 +666,15 @@ function handleEngineBestMove(result) {
             const lastMoveSan = moveHistory[moveHistory.length - 1];
             const currentFen = getCurrentFen();
             addMove(lastMoveSan, null, currentFen, beforeTurn);
+
+            // Track captured pieces
+            const verboseMoveHistory = chess.history({ verbose: true });
+            const lastMoveVerbose = verboseMoveHistory[verboseMoveHistory.length - 1];
+            if (lastMoveVerbose && lastMoveVerbose.captured) {
+                // beforeTurn is the color that just moved
+                const capturedBy = beforeTurn === 'w' ? 'white' : 'black';
+                addCapturedPiece(lastMoveVerbose.captured, capturedBy);
+            }
 
             updateOpeningDisplay(chess);
 
@@ -998,6 +1021,7 @@ function handleReset() {
     resetBoard();
     resetMoveHistory();
     resetClock();
+    resetCapturedPieces();
 
     appState.previousEval = 0.3;
     appState.gamePaused = false;
@@ -1061,6 +1085,14 @@ function handleUndo() {
 
     updateOpeningDisplay(getChess());
     showMessage('Move undone.');
+
+    // Update captured pieces display
+    const moves = getMoves();
+    if (moves.length > 0) {
+        updateCapturedPiecesForMoveIndex(moves.length - 1);
+    } else {
+        resetCapturedPieces();
+    }
 
     // Re-evaluate position
     const currentFen = getCurrentFen();
@@ -1176,6 +1208,10 @@ function handleLoadGame() {
                 updateEvaluationBar(lastMove.evaluation);
                 appState.previousEval = lastMove.evaluation;
             }
+            // Update captured pieces display
+            updateCapturedPiecesForMoveIndex(game.moves.length - 1);
+        } else {
+            resetCapturedPieces();
         }
 
         showMessage('Game loaded successfully');
@@ -1250,6 +1286,14 @@ function handleImportPGN(event) {
         loadPosition(currentFen);
         updateOpeningDisplay(chess);
 
+        // Update captured pieces display
+        const moves = getMoves();
+        if (moves.length > 0) {
+            updateCapturedPiecesForMoveIndex(moves.length - 1);
+        } else {
+            resetCapturedPieces();
+        }
+
         showMessage(`PGN imported: ${imported.moves.length} moves`);
     };
 
@@ -1272,6 +1316,9 @@ function handleMoveNavigation(moveIndex, fen) {
     // Load the position
     loadPosition(fen);
 
+    // Update captured pieces for this position
+    updateCapturedPiecesForMoveIndex(moveIndex);
+
     const isLatestMove = moveIndex === moves.length - 1;
 
     if (isLatestMove) {
@@ -1285,6 +1332,45 @@ function handleMoveNavigation(moveIndex, fen) {
     }
 
     setNavigationMode(false);
+}
+
+/**
+ * Updates captured pieces display for a specific move index
+ * @param {number} moveIndex - The move index to display captures up to
+ */
+function updateCapturedPiecesForMoveIndex(moveIndex) {
+    const moves = getMoves();
+
+    // Replay moves from the start to count captures
+    const Chess = getChess().constructor;
+    const tempChess = new Chess();
+
+    const whiteCaptured = [];
+    const blackCaptured = [];
+
+    // Replay moves up to and including the current index
+    for (let i = 0; i <= moveIndex && i < moves.length; i++) {
+        const moveRecord = moves[i];
+
+        // Make the move and check if it was a capture
+        try {
+            const move = tempChess.move(moveRecord.san);
+            if (move && move.captured) {
+                // The player who moved captured the piece
+                const capturedBy = move.color === 'w' ? 'white' : 'black';
+                if (capturedBy === 'white') {
+                    whiteCaptured.push(move.captured);
+                } else {
+                    blackCaptured.push(move.captured);
+                }
+            }
+        } catch (error) {
+            console.error('Error replaying move for capture tracking:', moveRecord.san, error);
+        }
+    }
+
+    // Update the display
+    setCapturedPieces(whiteCaptured, blackCaptured);
 }
 
 /**
