@@ -114,13 +114,29 @@ function handleUserMove(from, to) {
         return;
     }
 
-    // Play sound effect
-    if (boardState.chess.in_check()) {
+    // Play sound effect and update visual state
+    const boardElement = document.getElementById('board');
+    if (boardState.chess.in_checkmate()) {
         themeManager.playSound('check');
-    } else if (move.captured) {
-        themeManager.playSound('capture');
+        if (boardElement) {
+            boardElement.classList.remove('in-check');
+            boardElement.classList.add('in-checkmate');
+        }
+    } else if (boardState.chess.in_check()) {
+        themeManager.playSound('check');
+        if (boardElement) {
+            boardElement.classList.remove('in-checkmate');
+            boardElement.classList.add('in-check');
+        }
     } else {
-        themeManager.playSound('move');
+        if (boardElement) {
+            boardElement.classList.remove('in-check', 'in-checkmate');
+        }
+        if (move.captured) {
+            themeManager.playSound('capture');
+        } else {
+            themeManager.playSound('move');
+        }
     }
 
     // Disable board while processing
@@ -152,13 +168,29 @@ export function performEngineMove(moveStr) {
             return false;
         }
 
-        // Play sound effect
-        if (boardState.chess.in_check()) {
+        // Play sound effect and update visual state
+        const boardElement = document.getElementById('board');
+        if (boardState.chess.in_checkmate()) {
             themeManager.playSound('check');
-        } else if (move.captured) {
-            themeManager.playSound('capture');
+            if (boardElement) {
+                boardElement.classList.remove('in-check');
+                boardElement.classList.add('in-checkmate');
+            }
+        } else if (boardState.chess.in_check()) {
+            themeManager.playSound('check');
+            if (boardElement) {
+                boardElement.classList.remove('in-checkmate');
+                boardElement.classList.add('in-check');
+            }
         } else {
-            themeManager.playSound('move');
+            if (boardElement) {
+                boardElement.classList.remove('in-check', 'in-checkmate');
+            }
+            if (move.captured) {
+                themeManager.playSound('capture');
+            } else {
+                themeManager.playSound('move');
+            }
         }
 
         // Update board display

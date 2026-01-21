@@ -67,6 +67,11 @@
     --border: #333333;
     --sidebar-bg: var(--surface-elevated);
     --animation-duration: 300ms;
+
+    /* Enhanced Easing Functions */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
 body.light-mode {
@@ -199,8 +204,8 @@ body {
 .quick-action-btn:hover {
     background: var(--gradient-primary);
     border-color: transparent;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4), 0 0 20px rgba(76, 175, 80, 0.15);
 }
 
 .quick-action-btn:active {
@@ -742,7 +747,7 @@ body {
     /* Fluid sizing controlled by viewport and user preference */
 }
 
-/* Fluid board sizing based on available space */
+/* Adaptive board sizing: 400px (mobile) to 900px (ultrawide) */
 @media (min-width: 1920px) {
     .board {
         width: 700px;
@@ -757,16 +762,24 @@ body {
     }
 }
 
-/* Adapt board size when panels are collapsed */
+/* Ultrawide displays (3440px+) - Maximum board size */
+@media (min-width: 3440px) {
+    .board {
+        width: 900px;
+        height: 900px;
+    }
+}
+
+/* Adapt board size when panels are collapsed - More space available */
 .layout-container.left-collapsed .board,
 .layout-container.right-collapsed .board {
-    width: 650px;
-    height: 650px;
+    width: min(700px, calc(100vw - 600px));
+    height: min(700px, calc(100vw - 600px));
 }
 
 .layout-container.left-collapsed.right-collapsed .board {
-    width: 700px;
-    height: 700px;
+    width: min(850px, calc(100vw - 200px));
+    height: min(850px, calc(100vw - 200px));
 }
 
 .sidebar {
@@ -919,7 +932,7 @@ body.light-mode .sidebar-tab:hover {
 
 .tab-panel.active {
     display: block;
-    animation: fadeIn 0.2s ease-out;
+    animation: slideInFromRight 0.3s var(--ease-smooth);
 }
 
 @keyframes fadeIn {
@@ -931,6 +944,84 @@ body.light-mode .sidebar-tab:hover {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Enhanced Animations */
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes captureEffect {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3) rotate(10deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+}
+
+@keyframes skeleton-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes check-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 83, 80, 0.9);
+    }
+    50% {
+        box-shadow: 0 0 20px 8px rgba(239, 83, 80, 0);
+    }
+}
+
+@keyframes piece-shadow-trail {
+    0% {
+        box-shadow: 0 0 0 rgba(76, 175, 80, 0);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(76, 175, 80, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+@keyframes thinking-dots {
+    0%, 20% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
     }
 }
 
@@ -1829,6 +1920,8 @@ select {
 
 .analysis-btn:hover {
     background: #555;
+    transform: scale(1.02);
+    box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
 }
 
 .analysis-btn:disabled {
@@ -2083,6 +2176,8 @@ select {
 
 button:hover {
     background: #666;
+    transform: scale(1.02);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 #resetBtn:hover {
@@ -2326,26 +2421,49 @@ body.light-mode .modal-header {
     border-bottom-color: #ccc;
 }
 
-/* Animated move highlighting */
+/* Enhanced last move highlighting with glow effect */
 .board square.last-move {
     background-color: rgba(155, 199, 0, 0.41) !important;
+    box-shadow: inset 0 0 20px rgba(155, 199, 0, 0.3),
+                0 0 15px rgba(155, 199, 0, 0.4);
     animation: highlight-pulse var(--animation-duration) ease-in-out;
+    position: relative;
 }
 
 @keyframes highlight-pulse {
     0% {
         background-color: rgba(255, 255, 0, 0.8) !important;
+        box-shadow: inset 0 0 30px rgba(255, 255, 0, 0.5),
+                    0 0 25px rgba(255, 255, 0, 0.6);
     }
 
     100% {
         background-color: rgba(155, 199, 0, 0.41) !important;
+        box-shadow: inset 0 0 20px rgba(155, 199, 0, 0.3),
+                    0 0 15px rgba(155, 199, 0, 0.4);
     }
 }
 
-/* Move animation */
+/* Enhanced piece move animations with shadow trails */
 piece {
-    transition: transform var(--animation-duration) ease-out,
-        opacity calc(var(--animation-duration) / 2) ease-out;
+    transition: transform var(--animation-duration) var(--ease-spring),
+        opacity calc(var(--animation-duration) / 2) var(--ease-out),
+        box-shadow var(--animation-duration) var(--ease-smooth);
+    will-change: transform, opacity, box-shadow;
+}
+
+/* Moving piece gets shadow trail effect */
+piece.dragging,
+cg-board piece[style*="transform"] {
+    filter: drop-shadow(0 4px 12px rgba(76, 175, 80, 0.5));
+    animation: piece-shadow-trail 0.4s ease-out;
+}
+
+/* Captured piece explosion effect */
+piece.captured {
+    animation: captureEffect 0.5s var(--ease-out) forwards;
+    pointer-events: none;
+    z-index: 100;
 }
 
 /* Themes Panel */
@@ -2709,6 +2827,324 @@ body.light-mode input[type="range"] {
 .board {
     position: relative;
     transition: width var(--animation-duration) ease, height var(--animation-duration) ease;
+}
+
+/* Check state - pulsing red glow */
+.board.in-check::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 4px;
+    animation: check-pulse 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Checkmate state - intense red glow */
+.board.in-checkmate::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 4px;
+    box-shadow: 0 0 30px 10px rgba(239, 83, 80, 0.8);
+    animation: check-pulse 1s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* King in check - pulsing red background on square */
+.board square.check {
+    background-color: rgba(239, 83, 80, 0.3) !important;
+    animation: check-pulse 1.5s ease-in-out infinite;
+}
+
+/* ============================================
+   PREMIUM BOARD THEMES
+   ============================================ */
+
+/* Glass Theme - Frosted glass with depth */
+.board.theme-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.board.theme-glass square.light {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px);
+}
+
+.board.theme-glass square.dark {
+    background: rgba(0, 0, 0, 0.25) !important;
+    backdrop-filter: blur(10px);
+}
+
+.board.theme-glass piece {
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* 3D Wooden Theme - Realistic wood with lighting */
+.board.theme-3d-wood {
+    background: linear-gradient(135deg, #8b5a3c 0%, #6b4423 100%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 8px 24px rgba(0, 0, 0, 0.4);
+    border: 3px solid #5a3a1f;
+}
+
+.board.theme-3d-wood square.light {
+    background: linear-gradient(135deg, #daa06d 0%, #c89050 100%) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.board.theme-3d-wood square.dark {
+    background: linear-gradient(135deg, #8b5a3c 0%, #6b4423 100%) !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.board.theme-3d-wood piece {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5))
+            drop-shadow(0 1px 2px rgba(255, 255, 255, 0.1));
+}
+
+/* Neon Theme - Cyberpunk glowing pieces */
+.board.theme-neon {
+    background: #0a0a0a;
+    box-shadow: 0 0 40px rgba(139, 0, 255, 0.3),
+                inset 0 0 60px rgba(0, 255, 255, 0.1);
+    border: 2px solid #8b00ff;
+}
+
+.board.theme-neon square.light {
+    background: linear-gradient(135deg, #1a0033 0%, #0d001a 100%) !important;
+    box-shadow: inset 0 0 20px rgba(139, 0, 255, 0.2);
+}
+
+.board.theme-neon square.dark {
+    background: linear-gradient(135deg, #000a1a 0%, #000510 100%) !important;
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.board.theme-neon piece {
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.6))
+            drop-shadow(0 0 20px rgba(139, 0, 255, 0.4));
+}
+
+.board.theme-neon square:hover {
+    box-shadow: inset 0 0 30px rgba(0, 255, 255, 0.4) !important;
+}
+
+/* Marble Theme - Luxury marble with gold accents */
+.board.theme-marble {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 3px solid #d4af37;
+}
+
+.board.theme-marble square.light {
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%) !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.board.theme-marble square.dark {
+    background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%) !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.board.theme-marble piece {
+    filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.3))
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Tournament Theme - Professional clean style */
+.board.theme-tournament {
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 2px solid #333333;
+}
+
+.board.theme-tournament square.light {
+    background: #f0d9b5 !important;
+}
+
+.board.theme-tournament square.dark {
+    background: #b58863 !important;
+}
+
+.board.theme-tournament piece {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Premium theme transitions */
+.board.theme-glass,
+.board.theme-3d-wood,
+.board.theme-neon,
+.board.theme-marble,
+.board.theme-tournament {
+    transition: all 0.5s var(--ease-smooth);
+}
+
+.board.theme-glass square,
+.board.theme-3d-wood square,
+.board.theme-neon square,
+.board.theme-marble square,
+.board.theme-tournament square {
+    transition: all 0.3s var(--ease-smooth);
+}
+
+/* ============================================
+   ENHANCED MOVE HINTS & INDICATORS
+   ============================================ */
+
+/* Smooth circle animations for valid move destinations */
+.cg-board square.move-dest {
+    position: relative;
+}
+
+.cg-board square.move-dest::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20%;
+    height: 20%;
+    border-radius: 50%;
+    background: rgba(76, 175, 80, 0.5);
+    transform: translate(-50%, -50%) scale(0);
+    animation: move-hint-appear 0.3s var(--ease-spring) forwards;
+    pointer-events: none;
+}
+
+/* Capture hint - larger circle */
+.cg-board square.move-dest.occupied::after {
+    width: 85%;
+    height: 85%;
+    background: transparent;
+    border: 4px solid rgba(239, 83, 80, 0.6);
+    border-radius: 50%;
+}
+
+/* Move hint appear animation */
+@keyframes move-hint-appear {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Hover effect on valid move squares */
+.cg-board square.move-dest:hover::after {
+    background: rgba(76, 175, 80, 0.7);
+    transform: translate(-50%, -50%) scale(1.1);
+    transition: all 0.2s var(--ease-smooth);
+}
+
+.cg-board square.move-dest.occupied:hover::after {
+    border-color: rgba(239, 83, 80, 0.9);
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Premium Drag shadow for pieces */
+.cg-board piece.dragging {
+    opacity: 0.7;
+    filter: drop-shadow(0 8px 16px rgba(76, 175, 80, 0.6));
+    transform: scale(1.1);
+}
+
+/* Ghost piece at original position during drag */
+.cg-board square.move-origin piece {
+    opacity: 0.3;
+    filter: grayscale(50%);
+}
+
+/* ============================================
+   COORDINATE DISPLAY OPTIONS
+   ============================================ */
+
+/* Option 1: Inside board (like Chess.com) */
+.board.coords-inside coords {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.board.coords-inside coords.ranks {
+    left: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.board.coords-inside coords.files {
+    bottom: 4px;
+    right: 4px;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+/* Option 2: Outside board (traditional) */
+.board.coords-outside {
+    padding: 20px;
+    position: relative;
+}
+
+.board.coords-outside coords {
+    position: absolute;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.board.coords-outside coords.ranks {
+    left: 2px;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: calc(100% - 40px);
+}
+
+.board.coords-outside coords.files {
+    bottom: 2px;
+    left: 20px;
+    display: flex;
+    justify-content: space-around;
+    width: calc(100% - 40px);
+}
+
+/* Option 3: Hidden (clean) */
+.board.coords-hidden coords {
+    display: none !important;
+}
+
+/* Default: Show coordinates inside */
+.cg-wrap coords {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Smooth transitions for theme changes */
@@ -4570,6 +5006,63 @@ body.light-mode .win-prob-bar.black {
     color: var(--text-primary);
 }
 
+/* Skeleton Loading States */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-text {
+    height: 16px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+}
+
+.skeleton-text.large {
+    height: 24px;
+}
+
+.skeleton-text.small {
+    height: 12px;
+}
+
+.skeleton-block {
+    height: 100px;
+    border-radius: 8px;
+}
+
+.skeleton-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.skeleton-button {
+    height: 36px;
+    width: 120px;
+    border-radius: 6px;
+}
+
+/* Light mode skeleton */
+body.light-mode .skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.05) 0%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.05) 100%
+    );
+    background-size: 200% 100%;
+}
+
 /* Analysis Progress */
 .analysis-progress {
     margin-bottom: 16px;
@@ -4582,6 +5075,49 @@ body.light-mode .win-prob-bar.black {
     color: var(--text-secondary);
     margin-bottom: 8px;
     font-size: 0.9em;
+}
+
+/* AI Thinking Indicator with animated dots */
+.ai-thinking-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-purple);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.ai-thinking-indicator .thinking-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.ai-thinking-indicator .thinking-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    animation: thinking-dots 1.4s ease-in-out infinite;
+}
+
+.ai-thinking-indicator .thinking-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.ai-thinking-indicator .thinking-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Enhanced progress text with shimmer effect */
+.progress-info.analyzing::after {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--accent-purple);
+    margin-left: 4px;
+    animation: thinking-dots 1.4s ease-in-out infinite;
 }
 
 .progress-bar-container {
@@ -4952,6 +5488,210 @@ body.light-mode .win-prob-bar.black {
     color: var(--text-secondary);
     font-size: 1.2em;
     opacity: 0.5;
+}
+
+/* Enhanced Material Display with Sidebar Integration */
+.material-display-sidebar {
+    background: var(--surface-elevated);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.material-display-sidebar .material-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.material-display-sidebar .material-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+}
+
+.material-display-sidebar .material-score {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--primary-500);
+    font-family: var(--font-mono);
+}
+
+/* Visual piece icons with count badges */
+.material-pieces-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.material-player-section {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    transition: all 0.3s var(--ease-smooth);
+}
+
+.material-player-section.has-advantage {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 16px rgba(76, 175, 80, 0.2);
+}
+
+.material-player-label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.material-pieces-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.material-piece-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    min-width: 40px;
+    transition: all 0.2s var(--ease-smooth);
+}
+
+.material-piece-badge:hover {
+    transform: scale(1.05);
+    border-color: var(--primary-500);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.material-piece-icon {
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+.material-piece-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--primary-500);
+    color: white;
+    font-size: 0.7em;
+    font-weight: var(--font-bold);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--bg-secondary);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Real-time advantage calculator with animated numbers */
+.material-advantage-calculator {
+    background: linear-gradient(135deg, var(--bg-primary), var(--surface-elevated));
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 2px solid var(--border);
+}
+
+.advantage-label {
+    font-size: var(--text-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.advantage-value {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-extrabold);
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    transition: all 0.3s var(--ease-spring);
+}
+
+.advantage-value.positive {
+    color: var(--success);
+    text-shadow: 0 0 10px rgba(102, 187, 106, 0.3);
+}
+
+.advantage-value.negative {
+    color: var(--error);
+    text-shadow: 0 0 10px rgba(239, 83, 80, 0.3);
+}
+
+.advantage-value.equal {
+    color: var(--text-secondary);
+}
+
+/* Animated number changes */
+@keyframes number-change {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.advantage-value.changed {
+    animation: number-change 0.4s var(--ease-spring);
+}
+
+/* Material graph showing advantage over time */
+.material-graph {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.material-graph-bars {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.material-graph-bar {
+    flex: 1;
+    min-width: 4px;
+    background: var(--text-tertiary);
+    border-radius: 2px;
+    transition: all 0.3s var(--ease-smooth);
+    position: relative;
+}
+
+.material-graph-bar.advantage-white {
+    background: linear-gradient(to top, var(--text-tertiary), var(--success));
+}
+
+.material-graph-bar.advantage-black {
+    background: linear-gradient(to bottom, var(--text-tertiary), var(--error));
+}
+
+.material-graph-bar:hover {
+    opacity: 0.7;
 }
 
 /* Material Advantage Display */
