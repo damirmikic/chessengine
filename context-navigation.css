@@ -1,0 +1,641 @@
+/**
+ * Context-Aware Navigation & Smart Information Architecture
+ * CSS for the redesigned header and context-switching right panel
+ */
+
+/* ============================================================
+   PERSISTENT HEADER NAVIGATION
+   ============================================================ */
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: var(--header-bg, #1a1a1a);
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+body.light-mode .app-header {
+    background: var(--header-bg-light, #ffffff);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Primary Navigation */
+.primary-nav {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary, #ffffff);
+    transform: translateY(-1px);
+}
+
+.nav-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--accent-color, #6366f1);
+}
+
+body.light-mode .nav-btn {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body.light-mode .nav-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.9);
+}
+
+body.light-mode .nav-btn.active {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+}
+
+.nav-label {
+    font-weight: 600;
+}
+
+/* Engine Status Group */
+.engine-status-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.light-mode .engine-status-group {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.engine-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    font-weight: 500;
+}
+
+.engine-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    color: var(--text-primary, #ffffff);
+}
+
+.engine-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.engine-indicator {
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+}
+
+.engine-indicator.active {
+    color: #10b981;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.engine-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Settings Button */
+.settings-btn {
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.settings-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.settings-btn.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Command Palette Button */
+.command-palette-btn {
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.command-palette-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #ffffff);
+    transform: translateY(-1px);
+}
+
+/* ============================================================
+   CONTEXT-AWARE RIGHT PANEL
+   ============================================================ */
+
+.context-content {
+    position: relative;
+    min-height: 400px;
+}
+
+.context-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.context-panel.active {
+    display: block;
+}
+
+/* Panel transitions */
+.right-panel.transitioning .context-panel {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.right-panel .context-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Context-specific styling via data attributes */
+.right-panel[data-context="game-active"] .panel-header h3::before {
+    content: "🎮 ";
+}
+
+.right-panel[data-context="game-ended"] .panel-header h3::before {
+    content: "🎯 ";
+}
+
+.right-panel[data-context="analysis"] .panel-header h3::before {
+    content: "🔍 ";
+}
+
+.right-panel[data-context="learning"] .panel-header h3::before {
+    content: "📚 ";
+}
+
+.right-panel[data-context="settings"] .panel-header h3::before {
+    content: "⚙️ ";
+}
+
+/* ============================================================
+   GAME ENDED CONTEXT
+   ============================================================ */
+
+.game-summary-section {
+    padding: 1rem 0;
+}
+
+.summary-header {
+    text-align: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.summary-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-result {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-color, #6366f1);
+}
+
+.critical-moments-summary {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+}
+
+.critical-moments-summary h4 {
+    margin-bottom: 1rem;
+}
+
+.moments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.post-game-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* ============================================================
+   LEARNING CONTEXT
+   ============================================================ */
+
+.learning-context-header {
+    text-align: center;
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+}
+
+.learning-context-header h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.context-description {
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    font-size: 0.9rem;
+}
+
+.learning-quick-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color, #6366f1);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+}
+
+.learning-quick-access {
+    margin-top: 1.5rem;
+}
+
+.learning-quick-access h4 {
+    margin-bottom: 1rem;
+}
+
+.training-btn {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+}
+
+.training-btn:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(4px);
+}
+
+/* ============================================================
+   COMMAND PALETTE
+   ============================================================ */
+
+.command-palette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+}
+
+.command-palette.active {
+    display: flex;
+}
+
+.command-palette-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.command-palette-container {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    background: var(--panel-bg, #1e1e1e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    animation: slideDown 0.3s ease;
+}
+
+body.light-mode .command-palette-container {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.command-palette-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 0.75rem;
+}
+
+body.light-mode .command-palette-header {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+.command-palette-icon {
+    font-size: 1.2rem;
+    color: var(--accent-color, #6366f1);
+}
+
+.command-palette-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    color: var(--text-primary, #ffffff);
+    padding: 0.5rem 0;
+}
+
+body.light-mode .command-palette-input {
+    color: #000000;
+}
+
+.command-palette-input::placeholder {
+    color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+.command-palette-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.command-palette-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #ffffff);
+}
+
+.command-palette-results {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.command-palette-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 0.25rem;
+}
+
+.command-palette-item:hover,
+.command-palette-item.selected {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.command-palette-item-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.command-palette-item-shortcut {
+    font-size: 0.8rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.command-palette-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.command-palette-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .command-palette-footer {
+    border-top-color: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.command-palette-hint {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.command-palette-hint kbd {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.75rem;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    .nav-label {
+        display: none;
+    }
+
+    .nav-btn {
+        padding: 0.5rem;
+    }
+
+    .engine-label {
+        display: none;
+    }
+
+    .learning-quick-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        padding: 0.5rem 1rem;
+        height: 55px;
+    }
+
+    .primary-nav {
+        gap: 0.25rem;
+    }
+
+    .nav-btn {
+        padding: 0.4rem;
+        font-size: 1.1rem;
+    }
+
+    .nav-icon {
+        font-size: 1.2rem;
+    }
+
+    .engine-status-group {
+        padding: 0.3rem 0.6rem;
+    }
+
+    .command-palette-container {
+        width: 95%;
+        margin: 0 auto;
+    }
+
+    .command-palette {
+        padding-top: 5vh;
+    }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+.full-width {
+    width: 100%;
+}
+
+.desktop-only {
+    display: inline-flex;
+}
+
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: inline-flex;
+    }
+}

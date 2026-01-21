@@ -159,6 +159,18 @@ async function initializeApp() {
         // Initialize theme manager and apply saved settings
         themeManager.applyAllSettings();
 
+        // Initialize context-aware navigation system
+        if (window.contextManager) {
+            window.contextManager.initialize();
+            console.log('Context Manager initialized');
+        }
+
+        // Initialize keyboard shortcuts and command palette
+        if (window.keyboardShortcutsManager) {
+            window.keyboardShortcutsManager.initialize();
+            console.log('Keyboard Shortcuts Manager initialized');
+        }
+
         // Load learning data
         loadLearningData();
 
@@ -275,7 +287,38 @@ async function initializeApp() {
 }
 
 /**
- * Sets up tab navigation for the sidebar
+ * Handles engine switching between local and cloud
+ */
+async function handleEngineSwitch(newEngine) {
+    try {
+        showMessage(`Switching to ${newEngine} engine...`);
+        updateEngineStatusUI('connecting', newEngine);
+
+        await engineManager.switchEngine(newEngine);
+
+        // Update UI
+        const engineText = document.getElementById('engineText');
+        const engineIndicator = document.getElementById('engineIndicator');
+
+        if (engineText) {
+            engineText.textContent = newEngine === 'local' ? 'Local' : 'Cloud';
+        }
+
+        if (engineIndicator) {
+            engineIndicator.classList.add('active');
+        }
+
+        updateEngineStatusUI('connected', newEngine);
+        showMessage(`Switched to ${newEngine} engine`);
+    } catch (error) {
+        console.error('Engine switch error:', error);
+        showMessage('Failed to switch engine');
+        updateEngineStatusUI('disconnected', engineManager.getEngineType());
+    }
+}
+
+/**
+ * Sets up tab navigation for the sidebar (legacy - kept for compatibility)
  */
 function setupTabs() {
     const tabs = document.querySelectorAll('.sidebar-tab');
@@ -316,6 +359,96 @@ function switchTab(tabId) {
  * Sets up event listeners for UI controls
  */
 function setupEventListeners() {
+    // Header navigation buttons
+    const navPlayBtn = document.getElementById('navPlayBtn');
+    const navAnalysisBtn = document.getElementById('navAnalysisBtn');
+    const navLearnBtn = document.getElementById('navLearnBtn');
+    const navSettingsBtn = document.getElementById('navSettingsBtn');
+    const engineToggleBtn = document.getElementById('engineToggleBtn');
+    const commandPaletteBtn = document.getElementById('commandPaletteBtn');
+    const newGameFromEndBtn = document.getElementById('newGameFromEndBtn');
+    const reviewGameBtn = document.getElementById('reviewGameBtn');
+    const saveCompletedGameBtn = document.getElementById('saveCompletedGameBtn');
+    const openLearningBtn = document.getElementById('openLearningBtn');
+
+    // Header navigation handlers
+    if (navPlayBtn) {
+        navPlayBtn.addEventListener('click', () => {
+            handleReset();
+            if (window.contextManager) {
+                window.contextManager.setContext('game-active');
+            }
+        });
+    }
+
+    if (navAnalysisBtn) {
+        navAnalysisBtn.addEventListener('click', () => {
+            if (window.contextManager) {
+                window.contextManager.setContext('analysis');
+            }
+        });
+    }
+
+    if (navLearnBtn) {
+        navLearnBtn.addEventListener('click', () => {
+            if (window.contextManager) {
+                window.contextManager.setContext('learning');
+            }
+        });
+    }
+
+    if (navSettingsBtn) {
+        navSettingsBtn.addEventListener('click', () => {
+            if (window.contextManager) {
+                window.contextManager.setContext('settings');
+            }
+        });
+    }
+
+    if (engineToggleBtn) {
+        engineToggleBtn.addEventListener('click', () => {
+            const currentEngine = engineManager.getEngineType();
+            const newEngine = currentEngine === 'local' ? 'cloud' : 'local';
+            handleEngineSwitch(newEngine);
+        });
+    }
+
+    if (commandPaletteBtn) {
+        commandPaletteBtn.addEventListener('click', () => {
+            if (window.keyboardShortcutsManager) {
+                window.keyboardShortcutsManager.openCommandPalette();
+            }
+        });
+    }
+
+    // Game ended context buttons
+    if (newGameFromEndBtn) {
+        newGameFromEndBtn.addEventListener('click', () => {
+            handleReset();
+            if (window.contextManager) {
+                window.contextManager.setContext('game-active');
+            }
+        });
+    }
+
+    if (reviewGameBtn) {
+        reviewGameBtn.addEventListener('click', () => {
+            handleAnalyzeCompleteGame();
+            if (window.contextManager) {
+                window.contextManager.setContext('analysis');
+            }
+        });
+    }
+
+    if (saveCompletedGameBtn) {
+        saveCompletedGameBtn.addEventListener('click', handleSaveGame);
+    }
+
+    // Learning context buttons
+    if (openLearningBtn) {
+        openLearningBtn.addEventListener('click', showLearningDashboard);
+    }
+
     const resetBtn = document.getElementById('resetBtn');
     const undoBtn = document.getElementById('undoBtn');
     const flipBtn = document.getElementById('flipBtn');
@@ -876,6 +1009,20 @@ function handleGameOver() {
         }
     }
 
+    // Switch to game-ended context
+    if (window.contextManager) {
+        window.contextManager.setContext('game-ended');
+
+        // Update game result in UI
+        const gameResult = document.getElementById('gameResult');
+        if (gameResult) {
+            gameResult.textContent = message;
+        }
+
+        // Trigger game ended event for other listeners
+        document.dispatchEvent(new CustomEvent('game:ended', { detail: { message } }));
+    }
+
     // Show analyze game button if in no hints mode
     const noHintsMode = document.getElementById('noHintsMode')?.checked ?? false;
     if (noHintsMode) {
@@ -1047,6 +1194,13 @@ function handleReset() {
     showMessage('Make a move...');
     updateEvaluationBar(0.3);
     updateDifficultyBadge();
+
+    // Switch to game-active context
+    if (window.contextManager) {
+        window.contextManager.setContext('game-active');
+        // Trigger game started event
+        document.dispatchEvent(new CustomEvent('game:started'));
+    }
 
     // Sync clock toggle UI
     const clockEnabledToggle = document.getElementById('clockEnabled');
