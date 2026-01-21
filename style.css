@@ -19,40 +19,649 @@ body.light-mode {
     --sidebar-bg: #f8f9fa;
 }
 
+/* ============================================
+   ADAPTIVE LAYOUT ARCHITECTURE
+   ============================================ */
+
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
     min-height: 100vh;
-    padding: 20px 0;
     margin: 0;
     overflow-x: hidden;
     transition: background-color 0.3s, color 0.3s;
 }
 
-.container {
+/* ============================================
+   APP HEADER
+   ============================================ */
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
-    gap: 30px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
     background: var(--bg-secondary);
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
-    max-width: 98vw;
-    margin: 20px auto;
-    align-items: flex-start;
-    justify-content: center;
-    transition: background 0.3s;
+    border-bottom: 2px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.app-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.logo-icon {
+    font-size: 28px;
+    color: var(--accent);
+}
+
+.logo-text {
+    white-space: nowrap;
+}
+
+.header-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.quick-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-action-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.action-icon {
+    font-size: 16px;
+}
+
+.action-label {
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-engine-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.engine-indicator {
+    font-size: 10px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.engine-indicator.active {
+    color: var(--accent);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.header-menu-btn {
+    display: none;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* ============================================
+   MAIN LAYOUT CONTAINER (THREE-COLUMN GRID)
+   ============================================ */
+
+.layout-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    flex: 1;
+    padding: 20px;
+    max-width: 100%;
+    width: 100%;
+    align-items: start;
+    position: relative;
+}
+
+/* When left panel is collapsed */
+.layout-container.left-collapsed {
+    grid-template-columns: auto 1fr auto;
+}
+
+/* When right panel is collapsed */
+.layout-container.right-collapsed {
+    grid-template-columns: auto 1fr auto;
+}
+
+/* When both panels are collapsed */
+.layout-container.left-collapsed.right-collapsed {
+    grid-template-columns: auto 1fr auto;
+}
+
+/* ============================================
+   LEFT PANEL (POWER USER TOOLS)
+   ============================================ */
+
+.left-panel {
+    width: 280px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+}
+
+.left-panel.collapsed {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    margin-right: -20px;
+}
+
+/* ============================================
+   CENTER PANEL (BOARD AREA)
+   ============================================ */
+
+.center-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+}
+
+/* ============================================
+   RIGHT PANEL (ANALYSIS & SIDEBAR)
+   ============================================ */
+
+.right-panel {
+    width: 380px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel.collapsed {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+    margin-left: -20px;
+}
+
+/* ============================================
+   PANEL HEADERS
+   ============================================ */
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-primary);
+    border-bottom: 2px solid var(--border);
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.panel-collapse-btn {
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.panel-collapse-btn:hover {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--accent);
+}
+
+.collapse-icon {
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+    line-height: 1;
+}
+
+/* ============================================
+   PANEL EXPAND BUTTONS (WHEN COLLAPSED)
+   ============================================ */
+
+.panel-expand-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 40px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+    border-radius: 0;
+}
+
+.panel-expand-btn.left-expand {
+    left: 20px;
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+}
+
+.panel-expand-btn.right-expand {
+    right: 20px;
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+}
+
+.panel-expand-btn:hover {
+    background: var(--accent);
+    color: var(--text-primary);
+}
+
+.expand-icon {
+    font-size: 24px;
+    font-weight: bold;
+    display: block;
+    line-height: 1;
+}
+
+/* ============================================
+   PANEL CONTENT
+   ============================================ */
+
+.panel-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+}
+
+/* Left Panel Tool Sections */
+.tool-section {
+    margin-bottom: 20px;
+}
+
+.tool-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.tool-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.tool-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.quick-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.quick-setting-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.quick-setting-item:hover {
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.quick-setting-item input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.game-management-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.tool-btn-sm {
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.tool-btn-sm:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+/* ============================================
+   MOBILE BOTTOM SHEET
+   ============================================ */
+
+.bottom-sheet {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 90;
+    max-height: 70vh;
+    transform: translateY(calc(100% - 60px));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bottom-sheet.expanded {
+    transform: translateY(0);
+}
+
+.bottom-sheet-handle {
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.handle-bar {
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.bottom-sheet-content {
+    overflow-y: auto;
+    max-height: calc(70vh - 60px);
+}
+
+.bottom-sheet-tabs {
+    display: flex;
+    justify-content: space-around;
+    padding: 8px;
+    border-bottom: 2px solid var(--border);
+    background: var(--bg-primary);
+}
+
+.bottom-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 100px;
+}
+
+.bottom-tab.active {
+    color: var(--accent);
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.tab-icon {
+    font-size: 20px;
+}
+
+.tab-label {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* ============================================
+   FLOATING ACTION BUTTON (FAB)
+   ============================================ */
+
+.fab {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: var(--accent);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    z-index: 80;
+    transition: all 0.3s ease;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+.fab-icon {
+    display: block;
+    line-height: 1;
+}
+
+.fab.active {
+    transform: rotate(45deg);
+}
+
+/* FAB Menu */
+.fab-menu {
+    position: fixed;
+    bottom: 145px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 75;
+}
+
+.fab-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    animation: fabMenuSlide 0.3s ease;
+}
+
+@keyframes fabMenuSlide {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fab-menu-item:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.fab-menu-icon {
+    font-size: 20px;
+}
+
+.fab-menu-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.desktop-only {
+    display: flex;
+}
+
+.mobile-only {
+    display: none;
+}
+
+/* ============================================
+   BOARD WRAPPER (NOW IN CENTER PANEL)
+   ============================================ */
+
+.board-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* ============================================
+   FLUID BOARD SIZING (400px - 800px)
+   ============================================ */
 
 .board {
     width: 600px;
     height: 600px;
     background-size: cover;
     flex-shrink: 0;
-    /* Prevent board from shrinking */
+    transition: width var(--animation-duration) ease,
+                height var(--animation-duration) ease;
+    /* Fluid sizing controlled by viewport and user preference */
+}
+
+/* Fluid board sizing based on available space */
+@media (min-width: 1920px) {
+    .board {
+        width: 700px;
+        height: 700px;
+    }
+}
+
+@media (min-width: 2560px) {
+    .board {
+        width: 800px;
+        height: 800px;
+    }
+}
+
+/* Adapt board size when panels are collapsed */
+.layout-container.left-collapsed .board,
+.layout-container.right-collapsed .board {
+    width: 650px;
+    height: 650px;
+}
+
+.layout-container.left-collapsed.right-collapsed .board {
+    width: 700px;
+    height: 700px;
 }
 
 .sidebar {
@@ -1745,46 +2354,151 @@ body.light-mode input[type="range"] {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
+/* ============================================
+   RESPONSIVE BREAKPOINTS - ADAPTIVE LAYOUT
+   ============================================ */
+
+/* Large Tablet & Below (< 1400px) - Hide Left Panel */
+@media (max-width: 1400px) {
+    .left-panel {
+        display: none;
     }
 
-    .sidebar {
+    .layout-container {
+        grid-template-columns: 1fr auto;
+    }
+
+    .panel-expand-btn.left-expand {
+        display: none;
+    }
+}
+
+/* Tablet (< 1200px) - Two Column Layout */
+@media (max-width: 1200px) {
+    .app-header {
+        padding: 10px 16px;
+    }
+
+    .logo-text {
+        font-size: 16px;
+    }
+
+    .quick-actions {
+        gap: 6px;
+    }
+
+    .quick-action-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .layout-container {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .right-panel {
+        width: 340px;
+    }
+
+    .board {
+        width: 550px;
+        height: 550px;
+    }
+}
+
+/* Small Tablet (< 1024px) - Reduce Board Size */
+@media (max-width: 1024px) {
+    .layout-container {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .right-panel {
         width: 100%;
         max-width: 600px;
     }
 
     .board {
-        width: 600px !important;
-        height: 600px !important;
+        width: 500px;
+        height: 500px;
     }
 }
 
+/* Tablet Portrait & Mobile (< 768px) - Show Bottom Sheet & FAB */
 @media (max-width: 768px) {
     body {
-        height: auto;
-        padding: 10px;
+        padding: 0;
     }
 
-    .container {
-        padding: 15px;
-        gap: 20px;
+    /* Hide desktop elements */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* Show mobile elements */
+    .mobile-only {
+        display: flex !important;
+    }
+
+    /* Adjust header for mobile */
+    .app-header {
+        padding: 8px 12px;
+    }
+
+    .logo-icon {
+        font-size: 24px;
+    }
+
+    .logo-text {
+        font-size: 14px;
+    }
+
+    .header-engine-status {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    /* Hide panels, show bottom sheet */
+    .left-panel,
+    .right-panel,
+    .panel-expand-btn {
+        display: none !important;
+    }
+
+    .layout-container {
+        grid-template-columns: 1fr;
+        padding: 12px;
+        padding-bottom: 80px; /* Space for bottom sheet */
+    }
+
+    .center-panel {
+        width: 100%;
+    }
+
+    .board-wrapper {
+        padding: 12px;
+        width: 100%;
     }
 
     .board {
-        width: 90vw !important;
-        height: 90vw !important;
-        max-width: 500px !important;
-        max-height: 500px !important;
+        width: min(90vw, 500px);
+        height: min(90vw, 500px);
     }
 
-    .sidebar {
-        width: 100%;
-        max-width: 90vw;
+    /* Show bottom sheet */
+    .bottom-sheet {
+        display: block;
     }
 
+    /* Show FAB */
+    .fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Adjust existing responsive elements */
     .move-history-panel {
         max-height: 180px;
     }
@@ -1814,18 +2528,34 @@ body.light-mode input[type="range"] {
         min-height: 60px;
         padding: 15px;
     }
+
+    .captured-pieces-container {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
+/* Mobile Small (< 480px) - Smaller Board & UI */
 @media (max-width: 480px) {
-    .board {
-        width: 95vw !important;
-        height: 95vw !important;
-        max-width: 400px !important;
-        max-height: 400px !important;
+    .app-header {
+        padding: 6px 10px;
     }
 
-    .container {
-        padding: 10px;
+    .logo-text {
+        display: none;
+    }
+
+    .board {
+        width: min(95vw, 400px);
+        height: min(95vw, 400px);
+    }
+
+    .board-wrapper {
+        padding: 8px;
+    }
+
+    .layout-container {
+        padding: 8px;
     }
 
     .control-group {
@@ -1844,6 +2574,23 @@ body.light-mode input[type="range"] {
 
     .move-history-panel {
         max-height: 150px;
+    }
+
+    .fab {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+        bottom: 70px;
+        right: 16px;
+    }
+
+    .fab-menu {
+        bottom: 125px;
+        right: 16px;
+    }
+
+    .bottom-sheet {
+        transform: translateY(calc(100% - 50px));
     }
 
     .opening-panel,
@@ -3997,13 +4744,6 @@ body.light-mode .win-prob-bar.black {
 /* ===========================
    Captured Pieces Display
    =========================== */
-
-.board-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-}
 
 .captured-pieces-container {
     width: 600px;

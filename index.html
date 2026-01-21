@@ -19,8 +19,110 @@
 
 <body>
 
-    <div class="container">
-        <div class="board-wrapper">
+    <!-- Adaptive Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo">
+                <span class="logo-icon">♔</span>
+                <span class="logo-text">AI Chess Coach</span>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <div class="quick-actions desktop-only">
+                <button id="headerNewGameBtn" class="quick-action-btn" title="New Game">
+                    <span class="action-icon">🎮</span>
+                    <span class="action-label">New Game</span>
+                </button>
+                <button id="headerUndoBtn" class="quick-action-btn" title="Undo Move">
+                    <span class="action-icon">↶</span>
+                    <span class="action-label">Undo</span>
+                </button>
+                <button id="headerAnalyzeBtn" class="quick-action-btn" title="Analyze">
+                    <span class="action-icon">🔍</span>
+                    <span class="action-label">Analyze</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div id="headerEngineStatus" class="header-engine-status">
+                <span class="engine-indicator">⚫</span>
+                <span class="engine-text desktop-only">Engine Ready</span>
+            </div>
+            <button id="headerMenuBtn" class="header-menu-btn mobile-only">
+                <span class="menu-icon">☰</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout Container -->
+    <div class="layout-container">
+        <!-- Left Panel (Optional, Collapsible) -->
+        <aside class="left-panel" id="leftPanel">
+            <div class="panel-header">
+                <h3>Tools</h3>
+                <button class="panel-collapse-btn" id="leftPanelCollapseBtn" title="Collapse panel">
+                    <span class="collapse-icon">‹</span>
+                </button>
+            </div>
+            <div class="panel-content">
+                <!-- Learning Dashboard -->
+                <div class="tool-section">
+                    <h4>📊 Learning</h4>
+                    <button id="leftLearningDashboardBtn" class="tool-btn">
+                        Learning Dashboard
+                    </button>
+                </div>
+
+                <!-- Quick Settings -->
+                <div class="tool-section">
+                    <h4>⚙️ Quick Settings</h4>
+                    <div class="quick-settings">
+                        <label class="quick-setting-item">
+                            <input type="checkbox" id="leftShowHints" checked>
+                            <span>Show Hints</span>
+                        </label>
+                        <label class="quick-setting-item">
+                            <input type="checkbox" id="leftAnalysisMode">
+                            <span>Analysis Mode</span>
+                        </label>
+                        <label class="quick-setting-item">
+                            <input type="checkbox" id="leftClockEnabled">
+                            <span>Enable Clock</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Game History -->
+                <div class="tool-section">
+                    <h4>📂 Game Management</h4>
+                    <div class="game-management-btns">
+                        <button id="leftSaveGameBtn" class="tool-btn-sm">
+                            <span>💾</span> Save
+                        </button>
+                        <button id="leftLoadGameBtn" class="tool-btn-sm">
+                            <span>📂</span> Load
+                        </button>
+                        <button id="leftExportPgnBtn" class="tool-btn-sm">
+                            <span>📤</span> Export
+                        </button>
+                        <button id="leftImportPgnBtn" class="tool-btn-sm">
+                            <span>📥</span> Import
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Left Panel Collapse Toggle (when collapsed) -->
+        <button class="panel-expand-btn left-expand" id="leftPanelExpandBtn" style="display: none;" title="Expand panel">
+            <span class="expand-icon">›</span>
+        </button>
+
+        <!-- Center Panel (Board Area) -->
+        <main class="center-panel">
+            <div class="board-wrapper">
             <!-- Captured Pieces Display (Black's captures - above board) -->
             <div class="captured-pieces-container black-captures">
                 <div class="captured-pieces-header">
@@ -50,8 +152,18 @@
                 <span id="material-advantage" class="material-advantage equal">Equal material</span>
             </div>
         </div>
+        </main>
 
-        <div class="sidebar">
+        <!-- Right Panel (Collapsible Sidebar) -->
+        <aside class="right-panel" id="rightPanel">
+            <div class="panel-header">
+                <h3>Analysis</h3>
+                <button class="panel-collapse-btn" id="rightPanelCollapseBtn" title="Collapse panel">
+                    <span class="collapse-icon">›</span>
+                </button>
+            </div>
+
+            <div class="sidebar">
             <!-- Fixed Top Section (Clocks & Essential Info) -->
             <div class="sidebar-top">
                 <div class="chess-clock-panel" id="chessClockPanel">
@@ -551,6 +663,66 @@
                 </div>
             </div>
         </div>
+        </aside>
+
+        <!-- Right Panel Collapse Toggle (when collapsed) -->
+        <button class="panel-expand-btn right-expand" id="rightPanelExpandBtn" style="display: none;" title="Expand panel">
+            <span class="expand-icon">‹</span>
+        </button>
+    </div>
+
+    <!-- Mobile Bottom Sheet -->
+    <div class="bottom-sheet" id="bottomSheet">
+        <div class="bottom-sheet-handle">
+            <div class="handle-bar"></div>
+        </div>
+        <div class="bottom-sheet-content">
+            <!-- Tab Navigation for Mobile -->
+            <div class="bottom-sheet-tabs">
+                <button class="bottom-tab active" data-tab="play">
+                    <span class="tab-icon">🎮</span>
+                    <span class="tab-label">Play</span>
+                </button>
+                <button class="bottom-tab" data-tab="analysis">
+                    <span class="tab-icon">🧠</span>
+                    <span class="tab-label">Analysis</span>
+                </button>
+                <button class="bottom-tab" data-tab="settings">
+                    <span class="tab-icon">⚙️</span>
+                    <span class="tab-label">Settings</span>
+                </button>
+                <button class="bottom-tab" data-tab="community">
+                    <span class="tab-icon">👥</span>
+                    <span class="tab-label">Community</span>
+                </button>
+            </div>
+            <!-- Content will be synced with sidebar tabs -->
+        </div>
+    </div>
+
+    <!-- Floating Action Button (Mobile) -->
+    <button class="fab" id="mobileFab" title="New Game">
+        <span class="fab-icon">+</span>
+    </button>
+
+    <!-- FAB Menu (Mobile) -->
+    <div class="fab-menu" id="fabMenu" style="display: none;">
+        <button class="fab-menu-item" id="fabNewGame">
+            <span class="fab-menu-icon">🎮</span>
+            <span class="fab-menu-label">New Game</span>
+        </button>
+        <button class="fab-menu-item" id="fabUndo">
+            <span class="fab-menu-icon">↶</span>
+            <span class="fab-menu-label">Undo</span>
+        </button>
+        <button class="fab-menu-item" id="fabAnalyze">
+            <span class="fab-menu-icon">🔍</span>
+            <span class="fab-menu-label">Analyze</span>
+        </button>
+        <button class="fab-menu-item" id="fabFlip">
+            <span class="fab-menu-icon">🔄</span>
+            <span class="fab-menu-label">Flip Board</span>
+        </button>
     </div>
     </div>
 
@@ -570,6 +742,7 @@
         </div>
     </div>
 
+    <script type="module" src="layout-controller.js"></script>
     <script type="module" src="captured-pieces.js"></script>
     <script type="module" src="script.js"></script>
 
