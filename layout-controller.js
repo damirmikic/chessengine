@@ -30,6 +30,7 @@ class LayoutController {
         this.isRightPanelCollapsed = false;
         this.isBottomSheetExpanded = false;
         this.isFabMenuOpen = false;
+        this.isResizing = false;
 
         this.init();
     }
@@ -421,6 +422,10 @@ class LayoutController {
     }
 
     handleResize() {
+        // Prevent recursion
+        if (this.isResizing) return;
+        this.isResizing = true;
+
         const width = window.innerWidth;
 
         // Hide left panel on smaller screens
@@ -447,6 +452,8 @@ class LayoutController {
             this.isRightPanelCollapsed = false;
             this.toggleRightPanel();
         }
+
+        this.isResizing = false;
     }
 
     // ============================================
