@@ -202,6 +202,104 @@
                         <h3>Generated Puzzles</h3>
                         <div id="puzzlesList" class="puzzles-list"></div>
                     </div>
+
+                    <!-- Match Analysis Step-by-Step -->
+                    <div id="matchAnalysisPanel" class="match-analysis-panel" style="display: none;">
+                        <div class="match-analysis-header">
+                            <h3>📋 Match Analysis</h3>
+                            <button id="closeMatchAnalysisBtn" class="close-analysis-btn">✕</button>
+                        </div>
+
+                        <!-- Analysis Progress -->
+                        <div id="analysisProgress" class="analysis-progress" style="display: none;">
+                            <div class="progress-info">
+                                Analyzing match... <span id="analysisProgressText">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="matchAnalysisProgressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Accuracy Summary -->
+                        <div id="accuracySummary" class="accuracy-summary">
+                            <div class="accuracy-main">
+                                <div class="accuracy-label">Accuracy</div>
+                                <div class="accuracy-value" id="accuracyValue">--%</div>
+                            </div>
+                            <div class="accuracy-breakdown">
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon good">!</span>
+                                    <span id="goodMovesCount">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon inaccuracy">!?</span>
+                                    <span id="inaccuraciesCount">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon mistake">?</span>
+                                    <span id="mistakesCount">0</span>
+                                </div>
+                                <div class="accuracy-stat">
+                                    <span class="stat-icon blunder">??</span>
+                                    <span id="blundersCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Move Analysis -->
+                        <div id="currentMoveAnalysis" class="current-move-analysis">
+                            <div class="move-info-header">
+                                <span id="moveProgressText">Move 1 of 40</span>
+                            </div>
+
+                            <div class="move-comparison">
+                                <div class="move-played">
+                                    <div class="move-label">Move Played</div>
+                                    <div class="move-display">
+                                        <span class="move-notation" id="playedMove">-</span>
+                                        <span class="move-annotation" id="playedAnnotation"></span>
+                                    </div>
+                                    <div class="move-quality" id="playedQuality">-</div>
+                                </div>
+
+                                <div class="move-divider">→</div>
+
+                                <div class="move-best" id="bestMoveSection">
+                                    <div class="move-label">Best Move</div>
+                                    <div class="move-display">
+                                        <span class="move-notation" id="bestMove">-</span>
+                                    </div>
+                                    <div class="eval-loss" id="evalLoss">-</div>
+                                </div>
+                            </div>
+
+                            <div class="evaluation-change">
+                                <div class="eval-item">
+                                    <span class="eval-label">Before:</span>
+                                    <span class="eval-value" id="evalBefore">+0.0</span>
+                                </div>
+                                <div class="eval-item">
+                                    <span class="eval-label">After:</span>
+                                    <span class="eval-value" id="evalAfter">+0.0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Controls -->
+                        <div class="analysis-navigation">
+                            <button id="firstMoveBtn" class="nav-btn" title="First move">⏮</button>
+                            <button id="prevMoveBtn" class="nav-btn" title="Previous move">◀</button>
+                            <button id="nextMoveBtn" class="nav-btn" title="Next move">▶</button>
+                            <button id="lastMoveBtn" class="nav-btn" title="Last move">⏭</button>
+                        </div>
+                    </div>
+
+                    <!-- Load Game for Analysis Button -->
+                    <div class="load-match-analysis">
+                        <button id="loadMatchAnalysisBtn" class="primary-btn">
+                            📊 Analyze Saved Match
+                        </button>
+                    </div>
                 </div>
 
                 <!-- SETTINGS TAB -->

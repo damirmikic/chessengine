@@ -3496,3 +3496,354 @@ body.light-mode .win-prob-bar.black {
         right: 20px;
     }
 }
+
+/* ============================================
+   Match Analysis Step-by-Step Styles
+   ============================================ */
+
+.match-analysis-panel {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.match-analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.match-analysis-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.2em;
+}
+
+.close-analysis-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.close-analysis-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+/* Analysis Progress */
+.analysis-progress {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.progress-info {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 0.9em;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Accuracy Summary */
+.accuracy-summary {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(33, 150, 243, 0.15));
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.accuracy-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.accuracy-label {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.accuracy-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.accuracy-breakdown {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+}
+
+.accuracy-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    flex: 1;
+    justify-content: center;
+}
+
+.stat-icon {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.stat-icon.good {
+    color: #4caf50;
+}
+
+.stat-icon.inaccuracy {
+    color: #ffc107;
+}
+
+.stat-icon.mistake {
+    color: #ff9800;
+}
+
+.stat-icon.blunder {
+    color: #f44336;
+}
+
+/* Current Move Analysis */
+.current-move-analysis {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.move-info-header {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.move-comparison {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.move-played,
+.move-best {
+    flex: 1;
+    text-align: center;
+}
+
+.move-label {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.move-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.move-notation {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+}
+
+.move-annotation {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.move-annotation.good {
+    color: #4caf50;
+}
+
+.move-annotation.inaccuracy {
+    color: #ffc107;
+}
+
+.move-annotation.mistake {
+    color: #ff9800;
+}
+
+.move-annotation.blunder {
+    color: #f44336;
+}
+
+.move-quality {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    display: inline-block;
+}
+
+.move-quality.good {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+}
+
+.move-quality.inaccuracy {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.move-quality.mistake {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+}
+
+.move-quality.blunder {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.move-divider {
+    font-size: 1.5em;
+    color: var(--text-secondary);
+}
+
+.eval-loss {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.evaluation-change {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.eval-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.eval-label {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+}
+
+.eval-value {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.eval-value.positive {
+    color: #4caf50;
+}
+
+.eval-value.negative {
+    color: #f44336;
+}
+
+/* Navigation Controls */
+.analysis-navigation {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.nav-btn {
+    padding: 12px 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s;
+    flex: 1;
+    max-width: 80px;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nav-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Load Match Analysis Button */
+.load-match-analysis {
+    margin-top: 16px;
+}
+
+.load-match-analysis .primary-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .move-comparison {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .move-divider {
+        transform: rotate(90deg);
+    }
+
+    .accuracy-breakdown {
+        flex-wrap: wrap;
+    }
+
+    .accuracy-stat {
+        min-width: calc(50% - 6px);
+    }
+}
