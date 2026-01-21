@@ -185,7 +185,7 @@ class ContextManager {
      */
     updateNavigationState() {
         // Update header navigation active states
-        const navButtons = document.querySelectorAll('.nav-btn');
+        const navButtons = document.querySelectorAll('.nav-btn, .settings-btn');
         navButtons.forEach(btn => {
             const btnContext = btn.dataset.context;
             if (btnContext === this.currentContext) {
