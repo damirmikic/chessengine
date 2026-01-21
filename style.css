@@ -2774,6 +2774,127 @@ button {
     transform: scale(0.98);
 }
 
+/* Openings and Endgames specific styles */
+.opening-card {
+    border-left: 3px solid #ff9800;
+}
+
+.endgame-card {
+    border-left: 3px solid #9c27b0;
+}
+
+.opening-eco {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+}
+
+.difficulty-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.difficulty-badge.beginner {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+}
+
+.difficulty-badge.intermediate {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ff9800;
+}
+
+.difficulty-badge.advanced {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+.opening-item,
+.endgame-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.opening-item:hover,
+.endgame-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+
+.opening-position-info,
+.endgame-position-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.opening-position-title,
+.endgame-position-title {
+    font-weight: 600;
+    color: #fff;
+    font-size: 1em;
+}
+
+.opening-position-desc,
+.endgame-position-desc {
+    color: #aaa;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.endgame-goal {
+    color: #9c27b0;
+    font-size: 0.85em;
+    font-weight: 500;
+    padding: 6px 10px;
+    background: rgba(156, 39, 176, 0.1);
+    border-radius: 6px;
+}
+
+.key-ideas {
+    margin-top: 6px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+.key-ideas strong {
+    color: #4facfe;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.key-ideas ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: circle;
+}
+
+.key-ideas li {
+    color: #ccc;
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+.section-description {
+    color: #888;
+    font-size: 0.9em;
+    margin: -8px 0 16px 0;
+}
+
 /* ==================== ACHIEVEMENTS TAB ==================== */
 .achievements-header {
     display: flex;
@@ -3067,6 +3188,38 @@ body.light-mode .drill-title {
 }
 
 body.light-mode .drill-desc {
+    color: #666;
+}
+
+body.light-mode .opening-item,
+body.light-mode .endgame-item {
+    background: #e8e8e8;
+}
+
+body.light-mode .opening-item:hover,
+body.light-mode .endgame-item:hover {
+    background: #d8d8d8;
+}
+
+body.light-mode .opening-position-title,
+body.light-mode .endgame-position-title {
+    color: #1a1a1a;
+}
+
+body.light-mode .opening-position-desc,
+body.light-mode .endgame-position-desc {
+    color: #555;
+}
+
+body.light-mode .key-ideas li {
+    color: #444;
+}
+
+body.light-mode .key-ideas {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body.light-mode .section-description {
     color: #666;
 }
 
