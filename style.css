@@ -1,22 +1,108 @@
+/* Import Modern Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-    --bg-primary: #2c2c2c;
-    --bg-secondary: #222;
+    /* Primary - Chess Inspired */
+    --primary-50: #e8f5e9;
+    --primary-100: #c8e6c9;
+    --primary-500: #4caf50;  /* Keep familiar green */
+    --primary-700: #388e3c;
+    --primary-900: #1b5e20;
+
+    /* Accent - Intelligence/AI Theme */
+    --accent-blue: #2196f3;
+    --accent-purple: #9c27b0;  /* For AI features */
+    --accent-gold: #ffa726;    /* For achievements */
+
+    /* Semantic Colors */
+    --success: #66bb6a;
+    --warning: #ffa726;
+    --error: #ef5350;
+    --info: #42a5f5;
+
+    /* Neutrals - Warmer, more inviting */
+    --surface-dark: #1e1e1e;
+    --surface-darker: #141414;
+    --surface-elevated: #2a2a2a;
     --text-primary: #ffffff;
-    --text-secondary: #aaaaaa;
-    --accent: #4caf50;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #808080;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+    --gradient-accent: linear-gradient(135deg, #1e88e5 0%, #42a5f5 100%);
+    --gradient-ai: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);
+
+    /* Typography */
+    --font-display: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+    /* Type Scale (1.250 - Major Third) */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.5rem;      /* 24px */
+    --text-3xl: 1.875rem;    /* 30px */
+    --text-4xl: 2.25rem;     /* 36px */
+
+    /* Line Heights */
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+
+    /* Font Weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+
+    /* Legacy compatibility (mapped to new system) */
+    --bg-primary: var(--surface-dark);
+    --bg-secondary: var(--surface-darker);
+    --accent: var(--primary-500);
     --border: #333333;
-    --sidebar-bg: #2a2a2a;
+    --sidebar-bg: var(--surface-elevated);
     --animation-duration: 300ms;
 }
 
 body.light-mode {
-    --bg-primary: #f0f2f5;
-    --bg-secondary: #ffffff;
+    /* Light Mode Palette */
+    --primary-50: #1b5e20;
+    --primary-100: #388e3c;
+    --primary-500: #2e7d32;
+    --primary-700: #c8e6c9;
+    --primary-900: #e8f5e9;
+
+    --accent-blue: #1976d2;
+    --accent-purple: #7b1fa2;
+    --accent-gold: #f57c00;
+
+    --success: #2e7d32;
+    --warning: #f57c00;
+    --error: #c62828;
+    --info: #1976d2;
+
+    --surface-dark: #f0f2f5;
+    --surface-darker: #ffffff;
+    --surface-elevated: #f8f9fa;
     --text-primary: #1a1a1a;
     --text-secondary: #555555;
-    --accent: #2e7d32;
+    --text-tertiary: #888888;
+
+    --gradient-primary: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+    --gradient-accent: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+    --gradient-ai: linear-gradient(135deg, #6a1b9a 0%, #7b1fa2 100%);
+
+    /* Legacy compatibility */
+    --bg-primary: var(--surface-dark);
+    --bg-secondary: var(--surface-darker);
+    --accent: var(--primary-500);
     --border: #dddddd;
-    --sidebar-bg: #f8f9fa;
+    --sidebar-bg: var(--surface-elevated);
 }
 
 /* ============================================
@@ -26,7 +112,10 @@ body.light-mode {
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-normal);
+    line-height: var(--leading-normal);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -94,19 +183,29 @@ body {
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     color: var(--text-primary);
-    font-size: 14px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .quick-action-btn:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    transform: translateY(-1px);
+    background: var(--gradient-primary);
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.quick-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.2);
 }
 
 .action-icon {
@@ -194,9 +293,11 @@ body {
 
 .left-panel {
     width: 280px;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: calc(100vh - 120px);
@@ -229,9 +330,11 @@ body {
 
 .right-panel {
     width: 380px;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     max-height: calc(100vh - 120px);
@@ -254,15 +357,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    background: var(--bg-primary);
-    border-bottom: 2px solid var(--border);
+    padding: 16px 20px;
+    background: var(--surface-darker);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .panel-header h3 {
     margin: 0;
-    font-size: 16px;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
 }
 
 .panel-collapse-btn {
@@ -2842,19 +2947,22 @@ button {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 16px;
+    background: var(--surface-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    gap: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 .stat-icon {
@@ -3700,25 +3808,44 @@ button {
 }
 
 .achievement-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 14px;
+    background: var(--surface-elevated);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
-    gap: 12px;
-    transition: transform 0.2s;
+    gap: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .achievement-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
 .achievement-card.earned {
-    background: linear-gradient(135deg, rgba(79, 172, 254, 0.15), rgba(0, 242, 254, 0.15));
-    border: 1px solid rgba(79, 172, 254, 0.3);
+    background: var(--surface-elevated);
+    border: 1px solid transparent;
+}
+
+.achievement-card.earned::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #ffb74d 100%);
+}
+
+.achievement-card.earned:hover {
+    box-shadow: 0 8px 30px rgba(255, 167, 38, 0.3);
 }
 
 .achievement-card.locked {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 .achievement-icon {
@@ -4902,4 +5029,428 @@ body.light-mode .material-advantage.black {
     .captured-piece {
         font-size: 1.5em;
     }
+}
+
+/* ============================================
+   MODERN COMPONENT DESIGN SYSTEM
+   ============================================ */
+
+/* Primary Button - Glass morphism effect */
+.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Secondary Button - Accent gradient */
+.btn-secondary {
+    background: var(--gradient-accent);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* AI-themed Button */
+.btn-ai {
+    background: var(--gradient-ai);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-ai:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(156, 39, 176, 0.4);
+}
+
+/* Glass Button - For secondary actions */
+.btn-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-glass:active {
+    transform: translateY(0);
+}
+
+/* Outlined Button */
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary-500);
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--primary-500);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: var(--primary-500);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+/* Success Button */
+.btn-success {
+    background: var(--success);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 187, 106, 0.4);
+}
+
+/* Warning Button */
+.btn-warning {
+    background: var(--warning);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 167, 38, 0.4);
+}
+
+/* Error/Danger Button */
+.btn-error {
+    background: var(--error);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-error:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(239, 83, 80, 0.4);
+}
+
+/* Small Button Variant */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: var(--text-xs);
+}
+
+/* Large Button Variant */
+.btn-lg {
+    padding: 16px 32px;
+    font-size: var(--text-lg);
+}
+
+/* Icon Button */
+.btn-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.btn-icon.btn-icon-lg {
+    width: 48px;
+    height: 48px;
+}
+
+/* ============================================
+   MODERN CARD DESIGN SYSTEM
+   ============================================ */
+
+/* Base Card */
+.card {
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Card with gradient accent */
+.card-gradient {
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.card-gradient:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Glass Card */
+.card-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card-glass:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.card-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-normal);
+    color: var(--text-secondary);
+    margin: 4px 0 0 0;
+}
+
+/* Card Content */
+.card-content {
+    color: var(--text-primary);
+    line-height: var(--leading-relaxed);
+}
+
+/* Card Footer */
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Interactive Card */
+.card-interactive {
+    cursor: pointer;
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-interactive:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    border-color: var(--primary-500);
+}
+
+.card-interactive:active {
+    transform: translateY(-2px) scale(1);
+}
+
+/* Achievement Card (with gold accent) */
+.card-achievement {
+    background: var(--surface-elevated);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid transparent;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card-achievement::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #ffb74d 100%);
+}
+
+.card-achievement:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(255, 167, 38, 0.3);
+}
+
+/* Light Mode Adjustments */
+body.light-mode .card,
+body.light-mode .card-gradient,
+body.light-mode .card-interactive,
+body.light-mode .card-achievement {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .card:hover,
+body.light-mode .card-gradient:hover,
+body.light-mode .card-interactive:hover,
+body.light-mode .card-achievement:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .card-glass {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .card-glass:hover {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .btn-glass {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .btn-glass:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .btn-icon {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .btn-icon:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
 }
