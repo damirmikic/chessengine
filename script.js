@@ -1642,21 +1642,8 @@ function handleAnalyzeCompleteGame() {
     const criticalMoments = detectCriticalMoments(moves);
     displayCriticalMoments(criticalMoments, handleMoveNavigation);
 
-    // Generate puzzles from mistakes
-    const mistakes = moves.filter(m => {
-        const annotation = m.annotation;
-        return annotation === '?' || annotation === '??' || annotation === '!?';
-    });
-
-    if (mistakes.length > 0) {
-        // Generate puzzles from the mistakes
-        mistakes.forEach(mistake => {
-            if (mistake.fen && mistake.evaluation !== undefined) {
-                generatePuzzle(mistake.fen, mistake.evaluation);
-            }
-        });
-        displayPuzzles(handleMoveNavigation);
-    }
+    // Display any puzzles that were generated during the game
+    displayPuzzles(handleMoveNavigation);
 
     // Create a detailed summary
     let inaccuracies = 0;
