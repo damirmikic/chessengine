@@ -27,7 +27,9 @@ class LayoutController {
 
         // State - restore from localStorage if available
         this.isLeftPanelCollapsed = localStorage.getItem('leftPanelCollapsed') === 'true';
-        this.isRightPanelCollapsed = localStorage.getItem('rightPanelCollapsed') === 'true';
+        // Right panel always starts visible as it's essential for gameplay
+        // Users can manually collapse it if needed, but it won't persist across sessions
+        this.isRightPanelCollapsed = false;
         this.isBottomSheetExpanded = false;
         this.isFabMenuOpen = false;
         this.isResizing = false;
@@ -455,6 +457,10 @@ class LayoutController {
                 this.layoutContainer.classList.remove('right-collapsed');
                 this.rightPanelExpandBtn.style.display = 'none';
             }
+        } else {
+            // On mobile, panels are hidden and bottom sheet is used instead
+            // CSS media queries handle this, but ensure expand buttons are hidden
+            this.rightPanelExpandBtn.style.display = 'none';
         }
 
         this.hasRestoredState = true;
