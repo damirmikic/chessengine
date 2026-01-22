@@ -411,6 +411,16 @@ function setupEventListeners() {
         console.error('Settings button not found in DOM');
     }
 
+    // Right panel back button handler
+    const rightPanelBackBtn = document.getElementById('rightPanelBackBtn');
+    if (rightPanelBackBtn) {
+        rightPanelBackBtn.addEventListener('click', () => {
+            if (window.contextManager) {
+                window.contextManager.goBack();
+            }
+        });
+    }
+
     if (engineToggleBtn) {
         engineToggleBtn.addEventListener('click', () => {
             const currentEngine = engineManager.getEngineType();

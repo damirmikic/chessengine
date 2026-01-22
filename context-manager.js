@@ -158,6 +158,13 @@ class ContextManager {
             panelTitle.textContent = this.getPanelTitle();
         }
 
+        // Update back button visibility
+        const backButton = document.getElementById('rightPanelBackBtn');
+        if (backButton) {
+            // Show back button if we have a previous context
+            backButton.style.display = this.previousContext ? 'block' : 'none';
+        }
+
         // Hide all context panels
         const allPanels = document.querySelectorAll('.context-panel');
         console.log('Found context panels:', allPanels.length);
