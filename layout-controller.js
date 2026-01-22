@@ -25,9 +25,9 @@ class LayoutController {
         this.headerUndoBtn = document.getElementById('headerUndoBtn');
         this.headerAnalyzeBtn = document.getElementById('headerAnalyzeBtn');
 
-        // State
-        this.isLeftPanelCollapsed = false;
-        this.isRightPanelCollapsed = false;
+        // State - restore from localStorage if available
+        this.isLeftPanelCollapsed = localStorage.getItem('leftPanelCollapsed') === 'true';
+        this.isRightPanelCollapsed = localStorage.getItem('rightPanelCollapsed') === 'true';
         this.isBottomSheetExpanded = false;
         this.isFabMenuOpen = false;
         this.isResizing = false;
@@ -440,17 +440,20 @@ class LayoutController {
             }
         }
 
-        // Ensure right panel is visible on desktop/tablet
-        // Always start with panel visible - users can manually collapse if needed
+        // Handle right panel visibility on desktop/tablet
         if (width >= 768) {
-            // On desktop/tablet, always show right panel on load
-            // Don't auto-restore collapsed state as it's essential for gameplay
-            if (!this.hasRestoredState) {
-                this.rightPanel.style.display = 'flex';
-                this.isRightPanelCollapsed = false;
-            } else if (!this.isRightPanelCollapsed) {
-                // On subsequent resizes, respect current state
-                this.rightPanel.style.display = 'flex';
+            // Show panel (even when collapsed, the expand button needs to be visible)
+            this.rightPanel.style.display = 'flex';
+
+            // Apply collapsed state
+            if (this.isRightPanelCollapsed) {
+                this.rightPanel.classList.add('collapsed');
+                this.layoutContainer.classList.add('right-collapsed');
+                this.rightPanelExpandBtn.style.display = 'block';
+            } else {
+                this.rightPanel.classList.remove('collapsed');
+                this.layoutContainer.classList.remove('right-collapsed');
+                this.rightPanelExpandBtn.style.display = 'none';
             }
         }
 
