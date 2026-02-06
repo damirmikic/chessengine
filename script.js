@@ -717,13 +717,28 @@ function handleUserMove(moveData) {
     // Show analyzing message
     showAnalyzing('Analyzing...');
 
-    // Request evaluation of the new position
+    // Request evaluation of the new position, then analyze the move
+    // Use a one-shot evaluation listener instead of a fragile setTimeout
+    const originalOnEval = engineManager.callbacks.onEvaluation;
+    let evaluated = false;
+    engineManager.callbacks.onEvaluation = (score, pv) => {
+        if (originalOnEval) originalOnEval(score, pv);
+        if (!evaluated) {
+            evaluated = true;
+            engineManager.callbacks.onEvaluation = originalOnEval;
+            analyzeUserMove(move, previousFen, currentFen);
+        }
+    };
     engineManager.evaluatePosition(currentFen, 12, 'current');
 
-    // After engine has time to evaluate, analyze the move
+    // Safety fallback in case evaluation never fires (e.g., engine error)
     setTimeout(() => {
-        analyzeUserMove(move, previousFen, currentFen);
-    }, 800);
+        if (!evaluated) {
+            evaluated = true;
+            engineManager.callbacks.onEvaluation = originalOnEval;
+            analyzeUserMove(move, previousFen, currentFen);
+        }
+    }, 3000);
 }
 
 /**
@@ -837,15 +852,30 @@ function handleEngineBestMove(result) {
                 handleGameOver();
             }
 
-            // Evaluate new position
+            // Evaluate new position and update move evaluation when ready
+            const origEvalCb = engineManager.callbacks.onEvaluation;
+            let evalDone = false;
+            engineManager.callbacks.onEvaluation = (score, pv) => {
+                if (origEvalCb) origEvalCb(score, pv);
+                if (!evalDone) {
+                    evalDone = true;
+                    engineManager.callbacks.onEvaluation = origEvalCb;
+                    updateLastMoveEvaluation(score);
+                    appState.previousEval = score;
+                }
+            };
             engineManager.evaluatePosition(currentFen, 10, 'current');
 
-            // Store evaluation for the engine's move (will be updated when evaluation completes)
+            // Safety fallback
             setTimeout(() => {
-                const engineState = engineManager.getEngineState();
-                updateLastMoveEvaluation(engineState.currentEval);
-                appState.previousEval = engineState.currentEval;
-            }, 500);
+                if (!evalDone) {
+                    evalDone = true;
+                    engineManager.callbacks.onEvaluation = origEvalCb;
+                    const engineState = engineManager.getEngineState();
+                    updateLastMoveEvaluation(engineState.currentEval);
+                    appState.previousEval = engineState.currentEval;
+                }
+            }, 3000);
         }
         engineManager.stopAnalysis();
 
@@ -1683,8 +1713,8 @@ function handleAnalyzeCompleteGame() {
         summaryHtml += `<p style="margin: 10px 0; color: var(--text-secondary);">📍 Found ${criticalMoments.length} critical moment(s) - check below for details.</p>`;
     }
 
-    if (mistakes.length > 0) {
-        summaryHtml += `<p style="margin: 10px 0; color: var(--text-secondary);">🧩 Generated ${mistakes.length} puzzle(s) from your mistakes.</p>`;
+    if (blunders + mistakes_count > 0) {
+        summaryHtml += `<p style="margin: 10px 0; color: var(--text-secondary);">🧩 Found ${blunders + mistakes_count} mistake(s) and blunder(s) to review.</p>`;
     }
 
     const feedback = document.getElementById('feedback');
@@ -2198,6 +2228,11 @@ function handleCloseMatchAnalysis() {
 
     clearShapes();
 }
+
+// Clean up engine resources when page unloads
+window.addEventListener('beforeunload', () => {
+    engineManager.cleanup();
+});
 
 // Initialize application when DOM is ready
 if (document.readyState === 'loading') {

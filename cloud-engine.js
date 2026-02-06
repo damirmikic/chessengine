@@ -165,9 +165,9 @@ class CloudEngine {
      * @param {Object} data - Parsed JSON data from WebSocket
      */
     handleMessage(data) {
-        // Update current evaluation
+        // Update current evaluation (keep in pawns to match local engine convention)
         if (data.eval !== undefined) {
-            this.currentEval = data.eval * 100; // Convert to centipawns
+            this.currentEval = data.eval;
         }
 
         // Progressive move updates

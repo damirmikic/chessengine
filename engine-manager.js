@@ -206,12 +206,7 @@ class EngineManager {
             console.error('No active engine');
             return;
         }
-
-        if (this.engineType === 'cloud') {
-            this.activeEngine.evaluatePosition(fen, depth, evaluationType);
-        } else {
-            this.activeEngine.evaluatePosition(fen, depth, evaluationType);
-        }
+        this.activeEngine.evaluatePosition(fen, depth, evaluationType);
     }
 
     /**
@@ -222,12 +217,7 @@ class EngineManager {
             console.error('No active engine');
             return;
         }
-
-        if (this.engineType === 'cloud') {
-            this.activeEngine.findBestMove(fen, depth);
-        } else {
-            this.activeEngine.findBestMove(fen, depth);
-        }
+        this.activeEngine.findBestMove(fen, depth);
     }
 
     /**
@@ -238,12 +228,7 @@ class EngineManager {
             console.error('No active engine');
             return;
         }
-
-        if (this.engineType === 'cloud') {
-            this.activeEngine.analyzeWithMultiPv(fen, depth, numLines);
-        } else {
-            this.activeEngine.analyzeWithMultiPv(fen, depth, numLines);
-        }
+        this.activeEngine.analyzeWithMultiPv(fen, depth, numLines);
     }
 
     /**
