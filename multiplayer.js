@@ -110,6 +110,16 @@ function initPeer(callbacks) {
         statusEl.className = 'online-status connecting';
     }
 
+    // Check if PeerJS library loaded (it's a CDN dependency)
+    if (typeof Peer === 'undefined') {
+        console.error('PeerJS library not loaded. Online multiplayer unavailable.');
+        if (statusEl) {
+            statusEl.textContent = 'Online play unavailable (PeerJS failed to load)';
+            statusEl.className = 'online-status disconnected';
+        }
+        return;
+    }
+
     peer = new Peer();
 
     peer.on('open', (id) => {
@@ -143,6 +153,11 @@ function initPeer(callbacks) {
  * Connects to a remote peer
  */
 function connectToPeer(remoteId, callbacks) {
+    if (!peer) {
+        console.error('PeerJS not initialized');
+        return;
+    }
+
     const statusEl = document.getElementById('onlineStatus');
     statusEl.textContent = 'Connecting to friend...';
     statusEl.className = 'online-status connecting';
@@ -256,13 +271,27 @@ function loadLeaderboard() {
         return;
     }
 
-    listEl.innerHTML = leaderboard.map((item, index) => `
-        <div class="leaderboard-item">
-            <span class="leaderboard-rank">#${index + 1}</span>
-            <span class="leaderboard-name">Game on ${item.date}</span>
-            <span class="leaderboard-score">${item.accuracy}%</span>
-        </div>
-    `).join('');
+    // Build leaderboard using DOM methods to prevent XSS from localStorage
+    listEl.innerHTML = '';
+    leaderboard.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'leaderboard-item';
+
+        const rank = document.createElement('span');
+        rank.className = 'leaderboard-rank';
+        rank.textContent = `#${index + 1}`;
+
+        const name = document.createElement('span');
+        name.className = 'leaderboard-name';
+        name.textContent = `Game on ${item.date}`;
+
+        const score = document.createElement('span');
+        score.className = 'leaderboard-score';
+        score.textContent = `${Number(item.accuracy) || 0}%`;
+
+        row.append(rank, name, score);
+        listEl.appendChild(row);
+    });
 }
 
 export function getMultiplayerState() {

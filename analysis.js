@@ -13,6 +13,17 @@ import { Chess } from 'https://esm.sh/chess.js@0.13.4';
  */
 
 /**
+ * Escapes HTML special characters to prevent XSS
+ * @param {string} str - String to escape
+ * @returns {string} Escaped string
+ */
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+/**
  * Thresholds for move quality classification (in pawns)
  * @const {Object}
  */
@@ -111,7 +122,7 @@ export function displayMoveAnalysis(analysisData) {
 
     // Add hint if a better move exists
     if (bestMoveUci && previousFen) {
-        const sanBest = uciToSan(bestMoveUci, previousFen);
+        const sanBest = escapeHtml(uciToSan(bestMoveUci, previousFen));
         html += `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2)">
                  <strong>Better was:</strong> <span style="color:#4caf50; font-size:1.1em">${sanBest}</span>`;
 
@@ -121,7 +132,7 @@ export function displayMoveAnalysis(analysisData) {
             const oppReplyUci = moves[0];
 
             if (oppReplyUci) {
-                const sanReply = uciToSan(oppReplyUci, currentFen);
+                const sanReply = escapeHtml(uciToSan(oppReplyUci, currentFen));
                 html += `<div style="margin-top:8px; font-size:0.95em; color:#ffccbc;">
                          <strong>Why?</strong> This allows <b>${sanReply}</b>...
                          </div>`;
@@ -141,20 +152,41 @@ export function displayMoveAnalysis(analysisData) {
 
 /**
  * Updates the visual evaluation bar
- * @param {number} evaluation - Position evaluation in pawns
+ * Uses a sigmoid curve for smooth scaling at extreme values and handles mate scores
+ * @param {number} evaluation - Position evaluation in pawns (or large values for mate)
  */
 export function updateEvaluationBar(evaluation) {
     const bar = document.getElementById('eval-fill');
     if (!bar) return;
 
-    // Clamp evaluation to reasonable range
-    const clampedScore = Math.max(-5, Math.min(5, evaluation));
+    let percent;
 
-    // Convert to percentage (0-100)
-    // -5 = 0%, 0 = 50%, +5 = 100%
-    const percent = 50 + (clampedScore * 10);
+    // Handle mate scores (typically |eval| > 50)
+    if (Math.abs(evaluation) > 50) {
+        percent = evaluation > 0 ? 98 : 2;
+    } else {
+        // Sigmoid-like curve: gives fine detail near equal positions,
+        // compresses extreme advantages naturally
+        // At ±1 pawn: ~62%/38%, at ±3: ~82%/18%, at ±5: ~91%/9%
+        percent = 50 + 50 * (2 / (1 + Math.exp(-0.7 * evaluation)) - 1);
+    }
+
+    // Clamp to 1-99% so the bar is always slightly visible
+    percent = Math.max(1, Math.min(99, percent));
 
     bar.style.width = `${percent}%`;
+
+    // Update eval text if element exists
+    const evalText = document.getElementById('eval-text');
+    if (evalText) {
+        if (Math.abs(evaluation) > 50) {
+            const mateIn = Math.abs(100 - Math.abs(evaluation));
+            evalText.textContent = `M${mateIn}`;
+        } else {
+            const sign = evaluation > 0 ? '+' : '';
+            evalText.textContent = `${sign}${evaluation.toFixed(1)}`;
+        }
+    }
 }
 
 /**

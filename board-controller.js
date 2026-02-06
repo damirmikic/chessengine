@@ -92,21 +92,99 @@ export function initializeBoard({ containerId, orientation = 'white', onUserMove
 }
 
 /**
+ * Checks if a move is a pawn promotion
+ * @param {Chess} chess - Chess.js instance
+ * @param {string} from - Source square
+ * @param {string} to - Destination square
+ * @returns {boolean} True if the move is a promotion
+ */
+function isPromotion(chess, from, to) {
+    const piece = chess.get(from);
+    if (!piece || piece.type !== 'p') return false;
+    const rank = to.charAt(1);
+    return (piece.color === 'w' && rank === '8') || (piece.color === 'b' && rank === '1');
+}
+
+/**
+ * Shows a promotion piece selection dialog
+ * @param {string} color - 'white' or 'black'
+ * @returns {Promise<string>} Selected promotion piece ('q', 'r', 'b', 'n')
+ */
+function showPromotionDialog(color) {
+    return new Promise((resolve) => {
+        // Remove any existing dialog
+        const existing = document.getElementById('promotion-dialog');
+        if (existing) existing.remove();
+
+        const dialog = document.createElement('div');
+        dialog.id = 'promotion-dialog';
+        dialog.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: center;
+            justify-content: center; z-index: 10000;
+        `;
+
+        const pieces = color === 'white'
+            ? [{ piece: 'q', symbol: '♕' }, { piece: 'r', symbol: '♖' }, { piece: 'b', symbol: '♗' }, { piece: 'n', symbol: '♘' }]
+            : [{ piece: 'q', symbol: '♛' }, { piece: 'r', symbol: '♜' }, { piece: 'b', symbol: '♝' }, { piece: 'n', symbol: '♞' }];
+
+        const container = document.createElement('div');
+        container.style.cssText = `
+            display: flex; gap: 8px; background: var(--bg-secondary, #2a2a2a);
+            padding: 16px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        `;
+
+        pieces.forEach(({ piece, symbol }) => {
+            const btn = document.createElement('button');
+            btn.textContent = symbol;
+            btn.style.cssText = `
+                font-size: 48px; width: 72px; height: 72px; border: 2px solid transparent;
+                border-radius: 8px; cursor: pointer; background: var(--bg-primary, #1a1a1a);
+                color: inherit; transition: all 0.15s ease;
+            `;
+            btn.addEventListener('mouseenter', () => btn.style.borderColor = 'var(--accent, #4caf50)');
+            btn.addEventListener('mouseleave', () => btn.style.borderColor = 'transparent');
+            btn.addEventListener('click', () => {
+                dialog.remove();
+                resolve(piece);
+            });
+            container.appendChild(btn);
+        });
+
+        dialog.appendChild(container);
+
+        // Close on backdrop click (defaults to queen)
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                dialog.remove();
+                resolve('q');
+            }
+        });
+
+        document.body.appendChild(dialog);
+    });
+}
+
+/**
  * Handles user move on the board
  * @param {string} from - Source square (e.g., 'e2')
  * @param {string} to - Destination square (e.g., 'e4')
  */
-function handleUserMove(from, to) {
+async function handleUserMove(from, to) {
     if (!boardState.chess || !boardState.board) return;
 
     // Store current position for potential undo
     const previousFen = boardState.chess.fen();
 
-    // Attempt move (try normal move first, then promotion to queen)
-    let move = boardState.chess.move({ from, to });
-    if (move === null) {
-        move = boardState.chess.move({ from, to, promotion: 'q' });
+    // Check if this is a promotion move
+    let promotion = undefined;
+    if (isPromotion(boardState.chess, from, to)) {
+        const color = boardState.chess.turn() === 'w' ? 'white' : 'black';
+        promotion = await showPromotionDialog(color);
     }
+
+    // Attempt the move
+    let move = boardState.chess.move({ from, to, promotion });
 
     // Invalid move - revert board
     if (move === null) {

@@ -148,9 +148,9 @@ function handleEngineMessage(event) {
                     pv: pv
                 };
 
-                // Notify multipv callback
-                if (engineState.onMultiPv && pvNumber === 3) {
-                    // Wait for all 3 lines
+                // Notify multipv callback with current best moves
+                // Fire on the highest pvNumber seen so far (final line of this depth iteration)
+                if (engineState.onMultiPv && engineState.bestMoves.length >= pvNumber) {
                     engineState.onMultiPv([...engineState.bestMoves]);
                 }
             }
@@ -279,6 +279,12 @@ export function evaluatePosition(fen, depth = 12, evaluationType = 'current') {
     // Stop previous search to ensure freshness
     engineState.worker.postMessage('stop');
 
+    // Reset MultiPV to 1 for single-line evaluations
+    if (engineState.multiPvLines && engineState.multiPvLines > 1) {
+        engineState.worker.postMessage('setoption name MultiPV value 1');
+        engineState.multiPvLines = 1;
+    }
+
     // Reset state for new evaluation
     engineState.currentPv = "";
     if (evaluationType === 'current') {
@@ -353,6 +359,11 @@ export function analyzeWithMultiPv(fen, depth = 15, numLines = 3) {
     // Reset best moves array
     engineState.bestMoves = [];
     engineState.status = 'analyzing';
+    engineState.multiPvLines = numLines;
+
+    // Parse turn from FEN
+    const fenParts = fen.split(' ');
+    engineState.currentTurn = fenParts[1] || 'w';
 
     // Configure multipv
     engineState.worker.postMessage(`setoption name MultiPV value ${numLines}`);
