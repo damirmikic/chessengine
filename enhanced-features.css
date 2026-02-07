@@ -1323,3 +1323,509 @@ body.light-mode .showcase-badge {
     background: rgba(0, 0, 0, 0.05);
     border-color: rgba(0, 0, 0, 0.1);
 }
+
+/* ============================================================
+   OPENING COACH & TRAP COACH
+   ============================================================ */
+
+.coach-section {
+    margin-top: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.coach-section-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    user-select: none;
+    gap: 0.5rem;
+    transition: background 0.2s;
+}
+
+.coach-section-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.coach-section-header h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.coach-section-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+}
+
+.coach-section-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    opacity: 0.5;
+}
+
+.coach-section.expanded .coach-section-arrow {
+    transform: rotate(180deg);
+}
+
+.coach-section-body {
+    padding: 0 1rem 1rem;
+}
+
+/* Coach Panel */
+.coach-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.coach-header h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+}
+
+.coach-description {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+}
+
+/* Difficulty groups */
+.coach-difficulty-group {
+    margin-bottom: 0.75rem;
+}
+
+.difficulty-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.5rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.difficulty-beginner {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+}
+
+.difficulty-intermediate {
+    background: rgba(234, 179, 8, 0.15);
+    color: #facc15;
+}
+
+.difficulty-advanced {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+/* Opening/Trap Cards */
+.coach-opening-list,
+.coach-trap-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.coach-opening-card,
+.coach-trap-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0.75rem;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.coach-opening-card:hover,
+.coach-trap-card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.coach-opening-card.mastered,
+.coach-trap-card.mastered {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.opening-card-header,
+.trap-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.35rem;
+}
+
+.opening-eco {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.opening-side,
+.trap-side {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.opening-side.white,
+.trap-side.white {
+    background: rgba(255, 255, 255, 0.15);
+    color: #e5e7eb;
+}
+
+.opening-side.black,
+.trap-side.black {
+    background: rgba(0, 0, 0, 0.3);
+    color: #9ca3af;
+}
+
+.trap-difficulty {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.opening-card-title,
+.trap-card-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.opening-card-desc,
+.trap-card-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+/* Accuracy bar */
+.opening-card-stats,
+.trap-card-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.accuracy-bar-container {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.accuracy-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #818cf8);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.accuracy-bar.target-met {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.accuracy-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    min-width: 32px;
+    text-align: right;
+}
+
+.accuracy-text.perfect {
+    color: #4ade80;
+}
+
+.opening-card-paths,
+.trap-card-attempts {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+.coach-start-btn {
+    width: 100%;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.coach-start-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* Trap target selector */
+.trap-target-setting {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.trap-target-setting label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.trap-accuracy-select {
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: inherit;
+    font-size: 0.8rem;
+}
+
+/* Trap category */
+.coach-trap-category {
+    margin-bottom: 0.75rem;
+}
+
+.trap-category-label {
+    font-size: 0.8rem;
+    margin: 0 0 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.25rem;
+}
+
+/* Active Session */
+.coach-active-session {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.session-opening {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.session-path {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+}
+
+.session-progress {
+    margin-bottom: 0.75rem;
+}
+
+.session-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.session-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #818cf8);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.session-progress-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.session-stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.session-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.session-stat .stat-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #a5b4fc;
+}
+
+.session-stat .stat-desc {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.session-side-indicator {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0.75rem;
+}
+
+.waiting-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(234, 179, 8, 0.2);
+    color: #facc15;
+    margin-left: 0.5rem;
+}
+
+.your-turn-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    margin-left: 0.5rem;
+}
+
+.trap-move-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    font-weight: 600;
+    animation: pulse-badge 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+.coach-stop-btn {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.coach-stop-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Coach Feedback Toast */
+.coach-feedback-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+
+.coach-feedback-toast.correct {
+    background: rgba(34, 197, 94, 0.95);
+    color: #fff;
+}
+
+.coach-feedback-toast.wrong {
+    background: rgba(239, 68, 68, 0.95);
+    color: #fff;
+}
+
+.coach-feedback-toast.info {
+    background: rgba(99, 102, 241, 0.95);
+    color: #fff;
+}
+
+.coach-feedback-toast.complete {
+    background: rgba(234, 179, 8, 0.95);
+    color: #1a1a2e;
+}
+
+.coach-feedback-icon {
+    font-size: 1.2rem;
+}
+
+.coach-feedback-message {
+    max-width: 400px;
+    line-height: 1.3;
+}
+
+/* Light mode overrides */
+body.light-mode .coach-section {
+    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .coach-section-header:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.light-mode .coach-opening-card,
+body.light-mode .coach-trap-card {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .coach-description,
+body.light-mode .opening-card-desc,
+body.light-mode .trap-card-desc {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body.light-mode .coach-active-session {
+    background: rgba(99, 102, 241, 0.05);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+body.light-mode .trap-accuracy-select {
+    border-color: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.05);
+}

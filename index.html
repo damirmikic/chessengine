@@ -590,6 +590,40 @@
                         </button>
                     </div>
 
+                    <!-- Opening Coach -->
+                    <div class="coach-section" id="openingCoachSection">
+                        <div class="coach-section-header" id="openingCoachToggle">
+                            <h4>Opening Coach</h4>
+                            <span class="coach-section-badge" id="openingCoachBadge">0/9 mastered</span>
+                            <span class="coach-section-arrow">&#9660;</span>
+                        </div>
+                        <div class="coach-section-body" id="openingCoachBody" style="display: none;">
+                            <div id="openingCoachContainer">
+                                <!-- Populated by opening-coach.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trap Coach -->
+                    <div class="coach-section" id="trapCoachSection">
+                        <div class="coach-section-header" id="trapCoachToggle">
+                            <h4>Trap Coach</h4>
+                            <span class="coach-section-badge" id="trapCoachBadge">0/12 at target</span>
+                            <span class="coach-section-arrow">&#9660;</span>
+                        </div>
+                        <div class="coach-section-body" id="trapCoachBody" style="display: none;">
+                            <div id="trapCoachContainer">
+                                <!-- Populated by opening-coach.js -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coach Feedback Toast -->
+                    <div id="coachFeedbackToast" class="coach-feedback-toast" style="display: none;">
+                        <div class="coach-feedback-icon" id="coachFeedbackIcon"></div>
+                        <div class="coach-feedback-message" id="coachFeedbackMessage"></div>
+                    </div>
+
                     <!-- Achievement Showcase -->
                     <div id="achievementShowcase" class="achievement-showcase">
                         <!-- Populated by achievement-visuals.js -->
