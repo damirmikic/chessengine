@@ -187,12 +187,27 @@ class CloudEngine {
     }
 
     /**
+     * Convert LAN (Long Algebraic Notation) to UCI format
+     * Strips piece prefixes (e.g., "N", "B") and dashes from moves like "Nb1-c3" -> "b1c3"
+     * @param {string} lan - Move in LAN format
+     * @returns {string} Move in UCI format
+     */
+    lanToUci(lan) {
+        if (!lan) return lan;
+        // Remove piece prefix (uppercase letter at start, if followed by a file letter a-h)
+        let uci = lan.replace(/^[KQRBNP](?=[a-h])/, '');
+        // Remove dashes
+        uci = uci.replace(/-/g, '');
+        return uci;
+    }
+
+    /**
      * Handle progressive move updates during analysis
      */
     handleMoveUpdate(data) {
         // Store in best moves array
         const moveData = {
-            move: data.lan || data.move,
+            move: this.lanToUci(data.lan) || data.move,
             san: data.san,
             eval: data.eval,
             centipawns: data.eval * 100,
@@ -253,7 +268,7 @@ class CloudEngine {
         this.status = 'idle';
 
         const moveData = {
-            move: data.lan || data.move,
+            move: this.lanToUci(data.lan) || data.move,
             san: data.san,
             eval: data.eval,
             centipawns: data.eval * 100,
