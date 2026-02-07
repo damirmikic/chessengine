@@ -104,6 +104,32 @@ import {
     getProgressData
 } from './learning-tracker.js';
 
+// Opening Coach & Trap Coach
+import {
+    OPENING_REPERTOIRE,
+    TRAP_DATABASE,
+    startOpeningCoach,
+    validateOpeningMove,
+    openingCoachReplyPlayed,
+    getOpeningCoachReply,
+    getOpeningCoachFirstMove,
+    isOpeningCoachActive,
+    stopOpeningCoach,
+    getOpeningCoachStatus,
+    getOpeningCoachStats,
+    startTrapCoach,
+    validateTrapMove,
+    trapCoachReplyPlayed,
+    getTrapCoachReply,
+    getTrapCoachFirstMove,
+    isTrapCoachActive,
+    stopTrapCoach,
+    getTrapCoachStatus,
+    getTrapCoachStats,
+    renderOpeningCoachPanel,
+    renderTrapCoachPanel
+} from './opening-coach.js';
+
 import {
     initializeMatchAnalysis,
     analyzeMatch,
@@ -250,6 +276,9 @@ async function initializeApp() {
         // Set up UI event listeners
         setupEventListeners();
         setupTabs();
+
+        // Initialize Opening Coach & Trap Coach
+        initializeCoaches();
 
         // Initialize difficulty badge
         updateDifficultyBadge();
@@ -668,6 +697,18 @@ function handleUserMove(moveData) {
     // Don't allow moves while viewing history
     if (isViewingHistory()) {
         showMessage('Return to current position to make moves');
+        return;
+    }
+
+    // Handle Opening Coach moves
+    if (isOpeningCoachActive()) {
+        handleCoachUserMove(move, 'opening');
+        return;
+    }
+
+    // Handle Trap Coach moves
+    if (isTrapCoachActive()) {
+        handleCoachUserMove(move, 'trap');
         return;
     }
 
@@ -1175,6 +1216,302 @@ function updateRatingDisplay() {
         ratingValue.textContent = `~${rating}`;
         ratingBadge.style.display = 'inline-flex';
     }
+}
+
+// ============================================================
+// Opening Coach & Trap Coach Integration
+// ============================================================
+
+/**
+ * Initializes the Opening Coach and Trap Coach UI
+ */
+function initializeCoaches() {
+    const openingCoachContainer = document.getElementById('openingCoachContainer');
+    const trapCoachContainer = document.getElementById('trapCoachContainer');
+
+    if (openingCoachContainer) {
+        renderOpeningCoachPanel(openingCoachContainer);
+    }
+    if (trapCoachContainer) {
+        renderTrapCoachPanel(trapCoachContainer);
+    }
+
+    updateCoachBadges();
+
+    // Toggle sections
+    const openingToggle = document.getElementById('openingCoachToggle');
+    const trapToggle = document.getElementById('trapCoachToggle');
+
+    if (openingToggle) {
+        openingToggle.addEventListener('click', () => {
+            const section = document.getElementById('openingCoachSection');
+            const body = document.getElementById('openingCoachBody');
+            if (section && body) {
+                const isExpanded = body.style.display !== 'none';
+                body.style.display = isExpanded ? 'none' : 'block';
+                section.classList.toggle('expanded', !isExpanded);
+            }
+        });
+    }
+
+    if (trapToggle) {
+        trapToggle.addEventListener('click', () => {
+            const section = document.getElementById('trapCoachSection');
+            const body = document.getElementById('trapCoachBody');
+            if (section && body) {
+                const isExpanded = body.style.display !== 'none';
+                body.style.display = isExpanded ? 'none' : 'block';
+                section.classList.toggle('expanded', !isExpanded);
+            }
+        });
+    }
+
+    // Listen for coach start events
+    document.addEventListener('openingCoachStart', (e) => {
+        const { openingId } = e.detail;
+        beginOpeningCoachSession(openingId);
+    });
+
+    document.addEventListener('trapCoachStart', (e) => {
+        const { trapId } = e.detail;
+        beginTrapCoachSession(trapId);
+    });
+
+    document.addEventListener('openingCoachStop', () => {
+        handleReset();
+        updateCoachBadges();
+    });
+
+    document.addEventListener('trapCoachStop', () => {
+        handleReset();
+        updateCoachBadges();
+    });
+}
+
+/**
+ * Updates the badge counts on coach section headers
+ */
+function updateCoachBadges() {
+    const openingBadge = document.getElementById('openingCoachBadge');
+    const trapBadge = document.getElementById('trapCoachBadge');
+
+    if (openingBadge) {
+        const stats = getOpeningCoachStats();
+        openingBadge.textContent = `${stats.totalMastered}/${stats.totalOpenings} mastered`;
+    }
+
+    if (trapBadge) {
+        const stats = getTrapCoachStats();
+        trapBadge.textContent = `${stats.metTarget}/${stats.totalTraps} at target`;
+    }
+}
+
+/**
+ * Begins an Opening Coach practice session
+ */
+function beginOpeningCoachSession(openingId) {
+    // Reset the board first
+    handleReset();
+
+    const started = startOpeningCoach(openingId);
+    if (!started) {
+        showCoachFeedback('Could not start opening practice.', 'wrong');
+        return;
+    }
+
+    showCoachFeedback(`Starting: ${getOpeningCoachStatus().opening}`, 'info');
+
+    // Re-render the panel to show active session
+    const container = document.getElementById('openingCoachContainer');
+    if (container) renderOpeningCoachPanel(container);
+
+    // If user plays black, play the first white move
+    const firstMove = getOpeningCoachFirstMove();
+    if (firstMove) {
+        setTimeout(() => {
+            playCoachOpponentMove(firstMove);
+        }, 500);
+    }
+}
+
+/**
+ * Begins a Trap Coach practice session
+ */
+function beginTrapCoachSession(trapId) {
+    handleReset();
+
+    const started = startTrapCoach(trapId);
+    if (!started) {
+        showCoachFeedback('Could not start trap practice.', 'wrong');
+        return;
+    }
+
+    showCoachFeedback(`Starting: ${getTrapCoachStatus().trap}`, 'info');
+
+    const container = document.getElementById('trapCoachContainer');
+    if (container) renderTrapCoachPanel(container);
+
+    // If user plays black, play the first white move
+    const firstMove = getTrapCoachFirstMove();
+    if (firstMove) {
+        setTimeout(() => {
+            playCoachOpponentMove(firstMove);
+        }, 500);
+    }
+}
+
+/**
+ * Handles a user move during coach practice
+ */
+function handleCoachUserMove(move, coachType) {
+    const chess = getChess();
+
+    if (coachType === 'opening') {
+        const result = validateOpeningMove(move.san);
+        if (!result) return;
+
+        if (result.correct) {
+            if (result.isComplete) {
+                if (result.allPathsComplete) {
+                    const msg = result.mastered
+                        ? `All lines mastered at 100%!`
+                        : `All lines completed! Overall: ${result.overallAccuracy}%`;
+                    showCoachFeedback(msg, 'complete');
+                    refreshCoachPanels();
+                    return;
+                }
+            }
+
+            if (result.pathComplete) {
+                showCoachFeedback(`Line complete (${result.accuracy}%). Next: ${result.nextPath}`, 'info');
+                // Reset board for the next variant
+                setTimeout(() => {
+                    handleReset();
+                    const container = document.getElementById('openingCoachContainer');
+                    if (container) renderOpeningCoachPanel(container);
+
+                    // If user plays black, play the first white move of next path
+                    const firstMove = getOpeningCoachFirstMove();
+                    if (firstMove) {
+                        setTimeout(() => playCoachOpponentMove(firstMove), 500);
+                    }
+                }, 1200);
+                return;
+            }
+
+            showCoachFeedback('Correct!', 'correct');
+
+            // Play opponent reply if there is one
+            if (result.opponentReply) {
+                setTimeout(() => {
+                    playCoachOpponentMove(result.opponentReply);
+                    openingCoachReplyPlayed();
+                    const container = document.getElementById('openingCoachContainer');
+                    if (container) renderOpeningCoachPanel(container);
+                }, 600);
+            } else {
+                const container = document.getElementById('openingCoachContainer');
+                if (container) renderOpeningCoachPanel(container);
+            }
+        } else {
+            // Wrong move - undo it and show hint
+            showCoachFeedback(`Wrong! Expected: ${result.expectedMove}`, 'wrong');
+            setTimeout(() => {
+                undoMove();
+            }, 800);
+        }
+    } else if (coachType === 'trap') {
+        const result = validateTrapMove(move.san);
+        if (!result) return;
+
+        if (result.correct) {
+            if (result.isComplete) {
+                const msg = result.trapExecuted
+                    ? `Trap executed! ${result.accuracy}% accuracy. Overall: ${result.overallAccuracy}%`
+                    : 'Trap complete!';
+                showCoachFeedback(msg, 'complete');
+                if (result.explanation) {
+                    setTimeout(() => showCoachFeedback(result.explanation, 'info'), 2000);
+                }
+                refreshCoachPanels();
+                return;
+            }
+
+            if (result.trapHint) {
+                showCoachFeedback(result.trapHint, 'info');
+            } else {
+                showCoachFeedback('Correct!', 'correct');
+            }
+
+            if (result.opponentReply) {
+                setTimeout(() => {
+                    playCoachOpponentMove(result.opponentReply);
+                    trapCoachReplyPlayed();
+                    const container = document.getElementById('trapCoachContainer');
+                    if (container) renderTrapCoachPanel(container);
+                }, 600);
+            } else {
+                const container = document.getElementById('trapCoachContainer');
+                if (container) renderTrapCoachPanel(container);
+            }
+        } else {
+            showCoachFeedback(`Wrong! Expected: ${result.expectedMove}`, 'wrong');
+            setTimeout(() => {
+                undoMove();
+            }, 800);
+        }
+    }
+}
+
+/**
+ * Plays an opponent move on the board during coach practice
+ */
+function playCoachOpponentMove(san) {
+    const chess = getChess();
+    const moveResult = chess.move(san);
+    if (moveResult) {
+        performEngineMove(moveResult.from + moveResult.to + (moveResult.promotion || ''));
+    }
+}
+
+/**
+ * Shows a coach feedback toast
+ */
+function showCoachFeedback(message, type) {
+    const toast = document.getElementById('coachFeedbackToast');
+    const icon = document.getElementById('coachFeedbackIcon');
+    const msg = document.getElementById('coachFeedbackMessage');
+
+    if (!toast || !icon || !msg) return;
+
+    const icons = {
+        correct: '\u2713',
+        wrong: '\u2717',
+        info: '\u2139',
+        complete: '\u2605'
+    };
+
+    toast.className = 'coach-feedback-toast ' + type;
+    icon.textContent = icons[type] || '';
+    msg.textContent = message;
+    toast.style.display = 'flex';
+
+    clearTimeout(toast._hideTimeout);
+    toast._hideTimeout = setTimeout(() => {
+        toast.style.display = 'none';
+    }, type === 'complete' ? 3000 : 1800);
+}
+
+/**
+ * Refreshes both coach panels and badges
+ */
+function refreshCoachPanels() {
+    const openingContainer = document.getElementById('openingCoachContainer');
+    const trapContainer = document.getElementById('trapCoachContainer');
+
+    if (openingContainer) renderOpeningCoachPanel(openingContainer);
+    if (trapContainer) renderTrapCoachPanel(trapContainer);
+    updateCoachBadges();
 }
 
 /**
